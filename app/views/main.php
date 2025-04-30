@@ -71,7 +71,7 @@ $page = $_GET['page'] ?? 'home'; // 기본 페이지는 home
             <div class="content" id="main-content">
                 <?php
                 // 페이지에 따라 내용 불러오기
-                $view_path = "";  
+                $view_path = "sub_menu/";  
                 switch ($page) {
                     case "admin":
                         include $view_path . "admin_info.php";
