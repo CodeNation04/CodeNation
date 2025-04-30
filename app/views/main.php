@@ -1,5 +1,12 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_role'])) {
+    header("Location: ../../login.php"); // 또는 절대경로 확인
+    exit;
+}
+?>
+
+<?php
 $_SESSION['user_role'] = 'super'; // 또는 'middle'
 
 $page = $_GET['page'] ?? 'home'; // 기본 페이지는 home
@@ -18,6 +25,8 @@ $page = $_GET['page'] ?? 'home'; // 기본 페이지는 home
         <!-- Sidebar -->
         <div class="sidebar">
             <h2>i-Mon Admin</h2>
+
+            
 
             <?php if ($_SESSION['user_role'] === 'super'): ?>
             <div class="menu-group">
@@ -44,12 +53,18 @@ $page = $_GET['page'] ?? 'home'; // 기본 페이지는 home
 
         <!-- Main -->
         <div class="main">
-            <div class="header">
+        <div class="header">
                 <div class="user-info">
-                    <span class="name">최고관리자</span>
-                    <form method="post" action="../logout.php" style="display:inline;">
-                        <button type="submit">로그아웃</button>
-                    </form>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <span class="name"><?= $_SESSION['user_id'] ?></span>
+                        <form method="post" action="logout.php" style="display:inline;">
+                            <button type="submit">로그아웃</button>
+                        </form>
+                    <?php else: ?>
+                        <form method="get" action="login.php" style="display:inline;">
+                            <button type="submit">로그인</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
 
