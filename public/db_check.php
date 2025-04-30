@@ -11,7 +11,6 @@ if (!$conn) {
     die('MySQL 연결 실패: ' . mysqli_connect_error());
 } else {
     echo 'MySQL 연결 성공!';
-    echo '나도연결3!';
 
 }
 
