@@ -20,7 +20,7 @@
         <div class="sidebar">
             <h2>i-Mon Admin</h2>
 
-            <?php if ($_SESSION['user_role'] === 'super'): ?>
+            <!-- <?php if ($_SESSION['user_role'] === 'super'): ?> -->
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
                 <div class="menu-item" onclick="showContent('관리자 정보 관리')">관리자 정보 관리</div>
@@ -34,7 +34,7 @@
                 <div class="menu-item" onclick="showContent('삭제 환경 관리')">삭제 환경 관리</div>
                 <div class="menu-item" onclick="showContent('외부 반출 승인 관리')">외부 반출 승인 관리</div>
             </div>
-            <?php endif; ?>
+            <!-- <?php endif; ?> -->
 
             <div class="menu-group">
                 <div class="menu-group-title">정보 조회</div>
