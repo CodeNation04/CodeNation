@@ -12,7 +12,12 @@
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
             <div style="margin-bottom: 15px;">
-              <label><strong>비밀번호 변경</strong></label><br>
+              <label><strong>새 비밀번호</strong></label><br>
+              <input type="password" id="admin-password" placeholder="변경할 경우만 입력"
+                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label><strong>새 비밀번호 확인</strong></label><br>
               <input type="password" id="admin-password" placeholder="변경할 경우만 입력"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
