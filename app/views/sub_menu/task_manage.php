@@ -6,10 +6,10 @@
 
     <!-- 탭 메뉴 -->
     <ul class="tab-menu">
-        <li><a href="?tab=temp_delete" class="<?= ($_GET['tab'] ?? 'temp_delete') === 'temp_delete' ? 'active' : '' ?>">임시파일 삭제</a></li>
-        <li><a href="?tab=folder_delete" class="<?= ($_GET['tab'] ?? '') === 'folder_delete' ? 'active' : '' ?>">폴더 삭제</a></li>
-        <li><a href="?tab=recent_delete" class="<?= ($_GET['tab'] ?? '') === 'recent_delete' ? 'active' : '' ?>">최근 파일 삭제</a></li>
-        <li><a href="?tab=trash_delete" class="<?= ($_GET['tab'] ?? '') === 'trash_delete' ? 'active' : '' ?>">휴지통 완전비우기</a></li>
+        <li><a href="/?url=MainController/login&page=task&tab=temp_delete" class="<?= ($_GET['tab'] ?? 'temp_delete') === 'temp_delete' ? 'active' : '' ?>">임시파일 삭제</a></li>
+        <li><a href="/?url=MainController/login&page=task&tab=folder_delete" class="<?= ($_GET['tab'] ?? '') === 'folder_delete' ? 'active' : '' ?>">폴더 삭제</a></li>
+        <li><a href="/?url=MainController/login&page=task&tab=recent_delete" class="<?= ($_GET['tab'] ?? '') === 'recent_delete' ? 'active' : '' ?>">최근 파일 삭제</a></li>
+        <li><a href="/?url=MainController/login&page=task&tab=trash_delete" class="<?= ($_GET['tab'] ?? '') === 'trash_delete' ? 'active' : '' ?>">휴지통 완전비우기</a></li>
     </ul>
 
     <!-- 탭 콘텐츠 -->
