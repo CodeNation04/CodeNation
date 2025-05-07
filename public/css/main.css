@@ -1,4 +1,3 @@
-/* 기본 박스 설정 */
 * {
    box-sizing: border-box;
 }
@@ -39,18 +38,21 @@ body {
    background-color: #34495e;
 }
 
+/* ✅ 메뉴 항목: 세로 정렬 + 줄바꿈 */
 .menu-item {
+   display: block; /* 줄바꿈 필수 */
    padding: 10px 30px;
    font-size: 14px;
    cursor: pointer;
    color: #ecf0f1;
+   text-decoration: none;
 }
 
 .menu-item:hover {
    background-color: #3e5870;
 }
 
-/* 메인 영역 */
+/* 메인 콘텐츠 */
 .main {
    flex: 1;
    display: flex;
@@ -92,7 +94,6 @@ body {
    color: white;
 }
 
-/* 콘텐츠 영역 */
 .content {
    padding: 30px;
 }
