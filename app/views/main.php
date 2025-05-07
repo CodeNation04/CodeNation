@@ -50,15 +50,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="user-info">
 
                     <?php foreach ($data['admins'] as $admin): ?>
-<<<<<<< HEAD
                         <span class="name"><?= htmlspecialchars($admin['id']) ?></span>
                         <form method="post" action="/?url=AuthController/logout">
                             <button>로그아웃</button>
                         </form>
-=======
-                    <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
-                    <button>로그아웃</button>
->>>>>>> 7c2d55417ccce403ea68bcd91d872fb6f91a39ed
                     <?php endforeach; ?>
                 </div>
             </div>
