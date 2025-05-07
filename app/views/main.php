@@ -1,19 +1,17 @@
 <?php
-// session_start();
-// $_SESSION['user_role'] = 'super'; // 'super' 또는 'middle'
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>i-Mon 관리</title>
-    <link rel="stylesheet" href="css/main.css" /> <!-- ✅ 외부 CSS 연결 -->
-    <script defer src="js/main.js"></script> <!-- ✅ JS도 상대경로 연결 -->
+    <link rel="stylesheet" href="../css/main.css" /> 
 </head>
-
 <body>
     <div class="layout">
         <!-- Sidebar -->
@@ -23,30 +21,31 @@
             <?php if ($_SESSION['user_role'] === 'super'): ?>
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
-                <div class="menu-item" onclick="showContent('관리자 정보 관리')">관리자 정보 관리</div>
-                <div class="menu-item" onclick="showContent('부서 정보 관리')">부서 정보 관리</div>
-                <div class="menu-item" onclick="showContent('감사 로그 조회')">감사 로그 조회</div>
+                <a href="?page=admin" class="menu-item">관리자 정보 관리</a>
+                <a href="?page=dept" class="menu-item">부서 정보 관리</a>
+                <a href="?page=log" class="menu-item">감사 로그 조회</a>
             </div>
 
             <div class="menu-group">
                 <div class="menu-group-title">정책 설정</div>
-                <div class="menu-item" onclick="showContent('예약 작업 관리')">예약 작업 관리</div>
-                <div class="menu-item" onclick="showContent('삭제 환경 관리')">삭제 환경 관리</div>
-                <div class="menu-item" onclick="showContent('외부 반출 승인 관리')">외부 반출 승인 관리</div>
+                <a href="?page=task" class="menu-item">예약 작업 관리</a>
+                <a href="?page=delete" class="menu-item">삭제 환경 관리</a>
+                <a href="?page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
             <?php endif; ?>
 
             <div class="menu-group">
                 <div class="menu-group-title">정보 조회</div>
-                <div class="menu-item" onclick="showContent('Agent 정보 조회')">Agent 정보 조회</div>
-                <div class="menu-item" onclick="showContent('Agent 로그 조회')">Agent 로그 조회</div>
+                <a href="?page=agent" class="menu-item">Agent 정보 조회</a>
+                <a href="?page=agentlog" class="menu-item">Agent 로그 조회</a>
             </div>
         </div>
 
         <!-- Main -->
         <div class="main">
-            <div class="header">
+        <div class="header">
                 <div class="user-info">
+
                     <?php foreach ($data['admins'] as $admin): ?>
                         <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
                         <button>로그아웃</button>
@@ -55,13 +54,42 @@
             </div>
 
             <div class="content" id="main-content">
-                <div class="placeholder">
-                    <h2>i-Mon 관리자 시스템</h2>
-                    <p>왼쪽 메뉴를 선택하여 기능을 시작하세요.</p>
-                </div>
-            </div>
+    <?php
+    $page = $_GET['page'] ?? ""; 
+    $view_path = "sub_menu/";
+
+    switch ($page) {
+        case "admin":
+            include $view_path . "admin_info.php";
+            break;
+        case "dept":
+            include $view_path . "department_info.php";
+            break;
+        case "log":
+            include $view_path . "log_view.php";
+            break;
+        case "task":
+            include $view_path . "task_manage.php";
+            break;
+        case "delete":
+            include $view_path . "delete_manage.php";
+            break;
+        case "export":
+            include $view_path . "export_manage.php";
+            break;
+        case "agent":
+            include $view_path . "agent_info.php";
+            break;
+        case "agentlog":
+            include $view_path . "agent_log.php";
+            break;
+        default:
+            include $view_path . "home.php";
+    }
+    ?>
+</div>
+
         </div>
     </div>
 </body>
-
 </html>
