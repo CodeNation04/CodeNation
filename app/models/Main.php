@@ -9,10 +9,13 @@
             $this->db = $database->pdo;
         }
 
-        // 예시 메서드
-        public function getAdmins($id,$pw) {
-            $stmt = $this->db->query("SELECT * FROM admin");
-            // $stmt = $this->db->query("SELECT * FROM admin where id =". $id . "and pw = " . $pw);
+        public function getAdmins($id) {
+            $debugSql = "SELECT * FROM admin WHERE id = '" . addslashes($id) . "'";
+            echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
+
+            $stmt = $this->db->prepare("SELECT * FROM admin WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
