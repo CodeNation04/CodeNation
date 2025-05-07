@@ -1,19 +1,5 @@
 <?php
-session_start();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $id = $_POST['id'] ?? '';
-    $pw = $_POST['pw'] ?? '';
-
-    if ($id === 'admin' && $pw === '1234') {
-        $_SESSION['user_id'] = $id;
-        $_SESSION['user_role'] = 'super';
-        header("Location: main.php");
-        exit;
-    } else {
-        $error = "아이디 또는 비밀번호가 올바르지 않습니다.";
-    }
-}
 ?>
 
 <!DOCTYPE html>
