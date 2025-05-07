@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
     <h2>로그인</h2>
     <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form method="post">
+    <form method="post" action="/?url=AuthController/login">
         <input type="text" name="id" placeholder="아이디" required><br>
         <input type="password" name="pw" placeholder="비밀번호" required><br>
         <button type="submit">로그인</button>
