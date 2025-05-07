@@ -1,64 +1,60 @@
-/* task_manage.css */
-
-/* ✅ 기본 레이아웃 */
-body {
-   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-   background-color: #f4f6f8;
-   margin: 0;
-   display: flex;
-   justify-content: center;
-   align-items: flex-start;
-   height: 100vh;
+/* 기본 스타일 */
+.task-manage-wrapper {
+   margin: 20px;
+   font-family: Arial, sans-serif;
 }
 
-.layout {
-   background: #ffffff;
-   padding: 20px 30px;
-   border-radius: 12px;
-   width: 600px;
-   max-width: 90%;
-   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-   margin-top: 20px;
-}
-
-/* ✅ 제목 스타일 */
-h2 {
-   text-align: left;
-   margin-bottom: 20px;
-   font-size: 24px;
-}
-
-/* ✅ 탭 메뉴 스타일 */
+/* 탭 메뉴 스타일 */
 .tab-menu {
    display: flex;
-   justify-content: space-between;
+   gap: 10px;
    margin-bottom: 20px;
-   border-bottom: 2px solid #ddd;
+   list-style: none;
+   padding: 0;
 }
 
-.tab-menu a {
-   padding: 10px 15px;
+.tab-menu li {
+   margin: 0;
+}
+
+.tab-menu li a {
    text-decoration: none;
-   color: #555;
-   font-weight: bold;
-   transition: color 0.3s, border-bottom 0.3s;
-   border-bottom: 2px solid transparent;
+   padding: 10px 15px;
+   color: #333;
+   border: 1px solid #ddd;
+   border-radius: 5px;
+   transition: all 0.3s ease;
+   background-color: #f9f9f9;
 }
 
-.tab-menu a:hover {
-   color: #007bff;
+.tab-menu li a:hover {
+   background-color: #eaeaea;
 }
 
-.tab-menu a.active {
-   color: #007bff;
-   border-bottom: 2px solid #007bff;
+.tab-menu li a.active {
+   background-color: #007bff;
+   color: #fff;
+   border-color: #007bff;
 }
 
-/* ✅ 메인 콘텐츠 스타일 */
-.content {
+/* 탭 콘텐츠 스타일 */
+.tab-content {
    padding: 15px;
-   background: #f9f9f9;
-   border-radius: 8px;
-   min-height: 150px;
-   text-align: left;
+   border: 1px solid #ddd;
+   border-radius: 5px;
+   background-color: #fff;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+   .tab-menu {
+      flex-direction: column;
+      gap: 5px;
+   }
+
+   .tab-menu li a {
+      width: 100%;
+      text-align: center;
+   }
 }
