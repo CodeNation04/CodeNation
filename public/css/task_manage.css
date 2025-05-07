@@ -1,64 +1,122 @@
-/* task_manage.css */
-
-/* ✅ 기본 레이아웃 */
-body {
-   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-   background-color: #f4f6f8;
-   margin: 0;
-   display: flex;
-   justify-content: center;
-   align-items: flex-start;
-   height: 100vh;
-}
-
-.layout {
-   background: #ffffff;
-   padding: 20px 30px;
-   border-radius: 12px;
-   width: 600px;
-   max-width: 90%;
-   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+/* 전체 레이아웃 */
+.task-manage-wrapper {
+   background: #fff;
+   padding: 20px;
+   border-radius: 6px;
+   border: 1px solid #ccc;
    margin-top: 20px;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* ✅ 제목 스타일 */
-h2 {
-   text-align: left;
-   margin-bottom: 20px;
-   font-size: 24px;
-}
-
-/* ✅ 탭 메뉴 스타일 */
+/* 탭 메뉴 */
 .tab-menu {
+   list-style: none;
    display: flex;
-   justify-content: space-between;
-   margin-bottom: 20px;
-   border-bottom: 2px solid #ddd;
-}
-
-.tab-menu a {
-   padding: 10px 15px;
-   text-decoration: none;
-   color: #555;
-   font-weight: bold;
-   transition: color 0.3s, border-bottom 0.3s;
-   border-bottom: 2px solid transparent;
-}
-
-.tab-menu a:hover {
-   color: #007bff;
-}
-
-.tab-menu a.active {
-   color: #007bff;
+   padding: 0;
+   margin: 0 0 20px 0;
    border-bottom: 2px solid #007bff;
 }
 
-/* ✅ 메인 콘텐츠 스타일 */
-.content {
-   padding: 15px;
-   background: #f9f9f9;
-   border-radius: 8px;
-   min-height: 150px;
-   text-align: left;
+.tab-menu li {
+   flex: 1;
+   text-align: center;
+   padding: 12px 0;
+   border: 1px solid #007bff;
+   border-bottom: none;
+   background: #f1f1f1;
+   cursor: pointer;
+   font-weight: 500;
+   transition: background 0.2s, color 0.2s;
+}
+
+.tab-menu li:hover {
+   background: #e2e6ea;
+}
+
+.tab-menu li.active {
+   background: #ffffff;
+   font-weight: bold;
+   color: #007bff;
+   border-bottom: 2px solid white;
+}
+
+/* 탭 콘텐츠 */
+.tab-content {
+   border: 1px solid #007bff;
+   border-top: none;
+   padding: 24px;
+   background: #ffffff;
+}
+
+.tab-pane {
+   display: none;
+}
+
+.tab-pane.active {
+   display: block;
+}
+
+/* 폼 레이아웃 */
+.task-form {
+   max-width: 600px;
+}
+
+.task-form h3 {
+   margin-bottom: 20px;
+   color: #333;
+   font-size: 18px;
+   border-bottom: 2px solid #007bff;
+   padding-bottom: 8px;
+}
+
+/* 공통 form-group */
+.form-group {
+   margin-bottom: 20px;
+}
+
+.form-group label {
+   display: block;
+   font-weight: bold;
+   margin-bottom: 8px;
+   color: #222;
+}
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="number"] {
+   width: 100%;
+   padding: 8px 10px;
+   font-size: 14px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   box-sizing: border-box;
+}
+
+/* 체크박스 정렬 */
+.form-group input[type="checkbox"] {
+   margin-right: 6px;
+   transform: scale(1.1);
+   vertical-align: middle;
+}
+
+/* 버튼 그룹 */
+.form-buttons {
+   display: flex;
+   gap: 10px;
+   margin-top: 12px;
+}
+
+.form-buttons button {
+   padding: 8px 16px;
+   font-weight: bold;
+   cursor: pointer;
+   background-color: #007bff;
+   border: none;
+   color: white;
+   border-radius: 4px;
+   transition: background-color 0.2s;
+}
+
+.form-buttons button:hover {
+   background-color: #0056b3;
 }
