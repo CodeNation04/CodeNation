@@ -1,6 +1,10 @@
 <?php
-// session_start();
-// $_SESSION['user_role'] = 'super'; // 'super' 또는 'middle'
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user_role'])) {
+    $_SESSION['user_role'] = 'super';
+}
 ?>
 
 <!DOCTYPE html>
@@ -48,8 +52,8 @@
             <div class="header">
                 <div class="user-info">
                     <?php foreach ($data['admins'] as $admin): ?>
-                        <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
-                        <button>로그아웃</button>
+                    <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
+                    <button>로그아웃</button>
                     <?php endforeach; ?>
                 </div>
             </div>
