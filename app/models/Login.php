@@ -9,14 +9,9 @@
             $this->db = $database->pdo;
         }
 
-        public function getAdmins($id,$pw) {
-            $stmt = $this->db->query("SELECT * FROM admin");
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
         public function getAdminByUsername($username) {
             $debugSql = "SELECT * FROM admin WHERE id = '" . addslashes($username) . "'";
-            echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
+            // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
 
             $stmt = $this->db->prepare("SELECT * FROM admin WHERE id = :username" );
             $stmt->bindParam(':username', $username);
