@@ -21,26 +21,26 @@ if (session_status() === PHP_SESSION_NONE) {
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?> 
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
-                <a href="?page=super" class="menu-item">최고관리자</a>
-                <a href="?page=admin" class="menu-item">관리자 목록</a>
-                <a href="?page=dept" class="menu-item">부서 정보 관리</a>
+                <a href="/?url=MainController/login&page=super" class="menu-item">최고관리자</a>
+                <a href="/?url=MainController/login&page=admin" class="menu-item">관리자 목록</a>
+                <a href="/?url=MainController/login&page=dept" class="menu-item">부서 정보 관리</a>
         
-                <a href="?page=export" class="menu-item">외부 반출 승인 관리</a>
+                <a href="/?url=MainController/login&page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
 
             <div class="menu-group">
                 <div class="menu-group-title">정책 설정</div>
-                <a href="?page=task" class="menu-item">예약 작업 관리</a>
-                <a href="?page=delete" class="menu-item">삭제 환경 관리</a>
+                <a href="/?url=MainController/login&page=task" class="menu-item">예약 작업 관리</a>
+                <a href="/?url=MainController/login&page=delete" class="menu-item">삭제 환경 관리</a>
                
             </div>
             <?php endif; ?>
 
             <div class="menu-group">
                 <div class="menu-group-title">정보 조회</div>
-                <a href="?page=agent" class="menu-item">Agent 정보 조회</a>
-                <a href="?page=agentlog" class="menu-item">Agent 로그 조회</a>
-                <a href="?page=log" class="menu-item">감사 로그 조회</a>
+                <a href="/?url=MainController/login&page=agent" class="menu-item">Agent 정보 조회</a>
+                <a href="/?url=MainController/login&page=agentlog" class="menu-item">Agent 로그 조회</a>
+                <a href="/?url=MainController/login&page=log" class="menu-item">감사 로그 조회</a>
             </div>
         </div>
 
