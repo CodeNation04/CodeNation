@@ -2,7 +2,6 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-?>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -47,8 +46,8 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="user-info">
 
                     <?php foreach ($data['admins'] as $admin): ?>
-                        <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
-                        <button>로그아웃</button>
+                    <span class="name"><?= htmlspecialchars($admin['admin_type']) ?></span>
+                    <button>로그아웃</button>
                     <?php endforeach; ?>
                 </div>
             </div>
