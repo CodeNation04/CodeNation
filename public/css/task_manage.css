@@ -1,0 +1,64 @@
+/* task_manage.css */
+
+/* ✅ 기본 레이아웃 */
+body {
+   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+   background-color: #f4f6f8;
+   margin: 0;
+   display: flex;
+   justify-content: center;
+   align-items: flex-start;
+   height: 100vh;
+}
+
+.layout {
+   background: #ffffff;
+   padding: 20px 30px;
+   border-radius: 12px;
+   width: 600px;
+   max-width: 90%;
+   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+   margin-top: 20px;
+}
+
+/* ✅ 제목 스타일 */
+h2 {
+   text-align: left;
+   margin-bottom: 20px;
+   font-size: 24px;
+}
+
+/* ✅ 탭 메뉴 스타일 */
+.tab-menu {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 20px;
+   border-bottom: 2px solid #ddd;
+}
+
+.tab-menu a {
+   padding: 10px 15px;
+   text-decoration: none;
+   color: #555;
+   font-weight: bold;
+   transition: color 0.3s, border-bottom 0.3s;
+   border-bottom: 2px solid transparent;
+}
+
+.tab-menu a:hover {
+   color: #007bff;
+}
+
+.tab-menu a.active {
+   color: #007bff;
+   border-bottom: 2px solid #007bff;
+}
+
+/* ✅ 메인 콘텐츠 스타일 */
+.content {
+   padding: 15px;
+   background: #f9f9f9;
+   border-radius: 8px;
+   min-height: 150px;
+   text-align: left;
+}

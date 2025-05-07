@@ -21,16 +21,18 @@ if (session_status() === PHP_SESSION_NONE) {
             <?php if ($_SESSION['user_role'] === 'super'): ?>
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
-                <a href="?page=admin" class="menu-item">관리자 정보 관리</a>
+                <a href="?page=super" class="menu-item">최고관리자</a>
+                <a href="?page=admin" class="menu-item">관리자 목록</a>
                 <a href="?page=dept" class="menu-item">부서 정보 관리</a>
-                <a href="?page=log" class="menu-item">감사 로그 조회</a>
+        
+                <a href="?page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
 
             <div class="menu-group">
                 <div class="menu-group-title">정책 설정</div>
                 <a href="?page=task" class="menu-item">예약 작업 관리</a>
                 <a href="?page=delete" class="menu-item">삭제 환경 관리</a>
-                <a href="?page=export" class="menu-item">외부 반출 승인 관리</a>
+               
             </div>
             <?php endif; ?>
 
@@ -38,6 +40,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="menu-group-title">정보 조회</div>
                 <a href="?page=agent" class="menu-item">Agent 정보 조회</a>
                 <a href="?page=agentlog" class="menu-item">Agent 로그 조회</a>
+                <a href="?page=log" class="menu-item">감사 로그 조회</a>
             </div>
         </div>
 
@@ -59,6 +62,9 @@ if (session_status() === PHP_SESSION_NONE) {
     $view_path = "sub_menu/";
 
     switch ($page) {
+        case"super":
+            include $view_path . "super_admin.php";
+            break;
         case "admin":
             include $view_path . "admin_info.php";
             break;
