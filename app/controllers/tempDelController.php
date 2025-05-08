@@ -1,6 +1,6 @@
 <?php
 
-class tempDelController extends Controller {
+class TempDelController extends Controller {
     public function tempDel() {
         $code_id = $_POST['department'] ?? '';
         $reser_date = $_POST['period'] ?? '';
@@ -17,12 +17,18 @@ class tempDelController extends Controller {
         if ($temp) {
             echo "<script>
                     alert('성공적으로 저정되었습니다.');
-                    window.location.href='/?url=MainController/login&page=task&tab=temp_delete';
+                    window.location.href='/?url=MainController/index&page=task&tab=temp_delete';
                 </script>";
         } else {
             http_response_code(401);
-            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/login&page=task&tab=temp_delete';</script>";
+            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=task&tab=temp_delete';</script>";
             exit;
         }
+    }
+
+    public function tempDelList() {
+        header('Content-Type: application/json');
+        $temp = $this->model('TempDel')->selectTempDelList();
+        echo json_encode($temp);
     }
 }

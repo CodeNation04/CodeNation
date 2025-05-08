@@ -1,6 +1,6 @@
 <div class="form-card">
     <h4 class="form-title">임시파일 삭제 예약 추가</h4>
-    <form id="taskForm" name="taskForm" method="post" action="/?url=tempDelController/tempDel">
+    <form id="taskForm" name="taskForm" method="post" action="/?url=TempDelController/tempDel">
 
         <!-- 주기 선택 -->
         <div class="form-row">
@@ -94,7 +94,7 @@
 
         <!-- 버튼 -->
         <div class="form-buttons">
-            <a href="?url=MainController/login&page=task&tab=temp_delete">
+            <a href="?url=MainController/index&page=task&tab=temp_delete">
                 <button type="button" class="btn-cancel">취소</button>
             </a>
             <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>

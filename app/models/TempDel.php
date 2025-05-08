@@ -28,5 +28,14 @@
             
             return $stmt->execute();
         }
+
+        public function selectTempDelList(){
+            $debugSql = "SELECT * FROM del_env";
+            // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
+
+            $stmt = $this->db->prepare("SELECT * FROM del_env");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 ?>
