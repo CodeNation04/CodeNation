@@ -11,15 +11,20 @@ body {
 
 .layout {
    display: flex;
-   height: 100vh;
+   min-height: 100vh;
 }
 
 /* 사이드바 */
 .sidebar {
+   position: fixed;
+   top: 0;
+   left: 0;
    width: 240px;
    background-color: #2c3e50;
    color: white;
    padding: 20px 0;
+   min-height: 100vh;
+   z-index: 1000; /* 다른 요소 위에 표시 */
 }
 
 .sidebar h2 {
@@ -60,15 +65,21 @@ body {
    flex-direction: column;
 }
 
+/* 헤더 */
 .header {
+   position: fixed;
+   top: 0;
+   left: 240px; /* 사이드바 너비만큼 옆으로 밀림 */
+   right: 0;
+   height: 70px;
    background-color: #ffffff;
    padding: 15px 20px;
    display: flex;
    justify-content: flex-end;
    align-items: center;
    border-bottom: 1px solid #ddd;
+   z-index: 999;
 }
-
 .user-info {
    display: flex;
    align-items: center;
@@ -97,6 +108,8 @@ body {
 
 .content {
    padding: 30px;
+   margin-left: 250px;
+   margin-top: 70px;
 }
 
 .placeholder {
