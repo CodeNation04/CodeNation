@@ -26,7 +26,7 @@
             value:"종료 시 예약 실행"
         },
     }
-
+    
     $.ajax({
         type: "json",
         method : "get",
