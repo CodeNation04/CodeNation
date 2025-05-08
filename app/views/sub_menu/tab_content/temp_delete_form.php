@@ -1,15 +1,15 @@
 <div class="form-card">
     <h4 class="form-title">임시파일 삭제 예약 추가</h4>
-    <form method="post" action="/CodeNation/app/controllers/HandleTempDelete.php">
+    <form id="taskForm" name="taskForm" method="post" action="/?url=tempDelController/tempDel">
 
         <!-- 주기 선택 -->
         <div class="form-row">
             <select class="form-input" name="period" id="period" required onchange="handlePeriodChange()">
                 <option value="">작업 주기 선택</option>
-                <option value="once">한번</option>
-                <option value="daily">매일</option>
-                <option value="weekly">매주</option>
-                <option value="monthly">매월</option>
+                <option value="한번">한번</option>
+                <option value="매일">매일</option>
+                <option value="매주">매주</option>
+                <option value="매월">매월</option>
             </select>
         </div>
 
@@ -35,13 +35,13 @@
             <div class="form-row">
                 <select class="form-input" name="weekly_day">
                     <option value="">요일 선택</option>
-                    <option value="mon">월요일</option>
-                    <option value="tue">화요일</option>
-                    <option value="wed">수요일</option>
-                    <option value="thu">목요일</option>
-                    <option value="fri">금요일</option>
-                    <option value="sat">토요일</option>
-                    <option value="sun">일요일</option>
+                    <option value="월요일">월요일</option>
+                    <option value="화요일">화요일</option>
+                    <option value="수요일">수요일</option>
+                    <option value="목요일">목요일</option>
+                    <option value="금요일">금요일</option>
+                    <option value="토요일">토요일</option>
+                    <option value="일요일">일요일</option>
                 </select>
             </div>
             <div class="form-row">
@@ -66,7 +66,7 @@
 
         <!-- 부서 선택 -->
         <div class="form-row">
-            <select class="form-input" name="org" required>
+            <select class="form-input" name="code_id" required>
                 <option value="">부서 선택</option>
                 <option value="network">(주)에스엠에스</option>
                 <option value="security">보안팀</option>
@@ -77,17 +77,19 @@
         <!-- ✅ 작업 대상 체크박스 -->
         <div class="form-checks">
             <strong>작업 대상</strong><br />
-            <label><input type="checkbox" name="delete_items[]" value="internet_temp"> 인터넷 임시파일</label><br />
-            <label><input type="checkbox" name="delete_items[]" value="cookie"> 인터넷 쿠키파일</label><br />
-            <label><input type="checkbox" name="delete_items[]" value="history"> 인터넷 작업히스토리</label><br />
-            <label><input type="checkbox" name="delete_items[]" value="windows_temp"> 윈도우 임시파일</label>
+            <label><input type="checkbox" name="target" value="internet_temp"> 인터넷 임시파일</label><br />
+            <label><input type="checkbox" name="target" value="cookie"> 인터넷 쿠키파일</label><br />
+            <label><input type="checkbox" name="target" value="history"> 인터넷 작업히스토리</label><br />
+            <label><input type="checkbox" name="target" value="windows_temp"> 윈도우 임시파일</label>
+            <input type="hidden" id="targets" name="targets"/>
         </div>
 
         <!-- 예약 실행 조건 -->
         <div class="form-checks">
             <strong>작업 시점</strong><br />
-            <label><input type="checkbox" name="schedule[]" value="boot" /> 부팅 시 예약 실행</label><br />
-            <label><input type="checkbox" name="schedule[]" value="shutdown" /> 종료 시 예약 실행</label>
+            <label><input type="checkbox" name="schedule" value="boot" /> 부팅 시 예약 실행</label><br />
+            <label><input type="checkbox" name="schedule" value="shutdown" /> 종료 시 예약 실행</label>
+            <input type="hidden" id="schedules" name="schedules"/>
         </div>
 
         <!-- 버튼 -->
@@ -95,17 +97,48 @@
             <a href="?url=MainController/login&page=task&tab=temp_delete">
                 <button type="button" class="btn-cancel">취소</button>
             </a>
-            <button type="submit" class="btn-confirm">확인</button>
+            <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
         </div>
     </form>
 </div>
 
 <script>
-function handlePeriodChange() {
-    const period = document.getElementById("period").value;
-    document.getElementById("onceFields").style.display = (period === "once") ? "block" : "none";
-    document.getElementById("dailyFields").style.display = (period === "daily") ? "block" : "none";
-    document.getElementById("weeklyFields").style.display = (period === "weekly") ? "block" : "none";
-    document.getElementById("monthlyFields").style.display = (period === "monthly") ? "block" : "none";
-}
+    function handlePeriodChange() {
+        const period = document.getElementById("period").value;
+        document.getElementById("onceFields").style.display = (period === "once") ? "block" : "none";
+        document.getElementById("dailyFields").style.display = (period === "daily") ? "block" : "none";
+        document.getElementById("weeklyFields").style.display = (period === "weekly") ? "block" : "none";
+        document.getElementById("monthlyFields").style.display = (period === "monthly") ? "block" : "none";
+    }
+
+    function submitBtn(){
+        const form = $("#taskForm");
+        const formData = form.serializeArray();
+        let targets = document.querySelectorAll("input[name=target]");
+        let schedules = document.querySelectorAll("input[name=schedule]");
+        let str = "";
+        let str2 = "";
+        for(target of targets){
+            if (target.checked) {
+                if (str !== "") {
+                    str += ",";
+                }
+                str += target.value;
+            }
+        }
+
+        for(schedule of schedules){
+            if (schedule.checked) {
+                if (str2 !== "") {
+                    str2 += ",";
+                }
+                str2 += schedule.value;
+            }
+        }
+
+        $("#targets").val(str);
+        $("#schedules").val(str2);
+        console.log(formData)
+        // form.submit();
+    }
 </script>

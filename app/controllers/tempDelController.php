@@ -4,9 +4,13 @@ class tempDelController extends Controller {
     public function tempDel() {
         $code_id = $_POST['department'] ?? '';
         $reser_date = $_POST['period'] ?? '';
-        $work_potin = $_POST['schedule'] ?? '';
+        $work_potin = $_POST['schedules'] ?? '';
         $del_target = $_POST['targets'] ?? '';
         $temp_del = $_POST['temp_del'] ?? '';
+        $weekly_day = $_POST['weekly_day'] ?? '';
+        $weekly_time = $_POST['weekly_time'] ?? '';
+        $monthly_day = $_POST['monthly_day'] ?? '';
+        $monthly_day = $_POST['monthly_time'] ?? '';
 
         $temp = $this->model('TempDel')->insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del);
 
