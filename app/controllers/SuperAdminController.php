@@ -11,12 +11,12 @@ class SuperAdminController extends Controller {
         if ($admin) {
             echo "<script>
                     alert('성공적으로 수정되었습니다.');
-                    window.location.href='/?url=MainController/login&page=super';
+                    window.location.href='/?url=MainController/index&page=super';
                 </script>";
         } else {
             http_response_code(401);
             // echo json_encode(['status' => 'error', 'message' => 'error']);
-            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/login&page=super';</script>";
+            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=super';</script>";
             exit;
         }
     }

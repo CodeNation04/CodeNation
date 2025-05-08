@@ -46,8 +46,6 @@ class App {
         // 필요에 따라 서브도메인 파싱
         if (strpos($host, 'login.') === 0) {
             return 'LoginController';
-        } elseif (strpos($host, 'auth.') === 0) {
-            return 'AuthController';
         } elseif (strpos($host, 'main.') === 0) {
             return 'MainController';
         }

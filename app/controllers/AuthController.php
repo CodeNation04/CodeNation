@@ -18,7 +18,7 @@ class AuthController extends Controller {
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_type'] = $admin['admin_type'];
             echo json_encode(['status' => 'success']);
-            header('Location: /?url=MainController/login');
+            header('Location: /?url=MainController/index');
         } else {
             http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
