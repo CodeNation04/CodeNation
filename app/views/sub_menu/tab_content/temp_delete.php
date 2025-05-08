@@ -47,6 +47,7 @@ function renderPage(page) {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const pageData = resultData.slice(start, end);
+    console.log(pageData)
     let resultHtml = `<table class=\"task-table\">
         <thead>
             <tr>
@@ -87,7 +88,25 @@ function renderPage(page) {
                                 <tr>
                                     <td>${number}</td>
                                     <td>${pageData[i].code_name}</td>
-                                    <td>${pageData[i].reser_date}<br />2025-01-01 14:00:00</td>
+                                    <td>${pageData[i].reser_date}<br />`
+                                    if(pageData[i].reser_date == "매월"){
+
+                                        resultHtml += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
+
+                                    }else if(pageData[i].reser_date == "매주"){
+
+                                        resultHtml += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
+
+                                    }else if(pageData[i].reser_date == "매일"){
+
+                                        resultHtml += `${pageData[i].reser_date_time}`;
+
+                                    }else{
+
+                                        resultHtml += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
+
+                                    }
+            resultHtml += `         </td>
                                     <td>`;
                                 for(let j = 0; j<del_target_arr.length; j++){
                                     if(j > 0){
