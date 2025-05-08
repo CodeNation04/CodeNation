@@ -2,6 +2,7 @@
   function formSubmit(){
     const ip = document.getElementById("admin-ip").value.trim();
     const pw = document.getElementById("admin-password").value.trim();
+    const pwcm = document.getElementById("admin-password-com").value.trim();
     const form = document.getElementById("superForm")
 
     if (!ip) {
@@ -14,10 +15,15 @@
         return;
     }
 
-    console.log("최고 관리자 IP:", ip);
-    console.log("비밀번호:", pw);
-    form.action = "/?url=SuperAdminController/superAdmin";
-    form.submit();
+    if (pw !== pwcm) {
+        alert("비밀번호가 다릅니다. \n다시 입력해주세요.");
+        return;
+    }
+    
+    if(confirm("저장하시겠습니까?")){
+      form.action = "/?url=SuperAdminController/superAdmin";
+      form.submit();
+    }
   }
 </script>
 
@@ -41,7 +47,7 @@
             </div>
             <div style="margin-bottom: 15px;">
               <label><strong>새 비밀번호 확인</strong></label><br>
-              <input type="password" id="admin-password" placeholder="변경할 경우만 입력"
+              <input type="password" id="admin-password-com" placeholder="변경할 경우만 입력"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
             <div style="text-align: right;">
