@@ -1,43 +1,49 @@
-<!-- folder_delete.php -->
-<form class="task-form">
-    <h3>폴더 삭제 예약 등록</h3>
+<h3>폴더 삭제 예약 추가</h3>
 
-    <div class="form-group">
-        <label>부서 선택</label>
-        <select name="department">
-            <option value="">부서를 선택하세요</option>
-            <option value="network">네트워크팀</option>
-            <option value="security">보안팀</option>
-            <option value="infra">인프라팀</option>
-        </select>
-    </div>
+<?php
+$formMode = isset($_GET['form']) && $_GET['form'] === 'show';
+?>
 
-    <div class="form-group">
-        <label>예약작업 주기</label>
-        <select name="period">
-            <option value="">주기를 선택하세요</option>
-            <option value="once">1회</option>
-            <option value="daily">매일</option>
-            <option value="weekly">매주</option>
-        </select>
-    </div>
+<?php if (!$formMode): ?>
+<!-- 목록 테이블만 보이는 영역 -->
+<div class="task-table-wrapper">
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>부서명</th>
+                <th>작업 주기</th>
+                <th>대상 폴더명</th>
+                <th>작업 시점</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>(주)에스엠에스</td>
+                <td>매주<br />금요일 16:00</td>
+                <td>대상 폴더명</td>
+                <td>종료 시</td>
+                <td><a href="#">수정</a></td>
+                <td><a href="#">삭제</a></td>
+            </tr>
+        </tbody>
+    </table>
 
-    <div class="form-group">
-        <label>작업 시점</label>
-        <select name="schedule">
-            <option value="">시점을 선택하세요</option>
-            <option value="boot">부팅 시</option>
-            <option value="shutdown">종료 시</option>
-        </select>
+    <div class="pagination">
+        <button>이전</button>
+        <span>1</span>
+        <button>다음</button>
     </div>
+</div>
 
-    <div class="form-group">
-        <label>삭제 대상 폴더 경로</label>
-        <input type="text" name="folder_path" placeholder="예: C:\Temp\Logs" style="width: 100%; padding: 6px;" />
-    </div>
+<div class="add-button-wrapper">
+    <a href="?url=MainController/login&page=task&tab=folder_delete&form=show">
+        <button class="btn-confirm">추가</button>
+    </a>
+</div>
+<?php endif; ?>
 
-    <div class="form-buttons">
-        <button type="submit">등록</button>
-        <button type="reset">초기화</button>
-    </div>
-</form>
+<?php if ($formMode): ?>
+<?php include('folder_delete_form.php'); ?>
+<?php endif; ?>

@@ -1,6 +1,6 @@
 <div class="form-card">
-    <h4 class="form-title">임시파일 삭제 예약 추가</h4>
-    <form id="taskForm" name="taskForm" method="post" action="/?url=tempDelController/tempDel">
+    <h4 class="form-title">폴더 삭제 예약 추가</h4>
+    <form id="taskForm" name="taskForm" method="post" action="/?url=folderDelController/folderDel">
 
         <!-- 주기 선택 -->
         <div class="form-row">
@@ -74,14 +74,9 @@
             </select>
         </div>
 
-        <!-- ✅ 작업 대상 체크박스 -->
-        <div class="form-checks">
-            <strong>작업 대상</strong><br />
-            <label><input type="checkbox" name="target" value="internet_temp"> 인터넷 임시파일</label><br />
-            <label><input type="checkbox" name="target" value="cookie"> 인터넷 쿠키파일</label><br />
-            <label><input type="checkbox" name="target" value="history"> 인터넷 작업히스토리</label><br />
-            <label><input type="checkbox" name="target" value="windows_temp"> 윈도우 임시파일</label>
-            <input type="hidden" id="targets" name="targets" />
+        <!-- ✅ 작업 대상 폴더 경로 -->
+        <div class="form-row">
+            <input class="form-input" type="text" name="target" placeholder="대상 폴더명" required />
         </div>
 
         <!-- 예약 실행 조건 -->
@@ -94,7 +89,7 @@
 
         <!-- 버튼 -->
         <div class="form-buttons">
-            <a href="?url=MainController/login&page=task&tab=temp_delete">
+            <a href="?url=MainController/login&page=task&tab=folder_delete">
                 <button type="button" class="btn-cancel">취소</button>
             </a>
             <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
@@ -113,20 +108,8 @@ function handlePeriodChange() {
 
 function submitBtn() {
     const form = $("#taskForm");
-    const formData = form.serializeArray();
-    let targets = document.querySelectorAll("input[name=target]");
     let schedules = document.querySelectorAll("input[name=schedule]");
-    let str = "";
     let str2 = "";
-    for (target of targets) {
-        if (target.checked) {
-            if (str !== "") {
-                str += ",";
-            }
-            str += target.value;
-        }
-    }
-
     for (schedule of schedules) {
         if (schedule.checked) {
             if (str2 !== "") {
@@ -135,10 +118,7 @@ function submitBtn() {
             str2 += schedule.value;
         }
     }
-
-    $("#targets").val(str);
     $("#schedules").val(str2);
-    console.log(formData)
-    // form.submit();
+    form.submit();
 }
 </script>
