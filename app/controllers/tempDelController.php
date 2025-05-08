@@ -58,7 +58,9 @@ class TempDelController extends Controller {
 
     public function tempDelList() {
         header('Content-Type: application/json');
-        $temp = $this->model('TempDel')->selectTempDelList();
+        $del_method = $_GET['tab'] ?? "";
+        
+        $temp = $this->model('TempDel')->selectTempDelList($del_method);
         echo json_encode($temp);
     }
 

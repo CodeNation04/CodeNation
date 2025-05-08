@@ -29,10 +29,14 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let resultData = [];
 
+const params = new URLSearchParams(window.location.search);
+const tab = params.get('tab');
+
 $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/?url=FolderDelController/folderDelList",
+    url: "/?url=TempDelController/tempDelList",
+    data:{tab:tab},
     success: function(result) {
         resultData = result;
         renderPage(1);
@@ -55,7 +59,6 @@ function renderPage(page) {
                 <th>부서명</th>
                 <th>작업 주기</th>
                 <th>삭제 경로</th>
-                <th>작업 시점</th>
                 <th>수정</th>
                 <th>삭제</th>
             </tr>
@@ -83,7 +86,6 @@ function renderPage(page) {
 
         html += `</td>
                 <td>${pageData[i].folder_path}</td>
-                <td>${pageData[i].schedule_type || "-"}</td>
                 <td><a href="#">수정</a></td>
                 <td><a href="#">삭제</a></td>
             </tr>`;
