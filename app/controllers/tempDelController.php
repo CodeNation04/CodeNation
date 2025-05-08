@@ -7,12 +7,21 @@ class TempDelController extends Controller {
         $work_potin = $_POST['schedules'] ?? '';
         $del_target = $_POST['targets'] ?? '';
         $temp_del = $_POST['temp_del'] ?? '';
-        $weekly_day = $_POST['weekly_day'] ?? '';
-        $weekly_time = $_POST['weekly_time'] ?? '';
-        $monthly_day = $_POST['monthly_day'] ?? '';
-        $monthly_day = $_POST['monthly_time'] ?? '';
 
-        $temp = $this->model('TempDel')->insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del);
+        $once_date = $_POST['once_date'] ?? '';
+        $once_time = $_POST['once_time'] ?? '';
+
+        $daily_time = $_POST['daily_time'] ?? '';
+
+        $reser_date_week = $_POST['weekly_day'] ?? '';
+        $weekly_time = $_POST['weekly_time'] ?? '';
+
+        $reser_date_day = $_POST['monthly_day'] ?? '';
+        $monthly_time = $_POST['monthly_time'] ?? '';
+
+        $reser_date_time = $once_time ?: ($daily_time ?: ($weekly_time ?: ($monthly_time ?: '')));
+
+        $temp = $this->model('TempDel')->insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time);
 
         if ($temp) {
             echo "<script>

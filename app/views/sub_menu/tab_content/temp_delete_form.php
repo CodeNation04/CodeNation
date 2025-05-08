@@ -66,7 +66,7 @@
 
         <!-- 부서 선택 -->
         <div class="form-row">
-            <select class="form-input" name="code_id" required>
+            <select class="form-input" name="department" required>
                 <option value="">부서 선택</option>
                 <option value="network">(주)에스엠에스</option>
                 <option value="security">보안팀</option>
@@ -139,6 +139,8 @@ function submitBtn() {
     $("#targets").val(str);
     $("#schedules").val(str2);
     console.log(formData)
-    // form.submit();
+    if(confirm("저장하시겠습니까?")){
+        form.submit();
+    }
 }
 </script>
