@@ -1,5 +1,24 @@
 <!-- temp_delete.php -->
-<form class="task-form">
+<script>
+    function submitBtn(){
+        const form = $("#taskForm");
+        const formData = form.serializeArray();
+        let targets = document.querySelectorAll("input[name=target]");
+        let str = "";
+        for(target of targets){
+            if (target.checked) {
+                if (str !== "") {
+                    str += ",";
+                }
+                str += target.value;
+            }
+        }
+        $("#targets").val(str);
+        form.submit();
+    }
+</script>
+<form class="task-form" id="taskForm" name="taskForm" method="post" action="/?url=tempDelController/tempDel">
+    <input type="hidden" name="temp_del" value="temp_del"/>
     <h3>임시파일 삭제 예약 등록</h3>
 
     <div class="form-group">
@@ -33,14 +52,15 @@
 
     <div class="form-group">
         <label>삭제 대상</label><br />
-        <label><input type="checkbox" name="target[]" value="internet_temp" /> 인터넷 임시파일</label><br />
-        <label><input type="checkbox" name="target[]" value="cookie" /> 인터넷 쿠키</label><br />
-        <label><input type="checkbox" name="target[]" value="history" /> 인터넷 작업히스토리</label><br />
-        <label><input type="checkbox" name="target[]" value="windows_temp" /> 윈도우 임시파일</label>
+        <label><input type="checkbox" name="target" value="internet_temp" /> 인터넷 임시파일</label><br />
+        <label><input type="checkbox" name="target" value="cookie" /> 인터넷 쿠키</label><br />
+        <label><input type="checkbox" name="target" value="history" /> 인터넷 작업히스토리</label><br />
+        <label><input type="checkbox" name="target" value="windows_temp" /> 윈도우 임시파일</label>
+        <input type="hidden" id="targets" name="targets"/>
     </div>
 
     <div class="form-buttons">
-        <button type="submit">등록</button>
+        <button type="button" onclick="submitBtn()">등록</button>
         <button type="reset">초기화</button>
     </div>
 </form>

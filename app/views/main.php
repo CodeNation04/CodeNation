@@ -10,7 +10,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>i-Mon 관리</title>
-    <link rel="stylesheet" href="../css/main.css" /> 
+    <link rel="stylesheet" href="../css/main.css" />
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
     <div class="layout">
