@@ -20,6 +20,7 @@
                 <div class="custom-select-wrapper">
                     <select id="type" name="type" class="custom-select">
                         <option value="">-- 작업 종류 선택 --</option>
+                        <!-- 작업종류 sms회사에 물어보기로함 -->
                         <option value="로그인">로그인</option>
                         <option value="로그아웃">로그아웃</option>
                         <option value="파일요청">파일요청</option>
@@ -34,6 +35,7 @@
                 <div class="custom-select-wrapper">
                     <select id="dept" name="dept" class="custom-select">
                         <option value="">-- 부서 선택 --</option>
+                        <!-- 샘플부서, db에서 불러와야함 -->
                         <option value="의무기록과">의무기록과</option>
                         <option value="전산실">전산실</option>
                         <option value="원무과">원무과</option>

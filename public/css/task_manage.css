@@ -1,13 +1,4 @@
-/* 기본 레이아웃 */
-body,
-html {
-   height: 100%;
-   margin: 0;
-   padding: 0;
-   overflow: hidden;
-}
-
-.layout {
+/* .layout {
    display: flex;
    height: 100vh;
 }
@@ -41,7 +32,7 @@ html {
    flex: 1;
    padding: 20px;
    overflow-y: auto;
-}
+} */
 
 /* 탭 메뉴 및 작업 관리 */
 .task-manage-wrapper {
