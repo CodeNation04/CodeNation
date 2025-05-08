@@ -161,13 +161,20 @@
     }
 
     function saveAsFile(type) {
-        const content = filtered.map(agent => `${agent.dept},${agent.name},${agent.ip},${agent.last_login}`).join("\n");
+        if (filtered.length === 0) return;
+
+        let content = "\uFEFF부서명,사용자명,IP,최종접속일\n";
+
+        filtered.forEach(agent => {
+            content += `${agent.dept},${agent.name},${agent.ip},${agent.last_login}\n`;
+        });
+
         const blob = new Blob([content], {
             type: "text/plain;charset=utf-8"
         });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `agent_data.${type}`;
+        link.download = `agent_info_${new Date().toISOString().slice(0, 16).replace('T', '_')}.${type}`;
         link.click();
     }
     </script>
