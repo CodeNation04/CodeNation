@@ -1,16 +1,21 @@
+<?php
+// agent_info.php
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <title>Agent 정보 조회</title>
-    <link rel="stylesheet" href="css/agent_info.css">
+    <link rel="stylesheet" href="/css/agent_info.css" />
+
 </head>
 
 <body>
     <div class="container">
         <h2>Agent 정보 조회</h2>
-        <form id="searchForm">
+        <form method="get">
             <div>
                 <label for="name">사용자명</label>
                 <input type="text" id="name" name="name" placeholder="사용자명 입력">
@@ -19,40 +24,40 @@
                 <label for="ip">IP</label>
                 <input type="text" id="ip" name="ip" placeholder="IP 입력 (예: 192.168.0.1)">
             </div>
-            <div id="deptField" style="display: none;">
-                <label for="dept">부서명</label>
-                <select id="dept" name="dept">
-                    <!-- DB에서 부서목록 받아와야됨 -->
-                    <!-- 샘플 부서명 데이터 -->
-                    <option value="">-- 부서 선택 --</option>
-                    <option value="의무기록과">의무기록과</option>
-                    <option value="전산실">전산실</option>
-                    <option value="원무과">원무과</option>
-                    <option value="진료지원팀">진료지원팀</option>
-                </select>
+            <div class="dropdown-wrapper">
+                <label for="dept">부서 선택</label>
+                <div class="custom-select-wrapper">
+                    <select id="dept" name="dept" class="custom-select">
+                        <option value="">-- 부서 선택 --</option>
+                        <option value="의무기록과">의무기록과</option>
+                        <option value="전산실">전산실</option>
+                        <option value="원무과">원무과</option>
+                        <option value="진료지원팀">진료지원팀</option>
+                    </select>
+                    <span class="custom-arrow">▼</span>
+                </div>
             </div>
-            <button type="button" onclick="searchAgents()">검색</button>
+            <div class="button-group">
+                <button type="button" onclick="searchAgents()">검색</button>
+            </div>
         </form>
 
         <div id="result" style="margin-top: 20px;"></div>
+        <div class="save-buttons" style="display: none;">
+            <button onclick="saveAsFile('csv')">엑셀로 저장</button>
+            <button onclick="saveAsFile('txt')">텍스트로 저장</button>
+        </div>
     </div>
 
     <script>
-    // 최고관리자 여부 (true: 최고관리자, false: 중간관리자)
-    const isSuperAdmin = true; // 변경 가능
+    let currentSort = {
+        column: null,
+        direction: 'asc' // asc (오름차순) / desc (내림차순)
+    };
 
-    // 최고관리자일 때만 부서 검색 표시
-    if (isSuperAdmin) {
-        document.getElementById("deptField").style.display = "block";
-    }
-
-    // 검색 함수 (예제)
     function searchAgents() {
-        const name = document.getElementById("name").value.trim();
-        const ip = document.getElementById("ip").value.trim();
-        const dept = isSuperAdmin ? document.getElementById("dept").value.trim() : '';
-        //DB에서 Agent 목록 받아와야함
-        //샘플 agent 데이터
+        //샘플데이터 , 나중에 db에서 받아와야함
+        //-------------------------------
         const agents = [{
                 dept: "의무기록과",
                 name: "장수민",
@@ -115,36 +120,131 @@
             }
         ];
 
-        const filtered = agents.filter(agent =>
+
+        const name = document.getElementById("name").value.trim();
+        const ip = document.getElementById("ip").value.trim();
+        const dept = document.getElementById("dept").value.trim();
+
+        let filtered = agents.filter(agent =>
             (!name || agent.name.includes(name)) &&
             (!ip || agent.ip.includes(ip)) &&
             (!dept || agent.dept === dept)
         );
 
+        if (currentSort.column) {
+            filtered.sort((a, b) => {
+                if (currentSort.column === "last_login") {
+                    return sortDate(a[currentSort.column], b[currentSort.column]);
+                } else {
+                    return sortText(a[currentSort.column], b[currentSort.column]);
+                }
+            });
+
+            if (currentSort.direction === "desc") {
+                filtered.reverse();
+            }
+        }
+
+        renderTable(filtered);
+        document.getElementById("name").value = "";
+        document.getElementById("ip").value = "";
+        document.getElementById("dept").value = "";
+    }
+
+    // ✅ 정렬 함수 (문자열)
+    function sortText(a, b) {
+        return a.localeCompare(b, 'ko', {
+            numeric: true,
+            sensitivity: 'base'
+        });
+    }
+
+    // ✅ 정렬 함수 (날짜)
+    function sortDate(a, b) {
+        return new Date(a) - new Date(b);
+    }
+
+    // ✅ 표 렌더링 함수
+    function renderTable(filtered) {
         const resultDiv = document.getElementById("result");
         if (filtered.length > 0) {
-            let table = `
-                    <table>
-                        <tr>
-                            <th>부서명</th>
-                            <th>사용자명</th>
-                            <th>IP</th>
-                            <th>최종접속일</th>
-                        </tr>`;
+            let table = `<table class="result-table">
+            <thead>
+                <tr>
+                      <th onclick="setSort('dept')" class="sortable">부서명 <span class="sort-arrows">↑ ↓</span></th>
+                    <th onclick="setSort('name')" class="sortable">사용자명 <span class="sort-arrows">↑ ↓</span></th>
+                    <th onclick="setSort('ip')" class="sortable">IP <span class="sort-arrows">↑ ↓</span></th>
+                    <th onclick="setSort('last_login')" class="sortable">최종접속일 <span class="sort-arrows">↑ ↓</span></th>
+                </tr>
+            </thead>
+            <tbody>`;
             filtered.forEach(agent => {
-                table += `
-                        <tr>
-                            <td>${agent.dept}</td>
-                            <td>${agent.name}</td>
-                            <td>${agent.ip}</td>
-                            <td>${agent.last_login}</td>
-                        </tr>`;
+                table += `<tr>
+                        <td>${agent.dept}</td>
+                        <td>${agent.name}</td>
+                        <td>${agent.ip}</td>
+                        <td>${agent.last_login}</td>
+                    </tr>`;
             });
-            table += `</table>`;
+            table += `</tbody></table>`;
             resultDiv.innerHTML = table;
+            document.querySelector('.save-buttons').style.display = "flex";
         } else {
             resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
+            document.querySelector('.save-buttons').style.display = "none";
         }
+    }
+
+    // ✅ 정렬 설정 함수 (헤더 클릭)
+    function setSort(column) {
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+        } else {
+            currentSort.column = column;
+            currentSort.direction = "asc";
+        }
+        searchAgents(); // 정렬된 결과 다시 렌더링
+    }
+
+    function saveAsFile(type) {
+        const resultDiv = document.getElementById("result");
+        const rows = Array.from(resultDiv.querySelectorAll("tr"));
+        if (rows.length < 2) return; // 조회 결과가 없을 때
+
+        let content = "";
+        if (type === "csv") {
+            content = "\uFEFF"; // UTF-8 BOM 추가 (Excel에서 인코딩 문제 해결)
+            content += "부서명,사용자명,IP,최종접속일\n";
+            rows.slice(1).forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const line = Array.from(cells).map(cell => `"${cell.textContent}"`).join(",");
+                content += line + "\n";
+            });
+        } else if (type === "txt") {
+            rows.slice(1).forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const line = Array.from(cells).map(cell => cell.textContent).join(" | ");
+                content += line + "\n";
+            });
+        }
+
+        // ✅ 현재 날짜 및 시간 추가 (YYYYMMDD_HHMM 형식)
+        const now = new Date();
+        const formattedDate = now.getFullYear().toString() +
+            String(now.getMonth() + 1).padStart(2, '0') +
+            String(now.getDate()).padStart(2, '0') + "_" +
+            String(now.getHours()).padStart(2, '0') +
+            String(now.getMinutes()).padStart(2, '0');
+
+        const filename = `agent_data_${formattedDate}.${type}`;
+
+        const blob = new Blob([content], {
+            type: "text/plain;charset=utf-8"
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
     }
     </script>
 </body>
