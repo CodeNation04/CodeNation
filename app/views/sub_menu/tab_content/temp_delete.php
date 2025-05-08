@@ -1,4 +1,25 @@
-<h3>임시파일 삭제 예약 추가</h3>
+<!-- temp_delete.php -->
+<script>
+    function submitBtn(){
+        const form = $("#taskForm");
+        const formData = form.serializeArray();
+        let targets = document.querySelectorAll("input[name=target]");
+        let str = "";
+        for(target of targets){
+            if (target.checked) {
+                if (str !== "") {
+                    str += ",";
+                }
+                str += target.value;
+            }
+        }
+        $("#targets").val(str);
+        form.submit();
+    }
+</script>
+<form class="task-form" id="taskForm" name="taskForm" method="post" action="/?url=tempDelController/tempDel">
+    <input type="hidden" name="temp_del" value="temp_del"/>
+    <h3>임시파일 삭제 예약 추가</h3>
 
 <?php
 $formMode = isset($_GET['form']) && $_GET['form'] === 'show';
@@ -37,6 +58,22 @@ $formMode = isset($_GET['form']) && $_GET['form'] === 'show';
     </div>
 </div>
 
+<<<<<<< HEAD
+    <div class="form-group">
+        <label>삭제 대상</label><br />
+        <label><input type="checkbox" name="target" value="internet_temp" /> 인터넷 임시파일</label><br />
+        <label><input type="checkbox" name="target" value="cookie" /> 인터넷 쿠키</label><br />
+        <label><input type="checkbox" name="target" value="history" /> 인터넷 작업히스토리</label><br />
+        <label><input type="checkbox" name="target" value="windows_temp" /> 윈도우 임시파일</label>
+        <input type="hidden" id="targets" name="targets"/>
+    </div>
+
+    <div class="form-buttons">
+        <button type="button" onclick="submitBtn()">등록</button>
+        <button type="reset">초기화</button>
+    </div>
+</form>
+=======
 <div class="add-button-wrapper">
     <a href="?url=MainController/login&page=task&tab=temp_delete&form=show">
         <button class="btn-confirm">추가</button>
@@ -48,3 +85,4 @@ $formMode = isset($_GET['form']) && $_GET['form'] === 'show';
 <?php if ($formMode): ?>
 <?php include('temp_delete_form.php'); ?>
 <?php endif; ?>
+>>>>>>> 31904c7a81cdff77b70b44e59ebf671e847fd4c1
