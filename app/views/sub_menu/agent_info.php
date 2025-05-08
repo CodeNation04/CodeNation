@@ -1,7 +1,3 @@
-<?php
-// agent_info.php
-?>
-
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -50,14 +46,36 @@
     </div>
 
     <script>
+    let isSuperAdmin = true; // true: 최고관리자, false: 중간관리자 (권한 설정)
     let currentSort = {
         column: null,
         direction: 'asc' // asc (오름차순) / desc (내림차순)
     };
 
+    let filtered = []; // 검색된 결과 저장
+
+    // 페이지 로드 시 부서 필드 설정
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleDeptField();
+    });
+
+    // ✅ 부서 선택 필드 제어 (최고관리자만 보임)
+    function toggleDeptField() {
+        const deptField = document.querySelector(".dropdown-wrapper");
+        if (isSuperAdmin) {
+            deptField.style.display = "block";
+        } else {
+            deptField.style.display = "none";
+        }
+    }
+
+    // ✅ 로그 검색
     function searchAgents() {
-        //샘플데이터 , 나중에 db에서 받아와야함
-        //-------------------------------
+        const name = document.getElementById("name").value.trim();
+        const ip = document.getElementById("ip").value.trim();
+        const dept = document.getElementById("dept").value.trim();
+
+        // 샘플데이터 (나중에 DB에서 받아올 예정)
         const agents = [{
                 dept: "의무기록과",
                 name: "장수민",
@@ -120,71 +138,43 @@
             }
         ];
 
-
-        const name = document.getElementById("name").value.trim();
-        const ip = document.getElementById("ip").value.trim();
-        const dept = document.getElementById("dept").value.trim();
-
-        let filtered = agents.filter(agent =>
+        // ✅ 필터링
+        filtered = agents.filter(agent =>
             (!name || agent.name.includes(name)) &&
             (!ip || agent.ip.includes(ip)) &&
             (!dept || agent.dept === dept)
         );
 
-        if (currentSort.column) {
-            filtered.sort((a, b) => {
-                if (currentSort.column === "last_login") {
-                    return sortDate(a[currentSort.column], b[currentSort.column]);
-                } else {
-                    return sortText(a[currentSort.column], b[currentSort.column]);
-                }
-            });
+        renderTable();
 
-            if (currentSort.direction === "desc") {
-                filtered.reverse();
-            }
-        }
-
-        renderTable(filtered);
+        // ✅ 검색 후 입력 필드 초기화
         document.getElementById("name").value = "";
         document.getElementById("ip").value = "";
         document.getElementById("dept").value = "";
     }
 
-    // ✅ 정렬 함수 (문자열)
-    function sortText(a, b) {
-        return a.localeCompare(b, 'ko', {
-            numeric: true,
-            sensitivity: 'base'
-        });
-    }
-
-    // ✅ 정렬 함수 (날짜)
-    function sortDate(a, b) {
-        return new Date(a) - new Date(b);
-    }
-
     // ✅ 표 렌더링 함수
-    function renderTable(filtered) {
+    function renderTable() {
         const resultDiv = document.getElementById("result");
+
         if (filtered.length > 0) {
             let table = `<table class="result-table">
             <thead>
                 <tr>
-                      <th onclick="setSort('dept')" class="sortable">부서명 <span class="sort-arrows">↑ ↓</span></th>
-                    <th onclick="setSort('name')" class="sortable">사용자명 <span class="sort-arrows">↑ ↓</span></th>
-                    <th onclick="setSort('ip')" class="sortable">IP <span class="sort-arrows">↑ ↓</span></th>
-                    <th onclick="setSort('last_login')" class="sortable">최종접속일 <span class="sort-arrows">↑ ↓</span></th>
+                    <th onclick="setSort('dept')" class="sortable">부서명 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('name')" class="sortable">사용자명 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('ip')" class="sortable">IP <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('last_login')" class="sortable">최종접속일 <span class="sort-arrows"> ↑↓</span></th>
                 </tr>
             </thead>
             <tbody>`;
             filtered.forEach(agent => {
                 table += `<tr>
-                        <td>${agent.dept}</td>
-                        <td>${agent.name}</td>
-                        <td>${agent.ip}</td>
-                        <td>${agent.last_login}</td>
-                    </tr>`;
+                <td>${agent.dept}</td>
+                <td>${agent.name}</td>
+                <td>${agent.ip}</td>
+                <td>${agent.last_login}</td>
+            </tr>`;
             });
             table += `</tbody></table>`;
             resultDiv.innerHTML = table;
@@ -203,8 +193,41 @@
             currentSort.column = column;
             currentSort.direction = "asc";
         }
-        searchAgents(); // 정렬된 결과 다시 렌더링
+        sortFiltered();
     }
+
+    // ✅ 정렬 함수 (검색된 결과만 정렬)
+    function sortFiltered() {
+        filtered.sort((a, b) => {
+            if (currentSort.column === "last_login") {
+                return sortDate(a[currentSort.column], b[currentSort.column]);
+            } else {
+                return sortText(a[currentSort.column], b[currentSort.column]);
+            }
+        });
+
+        if (currentSort.direction === "desc") {
+            filtered.reverse();
+        }
+
+        renderTable();
+    }
+
+    // ✅ 정렬 함수 (문자열)
+    function sortText(a, b) {
+        return a.localeCompare(b, 'ko', {
+            numeric: true,
+            sensitivity: 'base'
+        });
+    }
+
+    // ✅ 정렬 함수 (날짜)
+    function sortDate(a, b) {
+        return new Date(a) - new Date(b);
+    }
+
+
+
 
     function saveAsFile(type) {
         const resultDiv = document.getElementById("result");
