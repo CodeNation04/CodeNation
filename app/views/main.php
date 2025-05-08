@@ -1,30 +1,26 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>i-Mon 관리</title>
-    <link rel="stylesheet" href="../css/main.css" /> 
+    <link rel="stylesheet" href="/css/main.css" />
 </head>
+
 <body>
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar">
             <h2>i-Mon Admin</h2>
 
-            <?php if ($_SESSION['admin_type'] === '최고관리자'): ?> 
+            <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
                 <a href="/?url=MainController/login&page=super" class="menu-item">최고관리자</a>
                 <a href="/?url=MainController/login&page=admin" class="menu-item">관리자 목록</a>
                 <a href="/?url=MainController/login&page=dept" class="menu-item">부서 정보 관리</a>
-        
+
                 <a href="/?url=MainController/login&page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
 
@@ -32,7 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="menu-group-title">정책 설정</div>
                 <a href="/?url=MainController/login&page=task" class="menu-item">예약 작업 관리</a>
                 <a href="/?url=MainController/login&page=delete" class="menu-item">삭제 환경 관리</a>
-               
+
             </div>
             <?php endif; ?>
 
@@ -46,20 +42,20 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <!-- Main -->
         <div class="main">
-        <div class="header">
+            <div class="header">
                 <div class="user-info">
 
                     <?php foreach ($data['admins'] as $admin): ?>
-                        <span class="name"><?= htmlspecialchars($admin['id']) ?></span>
-                        <form method="post" action="/?url=AuthController/logout">
-                            <button>로그아웃</button>
-                        </form>
+                    <span class="name"><?= htmlspecialchars($admin['id']) ?></span>
+                    <form method="post" action="/?url=AuthController/logout">
+                        <button>로그아웃</button>
+                    </form>
                     <?php endforeach; ?>
                 </div>
             </div>
 
             <div class="content" id="main-content">
-    <?php
+                <?php
     $page = $_GET['page'] ?? ""; 
     $view_path = "sub_menu/";
 
@@ -95,9 +91,10 @@ if (session_status() === PHP_SESSION_NONE) {
             include $view_path . "home.php";
     }
     ?>
-</div>
+            </div>
 
         </div>
     </div>
 </body>
+
 </html>
