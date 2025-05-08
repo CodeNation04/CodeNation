@@ -1,45 +1,111 @@
-<!-- recent_delete.php -->
-<form class="task-form">
-    <h3>최근 파일 삭제 예약 등록</h3>
+<!-- 최근 파일 삭제 예약 탭 -->
+<div class="task-form">
+    <input type="hidden" name="recent_del" value="recent_del" />
 
-    <div class="form-group">
-        <label>부서 선택</label>
-        <select name="department">
-            <option value="">부서를 선택하세요</option>
-            <option value="network">네트워크팀</option>
-            <option value="security">보안팀</option>
-            <option value="infra">인프라팀</option>
-        </select>
+    <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0;">최근 파일 삭제 예약 관리</h3>
+        <a href="?url=MainController/index&page=task&tab=recent_delete&form=show">
+            <button class="btn-confirm">추가</button>
+        </a>
     </div>
 
-    <div class="form-group">
-        <label>예약작업 주기</label>
-        <select name="period">
-            <option value="">주기를 선택하세요</option>
-            <option value="once">1회</option>
-            <option value="daily">매일</option>
-            <option value="weekly">매주</option>
-        </select>
-    </div>
+    <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>
 
-    <div class="form-group">
-        <label>작업 시점</label>
-        <select name="schedule">
-            <option value="">시점을 선택하세요</option>
-            <option value="boot">부팅 시</option>
-            <option value="shutdown">종료 시</option>
-        </select>
+    <?php if (!$formMode): ?>
+    <div class="task-table-wrapper" id="task-table-wrapper">
+        <!-- JS로 목록 출력 -->
     </div>
+    <?php endif; ?>
 
-    <div class="form-group">
-        <label>삭제 대상</label><br />
-        <label><input type="checkbox" name="target[]" value="win_recent" /> 윈도우 최근파일</label><br />
-        <label><input type="checkbox" name="target[]" value="program_recent" /> 응용프로그램 최근파일</label><br />
-        <label><input type="checkbox" name="target[]" value="usb_recent" /> USB/네트워크 드라이브</label>
-    </div>
+    <?php if ($formMode): ?>
+    <?php include('recent_delete_form.php'); ?>
+    <?php endif; ?>
+</div>
 
-    <div class="form-buttons">
-        <button type="submit">등록</button>
-        <button type="reset">초기화</button>
-    </div>
-</form>
+<script>
+let currentPage = 1;
+const itemsPerPage = 10;
+let resultData = [];
+
+$.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/?url=RecentDelController/recentDelList",
+    success: function(result) {
+        resultData = result;
+        renderPage(1);
+    },
+    error: function(err) {
+        console.error("데이터 불러오기 실패:", err);
+    }
+});
+
+function renderPage(page) {
+    currentPage = page;
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = resultData.slice(start, end);
+
+    let html = `<table class="task-table">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>부서명</th>
+                <th>작업 주기</th>
+                <th>기준 경로</th>
+                <th>작업 시점</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    for (let i = 0; i < pageData.length; i++) {
+        const number = resultData.length - ((page - 1) * itemsPerPage + i);
+
+        html += `
+            <tr>
+                <td>${number}</td>
+                <td>${pageData[i].code_name}</td>
+                <td>${pageData[i].reser_date}<br />`;
+
+        if (pageData[i].reser_date == "매월") {
+            html += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
+        } else if (pageData[i].reser_date == "매주") {
+            html += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
+        } else if (pageData[i].reser_date == "매일") {
+            html += `${pageData[i].reser_date_time}`;
+        } else {
+            html += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
+        }
+
+        html += `</td>
+                <td>${pageData[i].recent_path}</td>
+                <td>${pageData[i].schedule_type || "-"}</td>
+                <td><a href="#">수정</a></td>
+                <td><a href="#">삭제</a></td>
+            </tr>`;
+    }
+
+    html += `</tbody></table>`;
+
+    const totalPages = Math.ceil(resultData.length / itemsPerPage);
+    html += `<div class="pagination">`;
+
+    if (page > 1) {
+        html += `<button onclick="renderPage(${page - 1})">이전</button>`;
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="renderPage(${i})" ${i === page ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+    }
+
+    if (page < totalPages) {
+        html += `<button onclick="renderPage(${page + 1})">다음</button>`;
+    }
+
+    html += `</div>`;
+
+    $("#task-table-wrapper").html(html);
+}
+</script>
