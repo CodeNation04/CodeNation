@@ -29,10 +29,14 @@ let obj = {
     },
 }
 
+const params = new URLSearchParams(window.location.search);
+const tab = params.get('tab');
+
 $.ajax({
     type: "GET",
     dataType: "json",
     url: "/?url=TempDelController/tempDelList",
+    data:{tab:tab},
     success: function(result) {
         resultData = result;
         renderPage(1);
@@ -173,7 +177,6 @@ function delSubmit(num){
 </script>
 
 <div class="task-form">
-    <input type="hidden" name="temp_del" value="temp_del" />
 
     <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3 style="margin: 0;">임시파일 삭제 예약 추가</h3>

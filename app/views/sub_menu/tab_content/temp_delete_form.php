@@ -65,6 +65,7 @@
 </script>
 <div class="form-card">
     <form id="taskForm" name="taskForm" method="post" action="/?url=TempDelController/tempDel">
+        <input type="hidden" name="temp_del" value="temp_delete" />
         <input type="hidden" name="type" id="type" value=""/>
         <input type="hidden" name="num" id="num" value=""/>
 

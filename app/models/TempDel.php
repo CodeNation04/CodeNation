@@ -95,8 +95,8 @@
             return $stmt->execute();
         }
         
-        public function selectTempDelList(){
-            $debugSql = "SELECT * FROM del_env";
+        public function selectTempDelList($del_method){
+            // $debugSql = "SELECT * FROM del_env";
             // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
 
             $stmt = $this->db->prepare("SELECT  a.del_idx,
@@ -110,6 +110,7 @@
                                                 a.work_potin,
                                                 a.del_target,
                                                 a.set_change_yn,
+                                                a.folder_path,
                                                 a.del_method,
                                                 a.del_yn,
                                                 a.overwrite_cnt,
@@ -117,7 +118,9 @@
                                                 a.create_ip
                                         FROM del_env a
                                         WHERE a.del_yn = 'N'
+                                        AND a.del_method = :del_method
                                         ORDER BY del_idx DESC");
+            $stmt->bindParam(':del_method', $del_method);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
