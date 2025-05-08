@@ -163,12 +163,10 @@
    cursor: pointer;
    user-select: none;
    position: relative;
-   transition: background-color 0.3s, color 0.3s;
 }
 
 .result-table th.sortable:hover {
    background-color: #e8f0ff;
-   color: #007bff;
 }
 
 /* 엑셀, 텍스트 저장 버튼 */
@@ -191,4 +189,8 @@
 
 .save-buttons button:hover {
    background-color: #0056d2;
+}
+
+#deptField {
+   margin-top: 20px;
 }

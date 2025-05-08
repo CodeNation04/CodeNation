@@ -1,49 +1,113 @@
-<h3>폴더 삭제 예약 추가</h3>
+<!-- 폴더 삭제 예약 탭 -->
+<div class="task-form">
+    <input type="hidden" name="folder_del" value="folder_del" />
 
-<?php
-$formMode = isset($_GET['form']) && $_GET['form'] === 'show';
-?>
+    <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0;">폴더 삭제 예약 관리</h3>
+        <a href="?url=MainController/index&page=task&tab=folder_delete&form=show">
+            <button class="btn-confirm">추가</button>
+        </a>
+    </div>
 
-<?php if (!$formMode): ?>
-<!-- 목록 테이블만 보이는 영역 -->
-<div class="task-table-wrapper">
-    <table class="task-table">
+    <?php
+    $formMode = isset($_GET['form']) && $_GET['form'] === 'show';
+    ?>
+
+    <?php if (!$formMode): ?>
+    <div class="task-table-wrapper" id="task-table-wrapper">
+        <!-- JS로 목록 테이블 출력 -->
+    </div>
+    <?php endif; ?>
+
+    <?php if ($formMode): ?>
+    <?php include('folder_delete_form.php'); ?>
+    <?php endif; ?>
+</div>
+
+<script>
+let currentPage = 1;
+const itemsPerPage = 10;
+let resultData = [];
+
+$.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/?url=FolderDelController/folderDelList",
+    success: function(result) {
+        resultData = result;
+        renderPage(1);
+    },
+    error: function(err) {
+        console.error("데이터 불러오기 실패:", err);
+    }
+});
+
+function renderPage(page) {
+    currentPage = page;
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = resultData.slice(start, end);
+
+    let html = `<table class="task-table">
         <thead>
             <tr>
+                <th>번호</th>
                 <th>부서명</th>
                 <th>작업 주기</th>
-                <th>대상 폴더명</th>
+                <th>삭제 경로</th>
                 <th>작업 시점</th>
                 <th>수정</th>
                 <th>삭제</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody>`;
+
+    for (let i = 0; i < pageData.length; i++) {
+        const number = resultData.length - ((page - 1) * itemsPerPage + i);
+
+        html += `
             <tr>
-                <td>(주)에스엠에스</td>
-                <td>매주<br />금요일 16:00</td>
-                <td>대상 폴더명</td>
-                <td>종료 시</td>
+                <td>${number}</td>
+                <td>${pageData[i].code_name}</td>
+                <td>${pageData[i].reser_date}<br />`;
+
+        if (pageData[i].reser_date == "매월") {
+            html += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
+        } else if (pageData[i].reser_date == "매주") {
+            html += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
+        } else if (pageData[i].reser_date == "매일") {
+            html += `${pageData[i].reser_date_time}`;
+        } else {
+            html += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
+        }
+
+        html += `</td>
+                <td>${pageData[i].folder_path}</td>
+                <td>${pageData[i].schedule_type || "-"}</td>
                 <td><a href="#">수정</a></td>
                 <td><a href="#">삭제</a></td>
-            </tr>
-        </tbody>
-    </table>
+            </tr>`;
+    }
 
-    <div class="pagination">
-        <button>이전</button>
-        <span>1</span>
-        <button>다음</button>
-    </div>
-</div>
+    html += `</tbody></table>`;
 
-<div class="add-button-wrapper">
-    <a href="?url=MainController/login&page=task&tab=folder_delete&form=show">
-        <button class="btn-confirm">추가</button>
-    </a>
-</div>
-<?php endif; ?>
+    const totalPages = Math.ceil(resultData.length / itemsPerPage);
+    html += `<div class="pagination">`;
 
-<?php if ($formMode): ?>
-<?php include('folder_delete_form.php'); ?>
-<?php endif; ?>
+    if (page > 1) {
+        html += `<button onclick="renderPage(${page - 1})">이전</button>`;
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="renderPage(${i})" ${i === page ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+    }
+
+    if (page < totalPages) {
+        html += `<button onclick="renderPage(${page + 1})">다음</button>`;
+    }
+
+    html += `</div>`;
+
+    $("#task-table-wrapper").html(html);
+}
+</script>

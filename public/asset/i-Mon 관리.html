@@ -1,13 +1,63 @@
 <!DOCTYPE html>
-<html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Agent 로그 조회</title>
-    <link rel="stylesheet" href="/css/agent_info.css" />
+<!-- saved from url=(0056)http://localhost/?url=MainController/index&page=agentlog -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i-Mon 관리</title>
+    <link rel="stylesheet" href="./i-Mon 관리_files/main.css">
+    <script src="./i-Mon 관리_files/jquery-latest.min.js.다운로드"></script>
 </head>
 
 <body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>i-Mon Admin</h2>
+
+                        <div class="menu-group">
+                <div class="menu-group-title">조직 및 관리자</div>
+                <a href="http://localhost/?url=MainController/index&amp;page=super" class="menu-item">최고관리자</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=admin" class="menu-item">관리자 목록</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=dept" class="menu-item">부서 정보 관리</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=export" class="menu-item">외부 반출 승인 관리</a>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-group-title">정책 설정</div>
+                <a href="http://localhost/?url=MainController/index&amp;page=task" class="menu-item">예약 작업 관리</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=delete" class="menu-item">삭제 환경 관리</a>
+            </div>
+            
+            <div class="menu-group">
+                <div class="menu-group-title">정보 조회</div>
+                <a href="http://localhost/?url=MainController/index&amp;page=agent" class="menu-item">Agent 정보 조회</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=agentlog" class="menu-item">Agent 로그 조회</a>
+                <a href="http://localhost/?url=MainController/index&amp;page=log" class="menu-item">감사 로그 조회</a>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="header">
+                <div class="user-info">
+                                        <span class="name">admin</span>
+                    <form method="post" action="http://localhost/?url=AuthController/logout">
+                        <button>로그아웃</button>
+                    </form>
+                                    </div>
+            </div>
+
+            <div class="content" id="main-content">
+                
+
+
+
+    
+    <title>Agent 로그 조회</title>
+    <link rel="stylesheet" href="./i-Mon 관리_files/agent_info.css">
+
+
+
     <div class="container">
         <h2>Agent 로그 조회</h2>
         <form method="get">
@@ -24,13 +74,13 @@
                         <option value="로그아웃">로그아웃</option>
                         <option value="체크">체크</option>
                         <option value="삭제로그">삭제로그</option>
-                        <option value="설정정보요청">설정 정보 요청</option>
+                        <option value="설정정보요청">설정정보요청</option>
                     </select>
                     <span class="custom-arrow">▼</span>
                 </div>
             </div>
 
-            <div id="deptField" style="display: none;">
+            <div id="deptField" style="display: block;">
                 <!-- 기본으로 숨김 -->
                 <label for="dept">부서 선택</label>
                 <div class="custom-select-wrapper">
@@ -53,8 +103,8 @@
 
         <div id="result" style="margin-top: 20px;"></div>
         <div class="save-buttons" style="display: none;">
-            <button onclick="saveAsFile('csv')">엑셀로 저장</button>
-            <button onclick="saveAsFile('txt')">텍스트로 저장</button>
+            <button onclick="saveAsFile(&#39;csv&#39;)">엑셀로 저장</button>
+            <button onclick="saveAsFile(&#39;txt&#39;)">텍스트로 저장</button>
         </div>
     </div>
 
@@ -64,7 +114,6 @@
         column: null,
         direction: 'asc' // asc (오름차순) / desc (내림차순)
     };
-    let filteredLogs = []; // 검색 결과 저장
 
     // 페이지 로드 시 부서 필드 설정
     document.addEventListener("DOMContentLoaded", function() {
@@ -86,8 +135,7 @@
         const name = document.getElementById("name").value.trim();
         const type = document.getElementById("type").value.trim();
         const dept = document.getElementById("dept").value.trim();
-        //샘플데이터 , 나중에 db에서 받아와야함
-        //-------------------------------
+
         const logs = [{
                 dept: "의무기록과",
                 name: "장수민",
@@ -160,38 +208,33 @@
             }
         ];
 
-        // ✅ 필터링 로직 적용 (검색 조건에 맞는 로그만 필터링)
-        filteredLogs = logs.filter(log =>
+        // ✅ 필터링 로직 적용
+        const filteredLogs = logs.filter(log =>
             (!name || log.name.includes(name)) &&
             (!type || log.type === type) &&
             (!dept || log.dept === dept)
         );
 
-        renderTable();
-
-        // ✅ 검색 후 입력 필드 초기화
-        document.getElementById("name").value = "";
-        document.getElementById("type").value = "";
-        document.getElementById("dept").value = "";
+        renderTable(filteredLogs);
     }
 
     // ✅ 표 렌더링 함수 (필터링된 데이터만 표시)
-    function renderTable() {
+    function renderTable(logs) {
         const resultDiv = document.getElementById("result");
 
-        if (filteredLogs.length > 0) {
+        if (logs.length > 0) {
             let table = `<table class="result-table">
             <thead>
                 <tr>
-                    <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
-                    <th onclick="setSort('name')" class="sortable">사용자명 <span>↑↓</span></th>
-                    <th onclick="setSort('type')" class="sortable">작업종류 <span>↑↓</span></th>
-                    <th onclick="setSort('result')" class="sortable">작업결과 <span>↑↓</span></th>
-                    <th onclick="setSort('info')" class="sortable">작업정보 <span>↑↓</span></th>
+                    <th onclick="setSort('dept')" class="sortable">부서명 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('name')" class="sortable">사용자명 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('type')" class="sortable">작업종류 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('result')" class="sortable">작업결과 <span class="sort-arrows"> ↑↓</span></th>
+                    <th onclick="setSort('info')" class="sortable">작업정보 <span class="sort-arrows"> ↑↓</span></th>
                 </tr>
             </thead>
             <tbody>`;
-            filteredLogs.forEach(log => {
+            logs.forEach(log => {
                 table += `<tr>
                         <td>${log.dept}</td>
                         <td>${log.name}</td>
@@ -207,6 +250,7 @@
             resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
             document.querySelector('.save-buttons').style.display = "none";
         }
+        updateSortStyles();
     }
 
     // ✅ 정렬 설정 함수 (헤더 클릭)
@@ -217,24 +261,33 @@
             currentSort.column = column;
             currentSort.direction = "asc";
         }
-        sortLogs();
+        searchLogs();
     }
 
-    // ✅ 정렬 함수 (검색 결과만 정렬)
-    function sortLogs() {
-        filteredLogs.sort((a, b) => {
-            const aText = a[currentSort.column];
-            const bText = b[currentSort.column];
+    // ✅ 정렬 스타일 업데이트 (화살표)
+    function updateSortStyles() {
+        const headers = document.querySelectorAll(".sortable");
+        headers.forEach(header => {
+            const column = header.getAttribute("onclick").split("'")[1];
+            const arrows = header.querySelector(".sort-arrows");
 
-            return currentSort.direction === "asc" ?
-                aText.localeCompare(bText, 'ko') :
-                bText.localeCompare(aText, 'ko');
+            if (column === currentSort.column) {
+                arrows.innerHTML = currentSort.direction === "asc" ?
+                    "↑ <span style='color: #007bff;'>↓</span>" :
+                    "<span style='color: #007bff;'>↑</span> ↓";
+            } else {
+                arrows.innerHTML = "↑ ↓";
+            }
         });
-
-        renderTable();
-
     }
 
+    // ✅ 정렬 함수 (문자열)
+    function sortText(a, b) {
+        return a.localeCompare(b, 'ko', {
+            numeric: true,
+            sensitivity: 'base'
+        });
+    }
 
     function saveAsFile(type) {
         const resultDiv = document.getElementById("result");
@@ -275,6 +328,11 @@
         link.click();
     }
     </script>
-</body>
 
-</html>
+
+            </div>
+        </div>
+    </div>
+
+
+</body></html>

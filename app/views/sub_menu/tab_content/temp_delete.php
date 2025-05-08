@@ -3,31 +3,31 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let resultData = [];
 let obj = {
-        internet_temp:{
-            key:"internet_temp",
-            value:"인터넷 임시파일"
-        },
-        cookie:{
-            key:"cookie",
-            value:"인터넷 쿠키파일"
-        },
-        history:{
-            key:"history",
-            value:"인터넷 작업히스토리"
-        },
-        windows_temp:{
-            key:"windows_temp",
-            value:"윈도우 임시파일"
-        },
-        boot:{
-            key:"boot",
-            value:"부팅 시 예약 실행"
-        },
-        shutdown:{
-            key:"shutdown",
-            value:"종료 시 예약 실행"
-        },
-    }
+    internet_temp: {
+        key: "internet_temp",
+        value: "인터넷 임시파일"
+    },
+    cookie: {
+        key: "cookie",
+        value: "인터넷 쿠키파일"
+    },
+    history: {
+        key: "history",
+        value: "인터넷 작업히스토리"
+    },
+    windows_temp: {
+        key: "windows_temp",
+        value: "윈도우 임시파일"
+    },
+    boot: {
+        key: "boot",
+        value: "부팅 시 예약 실행"
+    },
+    shutdown: {
+        key: "shutdown",
+        value: "종료 시 예약 실행"
+    },
+}
 
 $.ajax({
     type: "GET",
@@ -62,59 +62,59 @@ function renderPage(page) {
         </thead>
         <tbody>`;
 
-        for(let i = 0; i<pageData.length; i++){
-            var work_potin_arr = pageData[i].work_potin.split(",");
-            var del_target_arr = pageData[i].del_target.split(",");
-            var matched_values = [];
-            var matched_values2 = [];
+    for (let i = 0; i < pageData.length; i++) {
+        var work_potin_arr = pageData[i].work_potin.split(",");
+        var del_target_arr = pageData[i].del_target.split(",");
+        var matched_values = [];
+        var matched_values2 = [];
 
-            for (let j = 0; j < work_potin_arr.length; j++) {
-                let key = work_potin_arr[j].trim(); // 공백 제거
-                if (obj[key]) {
-                    matched_values.push(obj[key].value);
-                }
+        for (let j = 0; j < work_potin_arr.length; j++) {
+            let key = work_potin_arr[j].trim(); // 공백 제거
+            if (obj[key]) {
+                matched_values.push(obj[key].value);
             }
+        }
 
-            for (let j = 0; j < del_target_arr.length; j++) {
-                let key = del_target_arr[j].trim(); // 공백 제거
-                if (obj[key]) {
-                    matched_values2.push(obj[key].value);
-                }
+        for (let j = 0; j < del_target_arr.length; j++) {
+            let key = del_target_arr[j].trim(); // 공백 제거
+            if (obj[key]) {
+                matched_values2.push(obj[key].value);
             }
+        }
 
-            const number = resultData.length - ((page - 1) * itemsPerPage + i);
+        const number = resultData.length - ((page - 1) * itemsPerPage + i);
 
-            resultHtml += `
+        resultHtml += `
                                 <tr>
                                     <td>${number}</td>
                                     <td>${pageData[i].code_name}</td>
                                     <td>${pageData[i].reser_date}<br />`
-                                    if(pageData[i].reser_date == "매월"){
+        if (pageData[i].reser_date == "매월") {
 
-                                        resultHtml += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
+            resultHtml += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
 
-                                    }else if(pageData[i].reser_date == "매주"){
+        } else if (pageData[i].reser_date == "매주") {
 
-                                        resultHtml += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
+            resultHtml += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
 
-                                    }else if(pageData[i].reser_date == "매일"){
+        } else if (pageData[i].reser_date == "매일") {
 
-                                        resultHtml += `${pageData[i].reser_date_time}`;
+            resultHtml += `${pageData[i].reser_date_time}`;
 
-                                    }else{
+        } else {
 
-                                        resultHtml += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
+            resultHtml += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
 
-                                    }
-            resultHtml += `         </td>
+        }
+        resultHtml += `         </td>
                                     <td>`;
-                                for(let j = 0; j<del_target_arr.length; j++){
-                                    if(j > 0){
-                                        resultHtml += ` ,`;
-                                    }
-                                    resultHtml += `${matched_values2[j]}`;
-                                }
-            resultHtml +=     `</td>
+        for (let j = 0; j < del_target_arr.length; j++) {
+            if (j > 0) {
+                resultHtml += ` ,`;
+            }
+            resultHtml += `${matched_values2[j]}`;
+        }
+        resultHtml += `</td>
                                 <td>`;
                                 for(let j = 0; j<work_potin_arr.length; j++){
                                     if(j > 0){
@@ -125,6 +125,7 @@ function renderPage(page) {
             resultHtml +=  `</td>
                             <td><a href="/?url=MainController/index&page=task&tab=temp_delete&form=show&type=moddify&num=${pageData[i].del_idx}">수정</a></td>
                                 <td><a onclick="delSubmit(${pageData[i].del_idx})">삭제</a></td>
+
                             </tr>`
     }
 
