@@ -33,7 +33,18 @@
             $debugSql = "SELECT * FROM del_env";
             // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
 
-            $stmt = $this->db->prepare("SELECT * FROM del_env");
+            $stmt = $this->db->prepare("SELECT a.code_code_id,
+                                                (SELECT code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name,
+                                                a.reser_date,
+                                                a.work_potin,
+                                                a.del_target,
+                                                a.set_change_yn,
+                                                a.del_method,
+                                                a.overwrite_cnt,
+                                                a.create_date,
+                                                a.create_ip
+                                        FROM del_env a
+                                        ORDER BY del_idx DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }

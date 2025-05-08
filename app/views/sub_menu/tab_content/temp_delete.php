@@ -1,5 +1,32 @@
 <!-- temp_delete.php -->
 <script>
+    let obj = {
+        internet_temp:{
+            key:"internet_temp",
+            value:"인터넷 임시파일"
+        },
+        cookie:{
+            key:"cookie",
+            value:"인터넷 쿠키파일"
+        },
+        history:{
+            key:"history",
+            value:"인터넷 작업히스토리"
+        },
+        windows_temp:{
+            key:"windows_temp",
+            value:"윈도우 임시파일"
+        },
+        boot:{
+            key:"boot",
+            value:"부팅 시 예약 실행"
+        },
+        shutdown:{
+            key:"shutdown",
+            value:"종료 시 예약 실행"
+        },
+    }
+
     $.ajax({
         type: "json",
         method : "get",
@@ -20,15 +47,49 @@
                                 </thead>
                                 <tbody>`;
                 for(let i = 0; i<result.length; i++){
+                    var work_potin_arr = result[i].work_potin.split(",");
+                    var del_target_arr = result[i].del_target.split(",");
+                    var matched_values = [];
+                    var matched_values2 = [];
+
+                    for (let j = 0; j < work_potin_arr.length; j++) {
+                        let key = work_potin_arr[j].trim(); // 공백 제거
+                        if (obj[key]) {
+                            matched_values.push(obj[key].value);
+                        }
+                    }
+
+                    for (let j = 0; j < del_target_arr.length; j++) {
+                        let key = del_target_arr[j].trim(); // 공백 제거
+                        if (obj[key]) {
+                            matched_values2.push(obj[key].value);
+                        }
+                    }
+
+                    console.log(matched_values)
                     resultHtml += `
                                         <tr>
-                                            <td>${result[i].code_code_id}</td>
-                                            <td>${result[i].period}<br />2025-01-01 14:00:00</td>
-                                            <td>${result[i].del_target}</td>
-                                            <td>${result[i].work_potin}</td>
-                                            <td><a href="#">수정</a></td>
-                                            <td><a href="#">삭제</a></td>
-                                        </tr>`
+                                            <td>${result[i].code_name}</td>
+                                            <td>${result[i].reser_date}<br />2025-01-01 14:00:00</td>
+                                            <td>`;
+                                        for(let j = 0; j<del_target_arr.length; j++){
+                                            if(j > 0){
+                                                resultHtml += ` ,`;
+                                            }
+                                            resultHtml += `${matched_values2[j]}`;
+                                        }
+                    resultHtml +=     `</td>
+                                        <td>`;
+                                        for(let j = 0; j<work_potin_arr.length; j++){
+                                            if(j > 0){
+                                                resultHtml += ` ,`;
+                                            }
+                                            resultHtml += `${matched_values[j]}`;
+                                        }
+                    resultHtml +=  `</td>
+                                    <td><a href="#">수정</a></td>
+                                        <td><a href="#">삭제</a></td>
+                                    </tr>`
                 }
                 resultHtml += `</tbody>
                                 </table>
