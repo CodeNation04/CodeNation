@@ -2,6 +2,8 @@
 
 class TempDelController extends Controller {
     public function tempDel() {
+        $type = $_POST['type'] ?? '';
+        $num = $_POST['num'] ?? 0;
         $code_id = $_POST['department'] ?? '';
         $reser_date = $_POST['period'] ?? '';
         $work_potin = $_POST['schedules'] ?? '';
@@ -21,7 +23,11 @@ class TempDelController extends Controller {
 
         $reser_date_time = $once_time ?: ($daily_time ?: ($weekly_time ?: ($monthly_time ?: '')));
 
-        $temp = $this->model('TempDel')->insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time);
+        if($type !== "moddify"){
+            $temp = $this->model('TempDel')->insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time);
+        }else{
+            $temp = $this->model('TempDel')->updateTempDel($num,$code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time);
+        }
 
         if ($temp) {
             echo "<script>
@@ -35,9 +41,36 @@ class TempDelController extends Controller {
         }
     }
 
+    public function tempListDelete() {
+        $num = $_POST['num'] ?? 0;
+
+        $temp = $this->model('TempDel')->deleteTemp($num);
+
+        header('Content-Type: application/json');
+
+        if ($temp) {
+            echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
+        }
+    }
+
     public function tempDelList() {
         header('Content-Type: application/json');
         $temp = $this->model('TempDel')->selectTempDelList();
         echo json_encode($temp);
     }
+
+    public function tempDelInfo() {
+        $del_idx = $_GET['num'] ?? '';
+        header('Content-Type: application/json');
+        $temp = $this->model('TempDel')->selectTempDelInfo($del_idx);
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
+    
 }

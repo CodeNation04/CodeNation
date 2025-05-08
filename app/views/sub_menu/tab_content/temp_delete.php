@@ -47,7 +47,7 @@ function renderPage(page) {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const pageData = resultData.slice(start, end);
-    console.log(pageData)
+    
     let resultHtml = `<table class=\"task-table\">
         <thead>
             <tr>
@@ -123,8 +123,8 @@ function renderPage(page) {
                                     resultHtml += `${matched_values[j]}`;
                                 }
             resultHtml +=  `</td>
-                            <td><a href="#">수정</a></td>
-                                <td><a href="#">삭제</a></td>
+                            <td><a href="/?url=MainController/index&page=task&tab=temp_delete&form=show&type=moddify&num=${pageData[i].del_idx}">수정</a></td>
+                                <td><a onclick="delSubmit(${pageData[i].del_idx})">삭제</a></td>
                             </tr>`
     }
 
@@ -149,6 +149,25 @@ function renderPage(page) {
     resultHtml += `</div>`;
 
     $("#task-table-wrapper").html(resultHtml);
+}
+
+function delSubmit(num){
+    console.log(num)
+    if(confirm("삭제하시겠습니까?")){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {num:num},
+            url: "/?url=TempDelController/tempListDelete",
+            success: function(result) {
+                alert(result.message);
+                location.reload();
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    }
 }
 </script>
 
