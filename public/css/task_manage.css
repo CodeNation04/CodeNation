@@ -127,3 +127,78 @@
    border-radius: 4px;
    cursor: pointer;
 }
+
+/* ✅ temp_delete_form.php 전용 스타일 (목록과 유사한 레이아웃) */
+.form-card {
+   width: 100%;
+   max-width: none;
+   padding: 0;
+   margin-top: 20px;
+   font-size: 14px;
+}
+
+.form-title {
+   font-size: 18px;
+   font-weight: bold;
+   margin-bottom: 16px;
+   color: #333;
+}
+
+.form-row {
+   margin-bottom: 12px;
+   max-width: 400px;
+}
+
+.form-input {
+   width: 100%;
+   padding: 6px 10px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+}
+
+.form-checks {
+   margin-bottom: 12px;
+}
+
+.form-checks strong {
+   display: block;
+   margin-bottom: 4px;
+}
+
+.form-checks label {
+   display: block;
+   margin-bottom: 4px;
+}
+
+.form-buttons {
+   margin-top: 20px;
+   display: flex;
+   gap: 10px;
+}
+
+.btn-cancel,
+.btn-confirm {
+   padding: 6px 14px;
+   border: none;
+   border-radius: 4px;
+   font-size: 14px;
+   cursor: pointer;
+}
+
+.btn-cancel {
+   background-color: #6c757d;
+   color: white;
+}
+
+.btn-cancel:hover {
+   background-color: #5a6268;
+}
+
+.btn-confirm {
+   background-color: #007bff;
+   color: white;
+}
+
+.btn-confirm:hover {
+   background-color: #0056b3;
+}

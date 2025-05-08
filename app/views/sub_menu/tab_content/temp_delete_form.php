@@ -1,9 +1,19 @@
 <div class="form-card">
-    <h4 class="form-title">임시파일 삭제 예약 추가</h4>
     <form id="taskForm" name="taskForm" method="post" action="/?url=TempDelController/tempDel">
+        <!-- 부서 선택 -->
+        <div class="form-row">
+            <strong>부서명</strong><br />
+            <select class="form-input" name="department" required>
+                <option value="">부서 선택</option>
+                <option value="network">(주)에스엠에스</option>
+                <option value="security">보안팀</option>
+                <option value="infra">인프라팀</option>
+            </select>
+        </div>
 
         <!-- 주기 선택 -->
         <div class="form-row">
+            <strong>작업 주기</strong><br />
             <select class="form-input" name="period" id="period" required onchange="handlePeriodChange()">
                 <option value="">작업 주기 선택</option>
                 <option value="한번">한번</option>
@@ -62,16 +72,6 @@
             <div class="form-row">
                 <input class="form-input" type="time" name="monthly_time" />
             </div>
-        </div>
-
-        <!-- 부서 선택 -->
-        <div class="form-row">
-            <select class="form-input" name="department" required>
-                <option value="">부서 선택</option>
-                <option value="network">(주)에스엠에스</option>
-                <option value="security">보안팀</option>
-                <option value="infra">인프라팀</option>
-            </select>
         </div>
 
         <!-- ✅ 작업 대상 체크박스 -->
@@ -139,7 +139,7 @@ function submitBtn() {
     $("#targets").val(str);
     $("#schedules").val(str2);
     console.log(formData)
-    if(confirm("저장하시겠습니까?")){
+    if (confirm("저장하시겠습니까?")) {
         form.submit();
     }
 }
