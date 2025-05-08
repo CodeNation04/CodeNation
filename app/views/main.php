@@ -21,7 +21,6 @@
                 <a href="/?url=MainController/index&page=super" class="menu-item">최고관리자</a>
                 <a href="/?url=MainController/index&page=admin" class="menu-item">관리자 목록</a>
                 <a href="/?url=MainController/index&page=dept" class="menu-item">부서 정보 관리</a>
-
                 <a href="/?url=MainController/index&page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
 
@@ -29,7 +28,6 @@
                 <div class="menu-group-title">정책 설정</div>
                 <a href="/?url=MainController/index&page=task" class="menu-item">예약 작업 관리</a>
                 <a href="/?url=MainController/index&page=delete" class="menu-item">삭제 환경 관리</a>
-
             </div>
             <?php endif; ?>
 
@@ -45,7 +43,6 @@
         <div class="main">
             <div class="header">
                 <div class="user-info">
-
                     <?php foreach ($data['admins'] as $admin): ?>
                     <span class="name"><?= htmlspecialchars($admin['id']) ?></span>
                     <form method="post" action="/?url=AuthController/logout">
@@ -57,43 +54,42 @@
 
             <div class="content" id="main-content">
                 <?php
-    $page = $_GET['page'] ?? ""; 
-    $view_path = "sub_menu/";
+                $page = $_GET['page'] ?? ""; 
+                $view_path = "sub_menu/";
 
-    switch ($page) {
-        case"super":
-            include $view_path . "super_admin.php";
-            break;
-        case "admin":
-            include $view_path . "admin_info.php";
-            break;
-        case "dept":
-            include $view_path . "department_info.php";
-            break;
-        case "log":
-            include $view_path . "log_view.php";
-            break;
-        case "task":
-            include $view_path . "task_manage.php";
-            break;
-        case "delete":
-            include $view_path . "delete_manage.php";
-            break;
-        case "export":
-            include $view_path . "export_manage.php";
-            break;
-        case "agent":
-            include $view_path . "agent_info.php";
-            break;
-        case "agentlog":
-            include $view_path . "agent_log.php";
-            break;
-        default:
-            include $view_path . "home.php";
-    }
-    ?>
+                switch ($page) {
+                    case"super":
+                        include $view_path . "super_admin.php";
+                        break;
+                    case "admin":
+                        include $view_path . "admin_info.php";
+                        break;
+                    case "dept":
+                        include $view_path . "department_info.php";
+                        break;
+                    case "log":
+                        include $view_path . "log_view.php";
+                        break;
+                    case "task":
+                        include $view_path . "task_manage.php";
+                        break;
+                    case "delete":
+                        include $view_path . "delete_manage.php";
+                        break;
+                    case "export":
+                        include $view_path . "export_manage.php";
+                        break;
+                    case "agent":
+                        include $view_path . "agent_info.php";
+                        break;
+                    case "agentlog":
+                        include $view_path . "agent_log.php";
+                        break;
+                    default:
+                        include $view_path . "home.php";
+                }
+                ?>
             </div>
-
         </div>
     </div>
 </body>
