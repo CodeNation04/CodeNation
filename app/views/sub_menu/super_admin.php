@@ -27,7 +27,7 @@ function formSubmit() {
 }
 </script>
 
-<div class="placeholder" style="max-width: 900px; margin: 0 auto;">
+<div class="placeholder" style="max-width: 1500px; margin: 0 auto;">
     <h2>최고 관리자 정보</h2>
     <form id="superForm" name="superForm" method="post" style="margin-bottom: 40px;">
         <div style="margin-bottom: 15px;">
@@ -52,7 +52,7 @@ function formSubmit() {
         </div>
         <div style="text-align: right;">
             <button onclick="formSubmit()" type="button"
-                style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px;">저장</button>
+                style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px;">저장</button>
         </div>
     </form>
 
