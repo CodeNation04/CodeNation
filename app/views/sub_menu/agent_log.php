@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Agent 로그 조회</title>
     <link rel="stylesheet" href="/css/agent_info.css" />
+
 </head>
 
 <body>
@@ -15,6 +16,7 @@
                 <label for="name">사용자명</label>
                 <input type="text" id="name" name="name" placeholder="사용자명 입력">
             </div>
+
             <div class="dropdown-wrapper">
                 <label for="type">작업 종류</label>
                 <div class="custom-select-wrapper">
@@ -30,8 +32,8 @@
                 </div>
             </div>
 
-            <div id="deptField" style="display: none;">
-                <!-- 기본으로 숨김 -->
+
+            <div class="dropdown-wrapper">
                 <label for="dept">부서 선택</label>
                 <div class="custom-select-wrapper">
                     <select id="dept" name="dept" class="custom-select">
@@ -46,6 +48,10 @@
                 </div>
             </div>
 
+
+
+
+
             <div class="button-group">
                 <button type="button" onclick="searchLogs()">검색</button>
             </div>
@@ -56,157 +62,46 @@
             <button onclick="saveAsFile('csv')">엑셀로 저장</button>
             <button onclick="saveAsFile('txt')">텍스트로 저장</button>
         </div>
+        <div class="pagination" id="pagination" style="display: none;"></div>
     </div>
 
     <script>
-    let isSuperAdmin = true; // true: 최고관리자, false: 중간관리자 (권한 설정)
+    let filteredLogs = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
     let currentSort = {
         column: null,
-        direction: 'asc' // asc (오름차순) / desc (내림차순)
+        direction: 'asc'
     };
-    let filteredLogs = []; // 검색 결과 저장
 
-    // 페이지 로드 시 부서 필드 설정
-    document.addEventListener("DOMContentLoaded", function() {
-        toggleDeptField();
-    });
+    // ✅ 샘플 로그 데이터
+    const logs = Array.from({
+        length: 50
+    }, (_, i) => ({
+        dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
+        name: `사용자${i + 1}`,
+        type: ["로그인", "로그아웃", "체크", "삭제로그", "설정정보요청"][i % 5],
+        result: i % 2 === 0 ? "성공" : "실패",
+        info: `작업 정보 ${i + 1}`
+    }));
 
-    // ✅ 부서 선택 필드 제어 (최고관리자만 보임)
-    function toggleDeptField() {
-        const deptField = document.getElementById("deptField");
-        if (isSuperAdmin) {
-            deptField.style.display = "block";
-        } else {
-            deptField.style.display = "none";
-        }
-    }
-
-    // ✅ 로그 검색 (검색어 필터링 적용)
+    // ✅ 로그 검색
     function searchLogs() {
         const name = document.getElementById("name").value.trim();
         const type = document.getElementById("type").value.trim();
         const dept = document.getElementById("dept").value.trim();
-        //샘플데이터 , 나중에 db에서 받아와야함
-        //-------------------------------
-        const logs = [{
-                dept: "의무기록과",
-                name: "장수민",
-                type: "로그인",
-                result: "성공",
-                info: "로그인 성공"
-            },
-            {
-                dept: "전산실",
-                name: "이민호",
-                type: "로그아웃",
-                result: "성공",
-                info: "정상 종료"
-            },
-            {
-                dept: "원무과",
-                name: "박지현",
-                type: "체크",
-                result: "성공",
-                info: "정상 확인"
-            },
-            {
-                dept: "진료지원팀",
-                name: "김영희",
-                type: "로그인",
-                result: "성공",
-                info: "로그인 성공"
-            },
-            {
-                dept: "의무기록과",
-                name: "최민수",
-                type: "삭제로그",
-                result: "성공",
-                info: "로그 삭제됨"
-            },
-            {
-                dept: "전산실",
-                name: "박준형",
-                type: "로그아웃",
-                result: "성공",
-                info: "정상 종료"
-            },
-            {
-                dept: "원무과",
-                name: "이소라",
-                type: "설정정보요청",
-                result: "성공",
-                info: "정보 제공"
-            },
-            {
-                dept: "진료지원팀",
-                name: "정예린",
-                type: "체크",
-                result: "실패",
-                info: "권한 없음"
-            },
-            {
-                dept: "의무기록과",
-                name: "홍길동",
-                type: "로그아웃",
-                result: "성공",
-                info: "정상 종료"
-            },
-            {
-                dept: "전산실",
-                name: "윤서연",
-                type: "로그인",
-                result: "성공",
-                info: "로그인 성공"
-            }
-        ];
 
-        // ✅ 필터링 로직 적용 (검색 조건에 맞는 로그만 필터링)
         filteredLogs = logs.filter(log =>
             (!name || log.name.includes(name)) &&
             (!type || log.type === type) &&
             (!dept || log.dept === dept)
         );
 
+        if (currentSort.column) sortFilteredLogs();
+        currentPage = 1;
         renderTable();
-
-        // ✅ 검색 후 입력 필드 초기화
-        document.getElementById("name").value = "";
-        document.getElementById("type").value = "";
-        document.getElementById("dept").value = "";
-    }
-
-    // ✅ 표 렌더링 함수 (필터링된 데이터만 표시)
-    function renderTable() {
-        const resultDiv = document.getElementById("result");
-
-        if (filteredLogs.length > 0) {
-            let table = `<table class="result-table">
-            <thead>
-                <tr>
-                    <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
-                    <th onclick="setSort('name')" class="sortable">사용자명 <span>↑↓</span></th>
-                    <th onclick="setSort('type')" class="sortable">작업종류 <span>↑↓</span></th>
-                    <th onclick="setSort('result')" class="sortable">작업결과 <span>↑↓</span></th>
-                    <th onclick="setSort('info')" class="sortable">작업정보 <span>↑↓</span></th>
-                </tr>
-            </thead>
-            <tbody>`;
-            filteredLogs.forEach(log => {
-                table += `<tr>
-                        <td>${log.dept}</td>
-                        <td>${log.name}</td>
-                        <td>${log.type}</td>
-                        <td>${log.result}</td>
-                        <td>${log.info}</td>
-                    </tr>`;
-            });
-            table += `</tbody></table>`;
-            resultDiv.innerHTML = table;
-            document.querySelector('.save-buttons').style.display = "flex";
-        } else {
-            resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
-            document.querySelector('.save-buttons').style.display = "none";
-        }
+        renderPagination();
+        document.querySelector('.save-buttons').style.display = filteredLogs.length > 0 ? "flex" : "none";
     }
 
     // ✅ 정렬 설정 함수 (헤더 클릭)
@@ -217,64 +112,110 @@
             currentSort.column = column;
             currentSort.direction = "asc";
         }
-        sortLogs();
-    }
-
-    // ✅ 정렬 함수 (검색 결과만 정렬)
-    function sortLogs() {
-        filteredLogs.sort((a, b) => {
-            const aText = a[currentSort.column];
-            const bText = b[currentSort.column];
-
-            return currentSort.direction === "asc" ?
-                aText.localeCompare(bText, 'ko') :
-                bText.localeCompare(aText, 'ko');
-        });
-
+        sortFilteredLogs();
         renderTable();
-
     }
 
+    // ✅ 정렬 함수 (검색된 결과만 정렬)
+    function sortFilteredLogs() {
+        filteredLogs.sort((a, b) => {
+            const aValue = a[currentSort.column];
+            const bValue = b[currentSort.column];
 
-    function saveAsFile(type) {
+            return currentSort.direction === "asc" ? aValue.localeCompare(bValue, 'ko') : bValue.localeCompare(
+                aValue, 'ko');
+        });
+    }
+
+    // ✅ 표 렌더링 함수
+    function renderTable() {
         const resultDiv = document.getElementById("result");
-        const rows = Array.from(resultDiv.querySelectorAll("tr"));
-        if (rows.length < 2) return;
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedLogs = filteredLogs.slice(start, end);
 
-        let content = "\uFEFF"; // UTF-8 BOM 추가 (Excel에서 인코딩 문제 해결)
-        if (type === "csv") {
-            content += isSuperAdmin ? "부서명,사용자명,작업종류,작업결과,작업정보\n" : "사용자명,작업종류,작업결과,작업정보\n";
-            rows.slice(1).forEach(row => {
-                const cells = row.querySelectorAll("td");
-                const line = Array.from(cells).map(cell => `"${cell.textContent}"`).join(",");
-                content += line + "\n";
+        if (paginatedLogs.length > 0) {
+            let table = `<table class="result-table">
+                    <thead>
+                        <tr>
+                            <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
+                            <th onclick="setSort('name')" class="sortable">사용자명 <span>↑↓</span></th>
+                            <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
+                            <th onclick="setSort('result')" class="sortable">작업 결과 <span>↑↓</span></th>
+                            <th onclick="setSort('info')" class="sortable">작업 정보 <span>↑↓</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            paginatedLogs.forEach(log => {
+                table += `<tr>
+                        <td>${log.dept}</td>
+                        <td>${log.name}</td>
+                        <td>${log.type}</td>
+                        <td>${log.result}</td>
+                        <td>${log.info}</td>
+                    </tr>`;
             });
-        } else if (type === "txt") {
-            rows.slice(1).forEach(row => {
-                const cells = row.querySelectorAll("td");
-                const line = Array.from(cells).map(cell => cell.textContent).join(" | ");
-                content += line + "\n";
-            });
+            table += `</tbody></table>`;
+            resultDiv.innerHTML = table;
+        } else {
+            resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
+        }
+    }
+
+    // ✅ 페이지네이션 렌더링 함수
+    function renderPagination() {
+        const paginationDiv = document.getElementById("pagination");
+        const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+
+        if (totalPages <= 1) {
+            paginationDiv.style.display = "none";
+            return;
         }
 
-        const now = new Date();
-        const formattedDate = now.getFullYear().toString() +
-            String(now.getMonth() + 1).padStart(2, '0') +
-            String(now.getDate()).padStart(2, '0') + "_" +
-            String(now.getHours()).padStart(2, '0') +
-            String(now.getMinutes()).padStart(2, '0');
+        paginationDiv.style.display = "flex";
+        let html =
+            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
 
-        const filename = `log_data_${formattedDate}.${type}`;
+        // ✅ 최대 3개의 페이지 번호만 표시
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
+        }
+
+        html +=
+            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
+        paginationDiv.innerHTML = html;
+    }
+
+    // ✅ 페이지 변경
+    function changePage(page) {
+        const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+
+        currentPage = page;
+        renderTable();
+        renderPagination();
+    }
+
+    // ✅ 저장 파일 생성
+    function saveAsFile(type) {
+        if (filteredLogs.length === 0) return;
+
+        let content = "\uFEFF부서명,사용자명,작업 종류,작업 결과,작업 정보\n";
+        filteredLogs.forEach(log => {
+            content += `${log.dept},${log.name},${log.type},${log.result},${log.info}\n`;
+        });
 
         const blob = new Blob([content], {
             type: "text/plain;charset=utf-8"
         });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = filename;
+        link.download = `agent_logs.${type}`;
         link.click();
     }
     </script>
+
 </body>
 
 </html>

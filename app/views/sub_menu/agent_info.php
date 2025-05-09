@@ -22,14 +22,19 @@
             </div>
             <div class="dropdown-wrapper">
                 <label for="dept">부서 선택</label>
-                <select id="dept" name="dept" class="custom-select">
-                    <option value="">-- 부서 선택 --</option>
-                    <option value="의무기록과">의무기록과</option>
-                    <option value="전산실">전산실</option>
-                    <option value="원무과">원무과</option>
-                    <option value="진료지원팀">진료지원팀</option>
-                </select>
+                <div class="custom-select-wrapper">
+                    <select id="dept" name="dept" class="custom-select">
+                        <option value="">-- 부서 선택 --</option>
+                        <!-- 샘플부서, db에서 불러와야함 -->
+                        <option value="의무기록과">의무기록과</option>
+                        <option value="전산실">전산실</option>
+                        <option value="원무과">원무과</option>
+                        <option value="진료지원팀">진료지원팀</option>
+                    </select>
+                    <span class="custom-arrow">▼</span>
+                </div>
             </div>
+
             <div class="button-group">
                 <button type="button" onclick="searchAgents()">검색</button>
             </div>
@@ -143,14 +148,17 @@
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
 
-        let html = "";
-        if (totalPages > 1) {
-            if (currentPage > 1) html += `<button onclick="changePage(${currentPage - 1})">◀ 이전</button>`;
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
-            }
-            if (currentPage < totalPages) html += `<button onclick="changePage(${currentPage + 1})">다음 ▶</button>`;
+
+        let html =
+            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
+
+        // ✅ 최대 3개의 페이지 번호만 표시
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
         }
+
+        html +=
+            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
         paginationDiv.innerHTML = html;
     }
 
