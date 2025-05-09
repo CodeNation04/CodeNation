@@ -69,7 +69,15 @@
             <input type="hidden" id="recent_targets" name="recent_targets" />
         </div>
 
-        <!-- 5. 버튼 -->
+        <!-- 5. 작업 시점 -->
+        <div class="form-checks">
+            <strong>작업 시점</strong><br />
+            <label><input type="checkbox" name="schedule" value="boot"> 부팅 시 예약 실행</label><br />
+            <label><input type="checkbox" name="schedule" value="shutdown"> 종료 시 예약 실행</label>
+            <input type="hidden" id="schedules" name="schedules" />
+        </div>
+
+        <!-- 6. 버튼 -->
         <div class="form-buttons">
             <a href="?url=MainController/index&page=task&tab=recent_delete">
                 <button type="button" class="btn-cancel">취소</button>
@@ -88,10 +96,17 @@ function handleRecentPeriodChange() {
     document.getElementById("recentMonthlyFields").style.display = (period === "매월") ? "block" : "none";
 }
 
+// ✅ 삭제 대상 체크
 document.querySelector("form#recentForm").addEventListener("submit", function() {
     const targets = document.querySelectorAll("input[name=recent_target]:checked");
-    let values = [];
-    targets.forEach(t => values.push(t.value));
-    document.getElementById("recent_targets").value = values.join(",");
+    const schedules = document.querySelectorAll("input[name=schedule]:checked");
+
+    let tStr = [],
+        sStr = [];
+    targets.forEach(t => tStr.push(t.value));
+    schedules.forEach(s => sStr.push(s.value));
+
+    document.getElementById("recent_targets").value = tStr.join(",");
+    document.getElementById("schedules").value = sStr.join(",");
 });
 </script>
