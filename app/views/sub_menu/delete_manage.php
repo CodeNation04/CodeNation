@@ -2,13 +2,13 @@
 <link rel="stylesheet" href="css/delete_manage.css" />
 
 <div class="delete-manage-wrapper">
-    <!-- 제목 + 등록 버튼을 같은 줄에 오른쪽 정렬 -->
+    <!-- 제목 + 등록 버튼 -->
     <div class="title-bar">
         <h2>삭제 환경 관리</h2>
         <button id="toggleFormBtn">등록</button>
     </div>
 
-    <!-- 등록/수정 폼 (초기 비노출) -->
+    <!-- 등록/수정 폼 (초기 숨김) -->
     <div id="formContainer" style="display: none;">
         <?php include "delete_manage_form.php"; ?>
     </div>
@@ -23,6 +23,7 @@
                     <th>삭제 방법</th>
                     <th>덮어쓰기 횟수</th>
                     <th>수정</th>
+                    <th>삭제</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@
                     <td>DoD 5220.22-M</td>
                     <td>3</td>
                     <td><button class="edit-btn">수정</button></td>
+                    <td><button class="delete-btn">삭제</button></td>
                 </tr>
                 <tr data-department="개발팀" data-allow="0" data-method="Quick Erase-FF" data-count="1">
                     <td>개발팀</td>
@@ -40,6 +42,7 @@
                     <td>Quick Erase-FF</td>
                     <td>1</td>
                     <td><button class="edit-btn">수정</button></td>
+                    <td><button class="delete-btn">삭제</button></td>
                 </tr>
             </tbody>
         </table>
@@ -81,7 +84,18 @@ document.querySelectorAll(".edit-btn").forEach((btn) => {
     });
 });
 
-// 취소 버튼 (폼 내부 버튼이 호출함)
+// 삭제 버튼 클릭 시 (기능은 이후 구현 가능)
+document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        const confirmed = confirm("정말 삭제하시겠습니까?");
+        if (confirmed) {
+            // 삭제 처리 로직 (예: Ajax 또는 폼 전송 등)
+            alert("삭제 처리 예정 (DB 연동 필요)");
+        }
+    });
+});
+
+// 취소 버튼 (폼 내부에서 호출)
 function cancelForm() {
     formContainer.style.display = "none";
     listContainer.style.display = "block";

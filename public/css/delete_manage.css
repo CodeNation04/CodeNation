@@ -131,6 +131,7 @@ button[type="button"]:hover {
    color: #333;
 }
 
+/* 수정 버튼 */
 .edit-btn {
    padding: 6px 12px;
    background-color: #828282;
@@ -139,8 +140,25 @@ button[type="button"]:hover {
    border-radius: 4px;
    font-size: 13px;
    cursor: pointer;
+   transition: background-color 0.2s ease;
 }
 
 .edit-btn:hover {
+   background-color: #555;
+}
+
+/* 삭제 버튼 - 수정 버튼과 동일 스타일 */
+.delete-btn {
+   padding: 6px 12px;
+   background-color: #828282;
+   color: white;
+   border: none;
+   border-radius: 4px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
    background-color: #555;
 }
