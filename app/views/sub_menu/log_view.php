@@ -33,19 +33,20 @@
                 </div>
             </div>
 
-            <div class="dropdown-wrapper">
-                <label for="dept">부서 선택</label>
-                <div class="custom-select-wrapper">
-                    <select id="dept" name="dept" class="custom-select">
-                        <option value="">-- 부서 선택 --</option>
-                        <option value="의무기록과">의무기록과</option>
-                        <option value="전산실">전산실</option>
-                        <option value="원무과">원무과</option>
-                        <option value="진료지원팀">진료지원팀</option>
-                    </select>
-                    <span class="custom-arrow">▼</span>
-                </div>
+
+            <label for="dept">부서 선택</label>
+            <div class="custom-select-wrapper">
+                <select id="dept" name="dept" class="custom-select">
+                    <option value="">-- 부서 선택 --</option>
+                    <!-- 샘플부서, db에서 불러와야함 -->
+                    <option value="의무기록과">의무기록과</option>
+                    <option value="전산실">전산실</option>
+                    <option value="원무과">원무과</option>
+                    <option value="진료지원팀">진료지원팀</option>
+                </select>
+                <span class="custom-arrow">▼</span>
             </div>
+
 
             <div class="button-group">
                 <button type="button" onclick="searchAuditLogs()">검색</button>
