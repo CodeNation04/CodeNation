@@ -53,128 +53,100 @@
             </div>
         </form>
 
+
         <div id="result" style="margin-top: 20px;"></div>
+        <div class="pagination" id="pagination" style="display: none;"></div>
     </div>
 
     <script>
-    // 샘플데이터 (나중에 DB에서 받아올 예정)
-    const auditLogs = [{
-            dept: "의무기록과",
-            id: "admin1",
-            type: "로그인",
-            info: "로그인 성공",
-            time: "2025-05-08 09:00"
-        },
-        {
-            dept: "전산실",
-            id: "admin2",
-            type: "로그아웃",
-            info: "로그아웃 성공",
-            time: "2025-05-08 09:15"
-        },
-        {
-            dept: "원무과",
-            id: "admin3",
-            type: "예약 추가",
-            info: "예약 성공",
-            time: "2025-05-08 09:30"
-        },
-        {
-            dept: "진료지원팀",
-            id: "admin4",
-            type: "예약 삭제",
-            info: "예약 취소",
-            time: "2025-05-08 09:45"
-        },
-        {
-            dept: "의무기록과",
-            id: "admin5",
-            type: "중간관리자 등록",
-            info: "등록 완료",
-            time: "2025-05-08 10:00"
-        },
-        {
-            dept: "전산실",
-            id: "admin6",
-            type: "부서 등록",
-            info: "부서 추가",
-            time: "2025-05-08 10:15"
-        },
-        {
-            dept: "원무과",
-            id: "admin7",
-            type: "삭제 환경 등록",
-            info: "환경 설정 완료",
-            time: "2025-05-08 10:30"
-        },
-        {
-            dept: "진료지원팀",
-            id: "admin8",
-            type: "삭제 환경 삭제",
-            info: "환경 삭제 완료",
-            time: "2025-05-08 10:45"
-        },
-        {
-            dept: "의무기록과",
-            id: "admin9",
-            type: "로그인",
-            info: "로그인 성공",
-            time: "2025-05-08 11:00"
-        },
-        {
-            dept: "전산실",
-            id: "admin10",
-            type: "로그아웃",
-            info: "로그아웃 성공",
-            time: "2025-05-08 11:15"
-        }
-    ];
-
-
+    const itemsPerPage = 10;
+    let currentPage = 1;
     let currentSort = {
         column: null,
         direction: 'asc'
     };
+    let filtered = [];
 
-    let filtered = []; // 검색된 결과 저장
+    // ✅ 샘플데이터 (나중에 DB에서 받아올 예정)
+    const auditLogs = Array.from({
+        length: 50
+    }, (_, i) => ({
+        dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
+        id: `admin${i + 1}`,
+        type: ["로그인", "로그아웃", "예약 추가", "예약 삭제", "부서 등록"][i % 5],
+        info: `로그 정보 ${i + 1}`,
+        time: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
+    }));
 
+    // ✅ 로그 검색
     function searchAuditLogs() {
         const dept = document.getElementById('dept').value.trim();
         const id = document.getElementById('id').value.trim();
         const type = document.getElementById('type').value.trim();
 
-        // ✅ 필터링
         filtered = auditLogs.filter(log =>
             (!dept || log.dept === dept) &&
             (!id || log.id.includes(id)) &&
             (!type || log.type === type)
         );
 
+        currentPage = 1;
         renderTable();
-        // ✅ 검색 후 입력 필드 초기화
-        document.getElementById('dept').value = "";
-        document.getElementById('id').value = "";
-        document.getElementById('type').value = "";
-
-        document.getElementById('result').style.display = 'block';
+        renderPagination();
     }
 
+
+
+    // ✅ 정렬 설정 함수 (헤더 클릭)
+    function setSort(column) {
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+        } else {
+            currentSort.column = column;
+            currentSort.direction = "asc";
+        }
+        sortFiltered();
+        renderTable();
+    }
+
+    // ✅ 정렬 함수 (검색된 결과만 정렬)
+    function sortFiltered() {
+        filtered.sort((a, b) => {
+            const aValue = a[currentSort.column];
+            const bValue = b[currentSort.column];
+
+            if (currentSort.column === "time") {
+                return currentSort.direction === "asc" ?
+                    new Date(aValue) - new Date(bValue) :
+                    new Date(bValue) - new Date(aValue);
+            }
+
+            return currentSort.direction === "asc" ?
+                aValue.localeCompare(bValue, 'ko') :
+                bValue.localeCompare(aValue, 'ko');
+        });
+    }
+
+    // ✅ 표 렌더링 함수
     function renderTable() {
         const resultDiv = document.getElementById("result");
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedLogs = filtered.slice(start, end);
 
-        if (filtered.length > 0) {
+        if (paginatedLogs.length > 0) {
             let table = `<table class="result-table">
                 <thead>
                     <tr>
-                        <th onclick="setSort('dept')" class="sortable">부서명<span class="sort-arrows"> ↑↓</span></th>
-                        <th onclick="setSort('id')" class="sortable">아이디<span class="sort-arrows"> ↑↓</span></th>
-                        <th onclick="setSort('type')" class="sortable">작업 종류<span class="sort-arrows"> ↑↓</span></th>
-                        <th onclick="setSort('time')" class="sortable">작업 시각<span class="sort-arrows"> ↑↓</span></th>
+                        <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
+                        <th onclick="setSort('id')" class="sortable">아이디 <span>↑↓</span></th>
+                        <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
+                        <th onclick="setSort('time')" class="sortable">작업 시각 <span>↑↓</span></th>
                     </tr>
                 </thead>
                 <tbody>`;
 
-            filtered.forEach(log => {
+            paginatedLogs.forEach(log => {
                 table += `<tr>
                     <td>${log.dept}</td>
                     <td>${log.id}</td>
@@ -190,32 +162,40 @@
         }
     }
 
-    function setSort(column) {
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            currentSort.column = column;
-            currentSort.direction = 'asc';
+    // ✅ 페이지네이션 렌더링 함수
+    function renderPagination() {
+        const paginationDiv = document.getElementById("pagination");
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+        paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
+        paginationDiv.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        let html =
+            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
+
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
         }
-        sortFiltered();
+
+        html +=
+            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
+        paginationDiv.innerHTML = html;
     }
 
-    function sortFiltered() {
-        filtered.sort((a, b) => {
-            if (currentSort.column === "time") {
-                return new Date(a[currentSort.column]) - new Date(b[currentSort.column]);
-            } else {
-                return a[currentSort.column].localeCompare(b[currentSort.column], 'ko');
-            }
-        });
+    // ✅ 페이지 변경
+    function changePage(page) {
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
 
-        if (currentSort.direction === "desc") {
-            filtered.reverse();
-        }
-
+        currentPage = page;
         renderTable();
+        renderPagination();
     }
     </script>
+
 </body>
 
 </html>
