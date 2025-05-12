@@ -1,10 +1,68 @@
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    const num = params.get('num');
+
+    if(type === 'moddify'){
+        $("#type").val(type);
+        $("#num").val(num);
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: { num: num },
+            url: "/?url=TempDelController/tempDelInfo",
+            success: function(result) {
+                console.log(result)
+                
+                $("#department").val(result.code_code_id);
+                $("#department").trigger("change");
+
+                $("#period").val(result.reser_date);
+                $("#period").trigger("change");
+
+                if(result.reser_date == "매월"){
+                    $("#monthly_day").val(result.reser_date_day);
+                    $("#monthly_day").trigger("change");
+                    $("#monthly_time").val(result.reser_date_time);
+                }else if(result.reser_date == "매주"){
+                    $("#weekly_day").val(result.reser_date_week);
+                    $("#weekly_day").trigger("change");
+                    $("#weekly_time").val(result.reser_date_time);
+                }else if(result.reser_date == "매일"){
+                    $("#daily_time").val(result.reser_date_time);
+                }else{
+                    $("#once_date").val(result.reser_date_ymd);
+                    $("#once_date").trigger("change");
+                    $("#once_time").val(result.reser_date_time);
+                }
+
+                $("#schedules").val(result.work_potin);
+                const schedules = $("#schedules").val();
+
+                const schedulesSplit = schedules.split(",");
+                console.log(schedulesSplit)
+
+                for(schedule of schedulesSplit){
+                    $(`input[name=schedule][value="${schedule.trim()}"]`).prop("checked", true);
+                }
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err.responseText);
+            }
+        });
+    }
+</script>
+
 <div class="form-card">
     <form id="trashForm" name="trashForm" method="post" action="/?url=TrashDelController/trashDel">
-
+        <input type="hidden" name="temp_del" value="trash_delete" />
+        <input type="hidden" name="type" id="type" value=""/>
+        <input type="hidden" name="num" id="num" value=""/>
         <!-- 부서명 -->
         <div class="form-row">
             <strong>부서명</strong><br />
-            <select class="form-input" name="department" required>
+            <select class="form-input" id="department" name="department" required>
                 <option value="">부서 선택</option>
                 <option value="network">(주)에스엠에스</option>
                 <option value="security">보안팀</option>
@@ -15,7 +73,7 @@
         <!-- 작업 주기 -->
         <div class="form-row">
             <strong>작업 주기</strong><br />
-            <select class="form-input" name="period" id="trash_period" required onchange="handleTrashPeriodChange()">
+            <select class="form-input" name="period" id="period" required onchange="handleTrashPeriodChange()">
                 <option value="">작업 주기 선택</option>
                 <option value="한번">한번</option>
                 <option value="매일">매일</option>
@@ -26,15 +84,15 @@
 
         <!-- 주기별 조건 -->
         <div id="trashOnceFields" style="display: none;">
-            <div class="form-row"><input class="form-input" type="date" name="once_date" /></div>
-            <div class="form-row"><input class="form-input" type="time" name="once_time" /></div>
+            <div class="form-row"><input class="form-input" type="date" id="once_date" name="once_date" /></div>
+            <div class="form-row"><input class="form-input" type="time" id="once_time" name="once_time" /></div>
         </div>
         <div id="trashDailyFields" style="display: none;">
-            <div class="form-row"><input class="form-input" type="time" name="daily_time" /></div>
+            <div class="form-row"><input class="form-input" type="time" id="daily_time" name="daily_time" /></div>
         </div>
         <div id="trashWeeklyFields" style="display: none;">
             <div class="form-row">
-                <select class="form-input" name="weekly_day">
+                <select class="form-input" id="weekly_day" name="weekly_day">
                     <option value="">요일 선택</option>
                     <option value="월요일">월요일</option>
                     <option value="화요일">화요일</option>
@@ -45,18 +103,18 @@
                     <option value="일요일">일요일</option>
                 </select>
             </div>
-            <div class="form-row"><input class="form-input" type="time" name="weekly_time" /></div>
+            <div class="form-row"><input class="form-input" type="time" id="weekly_time" name="weekly_time" /></div>
         </div>
         <div id="trashMonthlyFields" style="display: none;">
             <div class="form-row">
-                <select class="form-input" name="monthly_day">
+                <select class="form-input" id="monthly_day" name="monthly_day">
                     <option value="">일자 선택</option>
                     <?php for ($i = 1; $i <= 31; $i++): ?>
                     <option value="<?= $i ?>"><?= $i ?>일</option>
                     <?php endfor; ?>
                 </select>
             </div>
-            <div class="form-row"><input class="form-input" type="time" name="monthly_time" /></div>
+            <div class="form-row"><input class="form-input" type="time" id="monthly_time" name="monthly_time" /></div>
         </div>
 
         <!-- 작업 시점 -->
@@ -72,14 +130,14 @@
             <a href="?url=MainController/index&page=task&tab=trash_delete">
                 <button type="button" class="btn-cancel">취소</button>
             </a>
-            <button type="submit" class="btn-confirm">확인</button>
+            <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
         </div>
     </form>
 </div>
 
 <script>
 function handleTrashPeriodChange() {
-    const period = document.getElementById("trash_period").value;
+    const period = document.getElementById("period").value;
     document.getElementById("trashOnceFields").style.display = (period === "한번") ? "block" : "none";
     document.getElementById("trashDailyFields").style.display = (period === "매일") ? "block" : "none";
     document.getElementById("trashWeeklyFields").style.display = (period === "매주") ? "block" : "none";
@@ -92,4 +150,26 @@ document.querySelector("form#trashForm").addEventListener("submit", function() {
     schedules.forEach(s => values.push(s.value));
     document.getElementById("schedules").value = values.join(",");
 });
+
+function submitBtn() {
+    const form = $("#trashForm");
+    const formData = form.serializeArray();
+    let schedules = document.querySelectorAll("input[name=schedule]");
+    let str = "";
+
+    for (schedule of schedules) {
+        if (schedule.checked) {
+            if (str !== "") {
+                str += ",";
+            }
+            str += schedule.value;
+        }
+    }
+
+    $("#schedules").val(str);
+    console.log(formData)
+    if (confirm("저장하시겠습니까?")) {
+        form.submit();
+    }
+}
 </script>

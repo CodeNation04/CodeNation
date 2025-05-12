@@ -27,10 +27,14 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let resultData = [];
 
+const params = new URLSearchParams(window.location.search);
+const tab = params.get('tab');
+
 $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/?url=TrashDelController/trashDelList",
+    url: "/?url=TempDelController/tempDelList",
+    data:{tab:tab},
     success: function(result) {
         resultData = result;
         renderPage(1);
@@ -79,8 +83,8 @@ function renderPage(page) {
 
         html += `</td>
             <td>${pageData[i].schedule_type || "-"}</td>
-            <td><a href="#">수정</a></td>
-            <td><a href="#">삭제</a></td>
+            <td><a href="/?url=MainController/index&page=task&tab=trash_delete&form=show&type=moddify&num=${pageData[i].del_idx}">수정</a></td>
+            <td><a onclick="delSubmit(${pageData[i].del_idx})">삭제</a></td>
         </tr>`;
     }
 
@@ -104,5 +108,24 @@ function renderPage(page) {
     html += `</div>`;
 
     $("#task-table-wrapper").html(html);
+}
+
+function delSubmit(num){
+    console.log(num)
+    if(confirm("삭제하시겠습니까?")){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {num:num},
+            url: "/?url=TempDelController/tempListDelete",
+            success: function(result) {
+                alert(result.message);
+                location.reload();
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    }
 }
 </script>
