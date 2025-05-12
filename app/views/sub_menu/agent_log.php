@@ -17,6 +17,11 @@
                 <input type="text" id="name" name="name" placeholder="사용자명 입력">
             </div>
 
+            <div>
+                <label for="hostname">Hostname</label>
+                <input type="text" id="hostname" name="hostname" placeholder="Hostname 입력">
+            </div>
+
             <div class="dropdown-wrapper">
                 <label for="type">작업 종류</label>
                 <div class="custom-select-wrapper">
@@ -80,6 +85,7 @@
     }, (_, i) => ({
         dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
         name: `사용자${i + 1}`,
+        hostname: `hostname${i+1}`,
         type: ["로그인", "로그아웃", "체크", "삭제로그", "설정정보요청"][i % 5],
         result: i % 2 === 0 ? "성공" : "실패",
         info: `작업 정보 ${i + 1}`
@@ -88,11 +94,13 @@
     // ✅ 로그 검색
     function searchLogs() {
         const name = document.getElementById("name").value.trim();
+        const hostname = document.getElementById("hostname").value.trim();
         const type = document.getElementById("type").value.trim();
         const dept = document.getElementById("dept").value.trim();
 
         filteredLogs = logs.filter(log =>
             (!name || log.name.includes(name)) &&
+            (!hostname || agent.hostname.includes(hostname)) &&
             (!type || log.type === type) &&
             (!dept || log.dept === dept)
         );
@@ -140,6 +148,7 @@
                         <tr>
                             <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
                             <th onclick="setSort('name')" class="sortable">사용자명 <span>↑↓</span></th>
+                            <th onclick="setSort('hostname')" class="sortable">Hostname<span class="sort-arrows"> ↑↓</span></th>
                             <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
                             <th onclick="setSort('result')" class="sortable">작업 결과 <span>↑↓</span></th>
                             <th onclick="setSort('info')" class="sortable">작업 정보 <span>↑↓</span></th>
@@ -150,6 +159,7 @@
                 table += `<tr>
                         <td>${log.dept}</td>
                         <td>${log.name}</td>
+                        <td>${log.hostname}</td>
                         <td>${log.type}</td>
                         <td>${log.result}</td>
                         <td>${log.info}</td>

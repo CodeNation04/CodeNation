@@ -20,6 +20,10 @@
                 <label for="ip">IP</label>
                 <input type="text" id="ip" name="ip" placeholder="IP 입력 (예: 192.168.0.1)">
             </div>
+            <div>
+                <label for="hostname">Hostname</label>
+                <input type="text" id="hostname" name="hostname" placeholder="Hostname 입력">
+            </div>
             <div class="dropdown-wrapper">
                 <label for="dept">부서 선택</label>
                 <div class="custom-select-wrapper">
@@ -64,17 +68,20 @@
         dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
         name: `사용자${i + 1}`,
         ip: `192.168.0.${100 + i}`,
+        hostname: `hostname${i+1}`,
         last_login: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
     }));
 
     function searchAgents() {
         const name = document.getElementById("name").value.trim();
         const ip = document.getElementById("ip").value.trim();
+        const hostname = document.getElementById("hostname").value.trim();
         const dept = document.getElementById("dept").value.trim();
 
         filtered = agents.filter(agent =>
             (!name || agent.name.includes(name)) &&
             (!ip || agent.ip.includes(ip)) &&
+            (!hostname || agent.hostname.includes(hostname)) &&
             (!dept || agent.dept === dept)
         );
 
@@ -124,6 +131,7 @@
                             <th onclick="setSort('dept')" class="sortable">부서명<span class="sort-arrows"> ↑↓</span></th>
                             <th onclick="setSort('name')" class="sortable">사용자명<span class="sort-arrows"> ↑↓</span></th>
                             <th onclick="setSort('ip')" class="sortable">IP<span class="sort-arrows"> ↑↓</span></th>
+                              <th onclick="setSort('hostname')" class="sortable">Hostname<span class="sort-arrows"> ↑↓</span></th>
                             <th onclick="setSort('last_login')" class="sortable">최종접속일<span class="sort-arrows"> ↑↓</span></th>
                         </tr>
                     </thead>
@@ -133,6 +141,7 @@
                         <td>${agent.dept}</td>
                         <td>${agent.name}</td>
                         <td>${agent.ip}</td>
+                        <td>${agent.hostname}</td>
                         <td>${agent.last_login}</td>
                     </tr>`;
             });
