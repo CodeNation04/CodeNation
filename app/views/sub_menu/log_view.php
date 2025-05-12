@@ -20,14 +20,16 @@
                 <div class="custom-select-wrapper">
                     <select id="type" name="type" class="custom-select">
                         <option value="">-- 작업 종류 선택 --</option>
-                        <option value="로그인">로그인</option>
-                        <option value="로그아웃">로그아웃</option>
                         <option value="예약 추가">예약 추가</option>
                         <option value="예약 삭제">예약 삭제</option>
                         <option value="중간관리자 등록">중간관리자 등록</option>
+                        <option value="중간관리자 수정">중간관리자 수정</option>
                         <option value="부서 등록">부서 등록</option>
-                        <option value="삭제 환경 등록">삭제 환경 등록</option>
-                        <option value="삭제 환경 삭제">삭제 환경 삭제</option>
+                        <option value="부서 수정">부서 수정</option>
+                        <option value="암호화 환경 등록">암호화 환경 등록</option>
+                        <option value="암호화 환경 수정">암호화 환경 수정</option>
+                        <option value="암호화 환경 삭제">암호화 환경 삭제</option>
+                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 승인/반려</option>
                     </select>
                     <span class="custom-arrow">▼</span>
                 </div>
@@ -73,7 +75,9 @@
     }, (_, i) => ({
         dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
         id: `admin${i + 1}`,
-        type: ["로그인", "로그아웃", "예약 추가", "예약 삭제", "부서 등록"][i % 5],
+        type: ["예약 추가", "예약 삭제", "중간관리자 등록", "중간관리자 수정", "부서 등록", "부서 수정", "암호화 환경 등록", "암호화 환경 수정",
+            "암호화 환경 삭제", "외부 반출 요청 승인/반려"
+        ][i % 10],
         info: `로그 정보 ${i + 1}`,
         time: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
     }));
