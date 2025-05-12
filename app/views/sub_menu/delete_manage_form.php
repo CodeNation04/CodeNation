@@ -1,6 +1,7 @@
 <!-- views/sub_menu/delete_manage_form.php -->
 <div class="delete-manage-form">
-    <form method="post" action="" id="form">
+    <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm" name="deleteManageForm">
+        
         <h3 id="form-title">삭제 환경 등록</h3>
 
         <div class="form-row">
@@ -15,8 +16,8 @@
 
         <div class="form-row">
             <label>설정 변경 허용 여부</label>
-            <label><input type="radio" name="allow_change" value="1" checked> 허용</label>
-            <label><input type="radio" name="allow_change" value="0"> 불허</label>
+            <label><input type="radio" name="allow_change" value="Y" checked> 허용</label>
+            <label><input type="radio" name="allow_change" value="N"> 불허</label>
         </div>
 
         <div class="form-row">
@@ -37,8 +38,16 @@
         </div>
 
         <div class="form-row buttons">
-            <button type="submit" id="submitBtn">등록</button>
+            <button type="button" id="submitBtn" onclick="submitBtn()">등록</button>
             <button type="button" onclick="cancelForm()">취소</button>
         </div>
     </form>
 </div>
+
+<script>
+
+    function submitBtn(){
+
+    }
+
+</script>

@@ -9,16 +9,18 @@
             $this->db = $database->pdo;
         }
 
-        public function insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time) {
+        public function insertTempDel($code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time,$job_type,$folder_path) {
             $create_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
             $create_ip = $_SERVER['REMOTE_ADDR'];
 
-            $stmt = $this->db->prepare("INSERT INTO del_env (code_code_id, 
+            $stmt = $this->db->prepare("INSERT INTO reservation (code_code_id, 
                                                             reser_date, 
                                                             reser_date_ymd, 
                                                             reser_date_day, 
                                                             reser_date_time, 
                                                             reser_date_week, 
+                                                            job_type,
+                                                            folder_path,
                                                             work_potin, 
                                                             del_target, 
                                                             del_method, 
@@ -31,6 +33,8 @@
                                                         :reser_date_day,
                                                         :reser_date_time,
                                                         :reser_date_week,
+                                                        :job_type,
+                                                        :folder_path,
                                                         :work_potin,
                                                         :del_target,
                                                         :temp_del,
@@ -43,6 +47,8 @@
             $stmt->bindParam(':reser_date_week', $reser_date_week);
             $stmt->bindParam(':reser_date_day', $reser_date_day);
             $stmt->bindParam(':reser_date_time', $reser_date_time);
+            $stmt->bindParam(':job_type', $job_type);
+            $stmt->bindParam(':folder_path', $folder_path);
             $stmt->bindParam(':work_potin', $work_potin);
             $stmt->bindParam(':del_target', $del_target);
             $stmt->bindParam(':temp_del', $temp_del);
@@ -52,17 +58,19 @@
             return $stmt->execute();
         }
 
-        public function updateTempDel($num,$code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time) {
+        public function updateTempDel($num,$code_id,$reser_date,$work_potin,$del_target,$temp_del,$once_date,$reser_date_week,$reser_date_day,$reser_date_time,$job_type,$folder_path) {
             $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
             $update_ip = $_SERVER['REMOTE_ADDR'];
 
-            $stmt = $this->db->prepare("UPDATE del_env 
+            $stmt = $this->db->prepare("UPDATE reservation 
                                         SET code_code_id = :code_id,
                                             reser_date = :reser_date,
                                             reser_date_ymd = :reser_date_ymd,
                                             reser_date_day = :reser_date_day,
                                             reser_date_time = :reser_date_time,
                                             reser_date_week = :reser_date_week,
+                                            job_type = :job_type,
+                                            folder_path = :folder_path,
                                             work_potin = :work_potin,
                                             del_target = :del_target,
                                             create_date :update_date,
@@ -76,6 +84,8 @@
             $stmt->bindParam(':reser_date_week', $reser_date_week);
             $stmt->bindParam(':reser_date_day', $reser_date_day);
             $stmt->bindParam(':reser_date_time', $reser_date_time);
+            $stmt->bindParam(':job_type', $job_type);
+            $stmt->bindParam(':folder_path', $folder_path);
             $stmt->bindParam(':work_potin', $work_potin);
             $stmt->bindParam(':del_target', $del_target);
             $stmt->bindParam(':temp_del', $temp_del);
@@ -86,7 +96,7 @@
         }
 
         public function deleteTemp($num) {
-            $stmt = $this->db->prepare("UPDATE del_env 
+            $stmt = $this->db->prepare("UPDATE reservation 
                                         SET del_yn = 'Y'
                                         WHERE del_idx = :num");
 
@@ -95,8 +105,8 @@
             return $stmt->execute();
         }
         
-        public function selectTempDelList($del_method){
-            // $debugSql = "SELECT * FROM del_env";
+        public function selectTempDelList(){
+            // $debugSql = "SELECT * FROM reservation";
             // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
 
             $stmt = $this->db->prepare("SELECT  a.del_idx,
@@ -108,25 +118,22 @@
                                                 a.reser_date_time,
                                                 a.reser_date_week,
                                                 a.work_potin,
+                                                a.job_type,
                                                 a.del_target,
-                                                a.set_change_yn,
                                                 a.folder_path,
                                                 a.del_method,
                                                 a.del_yn,
-                                                a.overwrite_cnt,
                                                 a.create_date,
                                                 a.create_ip
-                                        FROM del_env a
+                                        FROM reservation a
                                         WHERE a.del_yn = 'N'
-                                        AND a.del_method = :del_method
                                         ORDER BY del_idx DESC");
-            $stmt->bindParam(':del_method', $del_method);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         public function selectTempDelInfo($del_idx){
-            $debugSql = "SELECT * FROM del_env WHERE del_idx = " . addslashes($del_idx) . "";
+            $debugSql = "SELECT * FROM reservation WHERE del_idx = " . addslashes($del_idx) . "";
             // echo "<script>console.log(`실행될 쿼리(예상):  {$debugSql}`);</script>";
 
             $stmt = $this->db->prepare("SELECT  a.del_idx,
@@ -139,13 +146,11 @@
                                                 a.reser_date_week,
                                                 a.work_potin,
                                                 a.del_target,
-                                                a.set_change_yn,
                                                 a.del_method,
                                                 a.del_yn,
-                                                a.overwrite_cnt,
                                                 a.create_date,
                                                 a.create_ip
-                                        FROM del_env a
+                                        FROM reservation a
                                         WHERE a.del_yn = 'N'
                                         AND a.del_idx = :del_idx
                                         ORDER BY del_idx DESC");
