@@ -81,7 +81,7 @@
             "암호화 환경 수정",
             "암호화 환경 삭제", "외부 반출 요청 승인/반려"
         ][i % 12],
-        info: `로그 정보 ${i + 1}`,
+        info: `로그 작업 정보 ${i + 1}`,
         time: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
     }));
 
@@ -148,6 +148,7 @@
                         <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
                         <th onclick="setSort('id')" class="sortable">아이디 <span>↑↓</span></th>
                         <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
+                         <th onclick="setSort('info')" class="sortable">작업 정보 <span>↑↓</span></th>
                         <th onclick="setSort('time')" class="sortable">작업 시각 <span>↑↓</span></th>
                     </tr>
                 </thead>
@@ -158,6 +159,7 @@
                     <td>${log.dept}</td>
                     <td>${log.id}</td>
                     <td>${log.type}</td>
+                     <td>${log.info}</td>
                     <td>${log.time}</td>
                 </tr>`;
             });
