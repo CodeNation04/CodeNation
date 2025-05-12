@@ -53,7 +53,8 @@ const toggleBtn = document.getElementById("toggleFormBtn");
 toggleBtn.addEventListener("click", () => {
     document.getElementById("form-title").innerText = "삭제 환경 등록";
     document.getElementById("submitBtn").innerText = "등록";
-    document.getElementById("form").reset();
+    document.getElementById("deleteManageForm").reset();
+
     formContainer.style.display = "block";
     listContainer.style.display = "none";
     toggleBtn.style.display = "none";

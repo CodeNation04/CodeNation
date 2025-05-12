@@ -24,6 +24,8 @@
                 <label for="hostname">Hostname</label>
                 <input type="text" id="hostname" name="hostname" placeholder="Hostname 입력">
             </div>
+
+            <!-- 최고관리자만 부서검색 가능 -->
             <div class="dropdown-wrapper">
                 <label for="dept">부서 선택</label>
                 <div class="custom-select-wrapper">
