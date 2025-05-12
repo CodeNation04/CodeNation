@@ -1,7 +1,7 @@
 <!-- views/sub_menu/delete_manage_form.php -->
 <div class="delete-manage-form">
     <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm" name="deleteManageForm">
-        
+
         <h3 id="form-title">삭제 환경 등록</h3>
 
         <div class="form-row">
@@ -38,16 +38,21 @@
         </div>
 
         <div class="form-row buttons">
-            <button type="button" id="submitBtn" onclick="submitBtn()">등록</button>
+            <button type="button" id="submitBtn">등록</button>
             <button type="button" onclick="cancelForm()">취소</button>
         </div>
     </form>
 </div>
 
 <script>
+    
+    $("#submitBtn").click(function(){
+        const form = $("#deleteManageForm");
+        const formData = form.serializeArray();
 
-    function submitBtn(){
-
-    }
-
+        console.log(formData)
+        if (confirm("저장하시겠습니까?")) {
+            // form.submit();
+        }
+    })
 </script>
