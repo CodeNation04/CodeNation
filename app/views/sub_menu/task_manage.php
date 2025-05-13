@@ -194,7 +194,9 @@ function deleteTask(num) {
         $.ajax({
             type: "POST",
             dataType: "json",
-            data: {num:num},
+            data: {
+                num: num
+            },
             url: "/?url=TempDelController/tempListDelete",
             success: function(result) {
                 alert(result.message);

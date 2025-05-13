@@ -6,11 +6,23 @@
 <div class="dept-wrapper">
     <div class="dept-header">
         <h2>부서 정보 관리</h2>
-        <button class="btn-confirm" onclick="showForm()">등록</button>
+        <a href="?url=MainController/index&page=dept&form=show">
+            <button class="btn-confirm">등록</button>
+        </a>
     </div>
 
+    <?php 
+    $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; 
+    ?>
+
+    <!-- 목록 테이블 -->
+    <?php if (!$formMode): ?>
+    <div class="dept-table-wrapper" id="deptTableBody"></div>
+    <?php endif; ?>
+
     <!-- 등록/수정 폼 -->
-    <div class="dept-form-card" id="formSection" style="display: none;">
+    <?php if ($formMode): ?>
+    <div class="dept-form-card" id="formSection">
         <form id="deptForm">
             <input type="hidden" id="mode" value="insert" />
             <input type="hidden" id="dept_id" />
@@ -38,152 +50,173 @@
 
             <div class="form-buttons">
                 <button type="submit" class="btn-confirm">저장</button>
-                <button type="button" class="btn-cancel" onclick="hideForm()">취소</button>
+                <a href="?url=MainController/index&page=dept">
+                    <button type="button" class="btn-cancel">취소</button>
+                </a>
             </div>
         </form>
     </div>
-
-    <!-- 목록 테이블 -->
-    <div class="dept-table-wrapper" id="tableSection">
-        <table class="dept-table">
-            <thead>
-                <tr>
-                    <th>부서명</th>
-                    <th>담당자명</th>
-                    <th>전화번호</th>
-                    <th>이메일</th>
-                    <th>비고</th>
-                    <th>수정</th>
-                    <th>삭제</th>
-                </tr>
-            </thead>
-            <tbody id="deptTableBody"></tbody>
-        </table>
-    </div>
+    <script>
+    window.onload = function() {
+        renderTable();
+        const urlParams = new URLSearchParams(window.location.search);
+        const editId = urlParams.get('edit');
+        if (editId) loadEditForm(parseInt(editId));
+    };
+    </script>
+    <?php endif; ?>
 </div>
-
 <script>
-let departments = [{
-        id: 1,
-        name: "보안팀",
-        manager: "김보안",
-        phone: "010-1234-5678",
-        email: "boan@example.com",
-        note: ""
-    },
-    {
-        id: 2,
-        name: "인프라팀",
-        manager: "홍인프라",
-        phone: "010-5678-1234",
-        email: "infra@example.com",
-        note: "서버 관리"
-    }
-];
+let resultData = [];
 
-function renderTable() {
-    const tbody = document.getElementById("deptTableBody");
-    tbody.innerHTML = "";
-    departments.forEach(dept => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-      <td>${dept.name}</td>
-      <td>${dept.manager}</td>
-      <td>${dept.phone}</td>
-      <td>${dept.email}</td>
-      <td>${dept.note}</td>
-      <td><button class="edit-btn" onclick="editDept(${dept.id})">수정</button></td>
-      <td><button class="delete-btn" onclick="deleteDept(${dept.id})">삭제</button></td>
-    `;
-        tbody.appendChild(row);
+// 최초 리스트 로딩 (DB에서 데이터 불러오기)
+window.onload = function() {
+    loadDepartmentList();
+};
+
+// DB에서 부서 목록 불러오기
+function loadDepartmentList() {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=TempDelController/tempDelList", // 부서 목록 API
+        success: function(result) {
+            resultData = result;
+            renderPage(1);
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
     });
 }
 
-function showForm(isEdit = false) {
-    document.getElementById("formSection").style.display = "block";
-    document.getElementById("tableSection").style.display = "none";
-    if (!isEdit) resetForm();
+// 페이지 렌더링
+function renderPage(page) {
+    const itemsPerPage = 10;
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = resultData.slice(start, end);
+
+    let html = `<table class="dept-table">
+        <thead>
+            <tr>
+                <th>부서명</th>
+                <th>담당자명</th>
+                <th>전화번호</th>
+                <th>이메일</th>
+                <th>비고</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    pageData.forEach((item, index) => {
+        html += `
+        <tr>
+            <td>${item.code_name}</td>
+            <td>${item.name}</td>
+            <td>${item.phone}</td>
+            <td>${item.email}</td>
+            <td>${item.etc}</td>
+            <td><button class="edit-btn" onclick="editDept(${item.del_idx})">수정</button></td>
+            <td><button class="delete-btn" onclick="deleteDept(${item.del_idx})">삭제</button></td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    document.getElementById("deptTableBody").innerHTML = html;
 }
 
-function hideForm() {
-    document.getElementById("formSection").style.display = "none";
-    document.getElementById("tableSection").style.display = "block";
-    resetForm();
+// 수정 모드 처리 (DB에서 불러오기)
+function editDept(num) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        data: {
+            num: num
+        },
+        url: "/?url=TempDelController/tempDelInfo", // 수정할 부서 정보 API
+        success: function(result) {
+            $("#dept_id").val(result.del_idx);
+            $("#dept_name").val(result.code_name).prop("readonly", true); // 부서명 수정 불가
+            $("#manager").val(result.name);
+            $("#phone").val(result.phone);
+            $("#email").val(result.email);
+            $("#note").val(result.etc);
+            $("#mode").val("update");
+            history.pushState({}, '',
+                `?url=MainController/index&page=department&form=show&type=moddify&num=${result.del_idx}`
+                );
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
 }
 
-function editDept(id) {
-    const dept = departments.find(d => d.id === id);
-    if (!dept) return;
-
-    document.getElementById("mode").value = "update";
-    document.getElementById("dept_id").value = dept.id;
-    document.getElementById("dept_name").value = dept.name;
-    document.getElementById("dept_name").disabled = true;
-    document.getElementById("manager").value = dept.manager;
-    document.getElementById("phone").value = dept.phone;
-    document.getElementById("email").value = dept.email;
-    document.getElementById("note").value = dept.note;
-
-    showForm(true);
-}
-
-function deleteDept(id) {
-    if (confirm("정말 삭제하시겠습니까?")) {
-        departments = departments.filter(d => d.id !== id);
-        renderTable();
-    }
-}
-
-function resetForm() {
-    document.getElementById("mode").value = "insert";
-    document.getElementById("deptForm").reset();
-    document.getElementById("dept_id").value = "";
-    document.getElementById("dept_name").disabled = false;
-}
-
-// 저장 시 처리
-
+// 저장/수정 버튼 클릭 시
 document.getElementById("deptForm").addEventListener("submit", function(e) {
     e.preventDefault();
-    const mode = document.getElementById("mode").value;
-    const id = document.getElementById("dept_id").value;
-    const name = document.getElementById("dept_name").value.trim();
-    const manager = document.getElementById("manager").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const note = document.getElementById("note").value.trim();
+    const mode = $("#mode").val();
+    const id = $("#dept_id").val();
+    const name = $("#dept_name").val().trim();
+    const manager = $("#manager").val().trim();
+    const phone = $("#phone").val().trim();
+    const email = $("#email").val().trim();
+    const note = $("#note").val().trim();
 
-    if (!name || !manager) {
-        alert("부서명과 담당자명은 필수입니다.");
+    if (!name) {
+        alert("부서명은 필수입니다.");
         return;
     }
 
-    if (mode === "insert") {
-        if (departments.some(d => d.name === name)) {
-            alert("이미 존재하는 부서명입니다.");
-            return;
+    // DB로 저장/수정 요청
+    const url = mode === "update" ?
+        "/?url=TempDelController/tempDelUpdate" :
+        "/?url=TempDelController/tempDelInsert";
+
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: url,
+        data: {
+            id: id,
+            name: name,
+            manager: manager,
+            phone: phone,
+            email: email,
+            note: note
+        },
+        success: function(response) {
+            alert(response.message);
+            history.pushState({}, '', '?url=MainController/index&page=department');
+            loadDepartmentList(); // 목록 다시 불러오기
+        },
+        error: function(err) {
+            console.error("저장/수정 실패:", err);
         }
-        departments.push({
-            id: Date.now(),
-            name,
-            manager,
-            phone,
-            email,
-            note
-        });
-    } else {
-        const dept = departments.find(d => d.id == id);
-        if (dept) {
-            dept.manager = manager;
-            dept.phone = phone;
-            dept.email = email;
-            dept.note = note;
-        }
-    }
-    hideForm();
-    renderTable();
+    });
 });
 
-// 초기 렌더
-renderTable();
+// 삭제
+function deleteDept(num) {
+    if (confirm("정말 삭제하시겠습니까?")) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/?url=TempDelController/tempDelDelete",
+            data: {
+                num: num
+            },
+            success: function(response) {
+                alert(response.message);
+                loadDepartmentList();
+            },
+            error: function(err) {
+                console.error("삭제 실패:", err);
+            }
+        });
+    }
+}
 </script>
