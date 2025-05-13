@@ -8,10 +8,14 @@
     </div>
 
     <!-- 등록/수정 폼 -->
-    <div id="formContainer" style="display: none;">
-        <?php include "delete_manage_form.php"; ?>
+    <?php 
+        $page = $_GET['form'] ?? ""; 
+        if($page == "show"){
+    ?>
+    <div id="formContainer">
+        <?php include "delete_manage_form.php";?>
     </div>
-
+    <?php } else{?> 
     <!-- 리스트 -->
     <div id="listContainer" class="delete-manage-list">
         <table>
@@ -24,24 +28,11 @@
                     <th>삭제</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr data-department="보안팀" data-ext="docx,xlsx,pdf" data-exclude="C:/예외1,D:/예외2">
-                    <td>보안팀</td>
-                    <td>docx, xlsx, pdf</td>
-                    <td>C:/예외1, D:/예외2</td>
-                    <td><button class="edit-btn">수정</button></td>
-                    <td><button class="delete-btn">삭제</button></td>
-                </tr>
-                <tr data-department="개발팀" data-ext="js,ts,java" data-exclude="D:/log,E:/temp">
-                    <td>개발팀</td>
-                    <td>js, ts, java</td>
-                    <td>D:/log, E:/temp</td>
-                    <td><button class="edit-btn">수정</button></td>
-                    <td><button class="delete-btn">삭제</button></td>
-                </tr>
+            <tbody id="data-content">
             </tbody>
         </table>
     </div>
+    <?php }?> 
 </div>
 
 <script>
@@ -51,13 +42,14 @@ const toggleBtn = document.getElementById("toggleFormBtn");
 
 // 등록 버튼
 toggleBtn.addEventListener("click", () => {
-    document.getElementById("form-title").innerText = "삭제 환경 등록";
-    document.getElementById("submitBtn").innerText = "등록";
-    document.getElementById("deleteManageForm").reset();
+    // document.getElementById("form-title").innerText = "삭제 환경 등록";
+    // document.getElementById("submitBtn").innerText = "등록";
+    // document.getElementById("deleteManageForm").reset();
 
-    formContainer.style.display = "block";
-    listContainer.style.display = "none";
-    toggleBtn.style.display = "none";
+    // formContainer.style.display = "block";
+    // listContainer.style.display = "none";
+    // toggleBtn.style.display = "none";
+    location.href="/?url=MainController/index&page=delete&form=show"
 });
 
 // 수정 버튼
@@ -87,8 +79,42 @@ document.querySelectorAll(".delete-btn").forEach((btn) => {
 });
 
 function cancelForm() {
-    formContainer.style.display = "none";
-    listContainer.style.display = "block";
-    toggleBtn.style.display = "inline-block";
+    // formContainer.style.display = "none";
+    // listContainer.style.display = "block";
+    // toggleBtn.style.display = "inline-block";
+    location.href="/?url=MainController/index&page=delete";
+}
+
+$.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/?url=DeleteManageController/deleteManageList",
+    success: function(result) {
+        console.log(result)
+        let html;
+        for(let i = 0; i<result.length;i++){
+            html += `
+                        <tr>
+                            <td>${result[i].code_name}</td>
+                            <td>${result[i].file_ext}</td>
+                            <td>${result[i].exclude_path}</td>
+                            <td><button class="edit-btn" onclick="listModidfy(${result[i].del_idx})">수정</button></td>
+                            <td><button class="delete-btn" onclick="manageListDel(${result[i].del_idx})">삭제</button></td>
+                        </tr>
+                        `;
+        }
+        $("#data-content").html(html)
+    },
+    error: function(err) {
+        console.error("데이터 불러오기 실패:", err);
+    }
+});
+
+function listModidfy(num){
+    location.href="/?url=MainController/index&page=delete&form=show&type=moddify&num=" + num;
+}
+
+function manageListDel(num){
+
 }
 </script>
