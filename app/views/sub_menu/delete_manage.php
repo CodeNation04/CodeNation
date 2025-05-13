@@ -3,7 +3,7 @@
 <div class="delete-manage-wrapper">
     <!-- 제목 + 등록 버튼 -->
     <div class="title-bar">
-        <h2>삭제 환경 관리</h2>
+        <h2>암호화 환경 관리</h2>
         <button id="toggleFormBtn">등록</button>
     </div>
 
@@ -51,7 +51,7 @@ const toggleBtn = document.getElementById("toggleFormBtn");
 
 // 등록 버튼
 toggleBtn.addEventListener("click", () => {
-    document.getElementById("form-title").innerText = "삭제 환경 등록";
+    document.getElementById("form-title").innerText = "암호화 환경 등록";
     document.getElementById("submitBtn").innerText = "등록";
     document.getElementById("deleteManageForm").reset();
 
@@ -68,7 +68,7 @@ document.querySelectorAll(".edit-btn").forEach((btn) => {
         document.getElementById("file_ext").value = row.dataset.ext;
         document.getElementById("exclude_path").value = row.dataset.exclude;
 
-        document.getElementById("form-title").innerText = "삭제 환경 수정";
+        document.getElementById("form-title").innerText = "암호화 환경 수정";
         document.getElementById("submitBtn").innerText = "수정";
 
         formContainer.style.display = "block";

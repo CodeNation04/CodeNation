@@ -27,7 +27,7 @@
             <div class="menu-group">
                 <div class="menu-group-title">정책 설정</div>
                 <a href="/?url=MainController/index&page=task" class="menu-item">예약 작업 관리</a>
-                <a href="/?url=MainController/index&page=delete" class="menu-item">삭제 환경 관리</a>
+                <a href="/?url=MainController/index&page=delete" class="menu-item">암호화 환경 관리</a>
             </div>
             <?php endif; ?>
 
