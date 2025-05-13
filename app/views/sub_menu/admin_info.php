@@ -209,22 +209,36 @@
                             <a href="?url=MainController/index&page=admin&form=show&type=moddify&edit=${manager.id}">수정</a>
                         </td>
                         <td style="text-align:center;">
-                            <button onclick="deleteManager(${manager.id})" class="delete-btn">삭제</button>
+                            <button onclick="deleteManager('${manager.id}')" class="delete-btn">삭제</button>
                         </td>
                     </tr>
                 `;
                 });
             }
         }
-
-        // 중간 관리자 삭제
-        function deleteManager(index) {
-            if (confirm("정말 삭제하시겠습니까?")) {
-                managerList.splice(index, 1);
-                renderManagerList();
-            }
-        }
     })
+
+    // 중간 관리자 삭제
+    function deleteManager(index) {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                data: {id: index},
+                url: "/?url=AdminInfoController/adminInfoDelete",
+                success: function(result) {
+                    console.log(result)
+                    if(result.success == true){
+                        alert(`${result.message}`);
+                        window.location.href='/?url=MainController/index&page=admin';
+                    }
+                },
+                error: function(err) {
+                    console.error("데이터 불러오기 실패:", err);
+                }
+            });
+        }
+    }
 
     function duplicateCheck(){
         const mgr_id =document.getElementById("mgr-id").value;

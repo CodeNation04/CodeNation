@@ -72,7 +72,6 @@
                                       create_date,
                                       create_ip,
                                       access_ip,
-                                      del_yn,
                                       code_code_id)
                             VALUES(:id,
                                    :encodedPw,
@@ -80,7 +79,6 @@
                                    :create_date,
                                    :create_ip,
                                    :access_ip,
-                                   'N',
                                    :code_id)";
             
             $params = [
@@ -147,7 +145,7 @@
                 $stmt->bindValue($key, $val);
             }
             
-            return $stmt->execute();;
+            return $stmt->execute();
         }
 
         public function adminInfoObj($id){
@@ -177,6 +175,32 @@
             }
 
             return $admin;
+        }
+
+        public function adminInfoDelete($id){ 
+            $sql = "DELETE FROM admin
+                    WHERE id = :id";
+            
+            $params = [
+                ':id' => $id,
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();
         }
     }
 ?>

@@ -23,33 +23,37 @@
     <!-- 등록/수정 폼 -->
     <?php if ($formMode): ?>
     <div class="dept-form-card" id="formSection">
-        <form id="deptForm">
-            <input type="hidden" id="mode" value="insert" />
-            <input type="hidden" id="dept_id" />
+        <form id="deptForm" method="post" action="/?url=AgentUserController/agentUserSubmit">
+            <input type="hidden" id="type" name="type"/>
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
-                <input type="text" id="dept_name" required />
+                <select class="form-input" id="dept_name" name="department" required>
+                    <option value="">부서 선택</option>
+                    <option value="network">(주)에스엠에스</option>
+                    <option value="security">보안팀</option>
+                    <option value="infra">인프라팀</option>
+                </select>
             </div>
             <div class="form-row">
                 <label for="manager">담당자명</label>
-                <input type="text" id="manager" required />
+                <input type="text" id="manager" name="name" required />
             </div>
             <div class="form-row">
                 <label for="phone">전화번호</label>
-                <input type="text" id="phone" />
+                <input type="text" id="phone" name="phone"/>
             </div>
             <div class="form-row">
                 <label for="email">이메일</label>
-                <input type="email" id="email" />
+                <input type="email" id="email" name="email"/>
             </div>
             <div class="form-row">
                 <label for="note">비고</label>
-                <textarea id="note"></textarea>
+                <textarea id="note" name="etc"></textarea>
             </div>
 
             <div class="form-buttons">
-                <button type="submit" class="btn-confirm">저장</button>
+                <button type="button" class="btn-confirm" onclick="submitBtn()">저장</button>
                 <a href="?url=MainController/index&page=dept">
                     <button type="button" class="btn-cancel">취소</button>
                 </a>
@@ -79,8 +83,9 @@ function loadDepartmentList() {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/?url=TempDelController/tempDelList", // 부서 목록 API
+        url: "/?url=AgentUserController/agentUserList", // 부서 목록 API
         success: function(result) {
+            console.log(result)
             resultData = result;
             renderPage(1);
         },
@@ -115,17 +120,20 @@ function renderPage(page) {
         html += `
         <tr>
             <td>${item.code_name}</td>
-            <td>${item.name}</td>
-            <td>${item.phone}</td>
-            <td>${item.email}</td>
+            <td>${item.user_name}</td>
+            <td>${item.user_phone}</td>
+            <td>${item.user_email}</td>
             <td>${item.etc}</td>
-            <td><button class="edit-btn" onclick="editDept(${item.del_idx})">수정</button></td>
-            <td><button class="delete-btn" onclick="deleteDept(${item.del_idx})">삭제</button></td>
+            <td><button class="edit-btn" onclick="editDept(${item.user_idx})">수정</button></td>
+            <td><button class="delete-btn" onclick="deleteDept(${item.user_idx})">삭제</button></td>
         </tr>`;
     });
 
     html += '</tbody></table>';
-    document.getElementById("deptTableBody").innerHTML = html;
+    const deptTableBody = document.getElementById("deptTableBody");
+    if(deptTableBody){
+        deptTableBody.innerHTML = html;
+    }
 }
 
 // 수정 모드 처리 (DB에서 불러오기)
@@ -156,67 +164,37 @@ function editDept(num) {
 }
 
 // 저장/수정 버튼 클릭 시
-document.getElementById("deptForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const mode = $("#mode").val();
-    const id = $("#dept_id").val();
-    const name = $("#dept_name").val().trim();
-    const manager = $("#manager").val().trim();
-    const phone = $("#phone").val().trim();
-    const email = $("#email").val().trim();
-    const note = $("#note").val().trim();
+function submitBtn(){
+    const name = $("#dept_name").val();
+    const form = $("#deptForm")
 
-    if (!name) {
+    if (name == "" || name == null || name == undefined) {
         alert("부서명은 필수입니다.");
         return;
     }
-
-    // DB로 저장/수정 요청
-    const url = mode === "update" ?
-        "/?url=TempDelController/tempDelUpdate" :
-        "/?url=TempDelController/tempDelInsert";
-
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: url,
-        data: {
-            id: id,
-            name: name,
-            manager: manager,
-            phone: phone,
-            email: email,
-            note: note
-        },
-        success: function(response) {
-            alert(response.message);
-            history.pushState({}, '', '?url=MainController/index&page=department');
-            loadDepartmentList(); // 목록 다시 불러오기
-        },
-        error: function(err) {
-            console.error("저장/수정 실패:", err);
-        }
-    });
-});
+    if(confirm("저장하시겠습니까?")){
+        form.submit();
+    }
+}
 
 // 삭제
 function deleteDept(num) {
-    if (confirm("정말 삭제하시겠습니까?")) {
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/?url=TempDelController/tempDelDelete",
-            data: {
-                num: num
-            },
-            success: function(response) {
-                alert(response.message);
-                loadDepartmentList();
-            },
-            error: function(err) {
-                console.error("삭제 실패:", err);
-            }
-        });
-    }
+    // if (confirm("정말 삭제하시겠습니까?")) {
+    //     $.ajax({
+    //         type: "POST",
+    //         dataType: "json",
+    //         url: "/?url=TempDelController/tempDelDelete",
+    //         data: {
+    //             num: num
+    //         },
+    //         success: function(response) {
+    //             alert(response.message);
+    //             loadDepartmentList();
+    //         },
+    //         error: function(err) {
+    //             console.error("삭제 실패:", err);
+    //         }
+    //     });
+    // }
 }
 </script>

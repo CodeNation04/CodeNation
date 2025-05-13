@@ -1,138 +1,139 @@
 /* department_info.css */
 .dept-wrapper {
-   display: flex;
-   flex-direction: column;
-   font-size: 14px;
-   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  padding: 20px;
 }
 
 .dept-header {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .dept-header h2 {
-   font-size: 20px;
-   font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .dept-form-card {
-   max-width: 600px;
-   margin-bottom: 24px;
+  max-width: 600px;
+  margin-bottom: 24px;
 }
 
 .form-row {
-   display: flex;
-   flex-direction: column;
-   margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
 }
 
 .form-row label {
-   margin-bottom: 6px;
-   font-weight: bold;
+  margin-bottom: 6px;
+  font-weight: bold;
 }
 
 .form-row input,
-.form-row textarea {
-   padding: 8px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
+.form-row textarea,
+.form-row select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .form-buttons {
-   display: flex;
-   gap: 10px;
-   margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .btn-confirm {
-   background-color: #007bff;
-   color: white;
-   padding: 6px 14px;
-   border: none;
-   border-radius: 4px;
-   cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .btn-cancel {
-   background-color: #6c757d;
-   color: white;
-   padding: 6px 14px;
-   border: none;
-   border-radius: 4px;
-   cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .btn-confirm:hover {
-   background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .btn-cancel:hover {
-   background-color: #5a6268;
+  background-color: #5a6268;
 }
 
 /* 테이블 스타일 */
 .dept-table-wrapper {
-   overflow-x: auto;
+  overflow-x: auto;
 }
 
 .dept-table {
-   width: 100%;
-   border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .dept-table th,
 .dept-table td {
-   border: 1px solid #ddd;
-   padding: 10px;
-   text-align: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
 }
 
 .dept-table th {
-   background-color: #f4f4f4;
-   font-weight: bold;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
 .dept-table tr:hover {
-   background-color: #fafafa;
+  background-color: #fafafa;
 }
 
 .edit-btn,
 .delete-btn {
-   background-color: transparent;
-   border: none;
-   font-weight: bold;
-   cursor: pointer;
-   text-decoration: underline;
-   padding: 0;
-   font-size: 14px;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 14px;
 }
 
 .edit-btn {
-   color: #007bff;
+  color: #007bff;
 }
 
 .delete-btn {
-   color: #dc3545;
-   margin-left: 6px;
+  color: #dc3545;
+  margin-left: 6px;
 }
 .pagination {
-   margin-top: 10px;
-   text-align: center;
+  margin-top: 10px;
+  text-align: center;
 }
 
 .pagination button {
-   margin: 0 5px;
-   padding: 5px 10px;
-   border: 1px solid #ccc;
-   background: #f2f2f2;
-   cursor: pointer;
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background: #f2f2f2;
+  cursor: pointer;
 }
 
 .pagination button.active {
-   background: #007bff;
-   color: white;
-   font-weight: bold;
+  background: #007bff;
+  color: white;
+  font-weight: bold;
 }
