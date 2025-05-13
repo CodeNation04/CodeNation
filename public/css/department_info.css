@@ -118,3 +118,21 @@
    color: #dc3545;
    margin-left: 6px;
 }
+.pagination {
+   margin-top: 10px;
+   text-align: center;
+}
+
+.pagination button {
+   margin: 0 5px;
+   padding: 5px 10px;
+   border: 1px solid #ccc;
+   background: #f2f2f2;
+   cursor: pointer;
+}
+
+.pagination button.active {
+   background: #007bff;
+   color: white;
+   font-weight: bold;
+}
