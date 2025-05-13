@@ -42,8 +42,8 @@
                                         SET code_code_id = :code_id,
                                             exclude_path = :exclude_path,
                                             file_ext = :file_ext,
-                                            update_date :update_date,
-                                            update_ip:update_ip
+                                            update_date = :update_date,
+                                            update_ip =:update_ip
                                         WHERE del_idx = :num");
 
             $stmt->bindParam(':num', $num);
@@ -86,6 +86,23 @@
             $stmt->bindParam(':num', $num);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function manageListdelete($num) {
+            $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $update_ip = $_SERVER['REMOTE_ADDR'];
+
+            $stmt = $this->db->prepare("UPDATE del_env 
+                                        SET del_yn = 'Y',
+                                            update_date = :update_date,
+                                            update_ip =:update_ip
+                                        WHERE del_idx = :num");
+
+            $stmt->bindParam(':num', $num);
+            $stmt->bindParam(':update_date', $update_date);
+            $stmt->bindParam(':update_ip', $update_ip);
+            
+            return $stmt->execute();
         }
     }
 ?>

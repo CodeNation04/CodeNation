@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="css/task_manage.css" />
 
 <div class="task-manage-wrapper">
-    <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h2>Agent 예약작업 관리</h2>
+    <div class="form-header">
+        <h2>예약작업 관리</h2>
         <a href="?url=MainController/index&page=task&form=show">
             <button class="btn-confirm">추가</button>
         </a>
@@ -18,7 +18,6 @@
     <?php endif; ?>
 
     <?php if ($formMode): ?>
-    <!-- 예약작업 등록 폼 -->
     <div class="form-card">
         <form id="taskForm" name="taskForm" method="post" action="/?url=TempDelController/tempDel">
             <input type="hidden" name="type" id="type" value="" />
@@ -123,17 +122,9 @@ function handlePeriodChange() {
     document.getElementById("monthlyFields").style.display = period === "매월" ? "block" : "none";
 }
 
-// 목록 렌더링 (조회 항목 기준: 부서명, 작업 종류, 주기, 대상)
 let currentPage = 1;
 const itemsPerPage = 10;
 let resultData = [];
-
-fetch('/?url=TempDelController/tempDelList')
-    .then(res => res.json())
-    .then(data => {
-        resultData = data;
-        renderPage(1);
-    });
 
 function renderPage(page) {
     currentPage = page;
@@ -142,166 +133,122 @@ function renderPage(page) {
     const pageData = resultData.slice(start, end);
 
     let html = `<table class="task-table">
-    <thead>
-      <tr>
-        <th>번호</th>
-        <th>부서명</th>
-        <th>예약작업 종류</th>
-        <th>작업 주기</th>
-        <th>작업 대상</th>
-      </tr>
-    </thead>
-    <tbody>`;
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>부서명</th>
+                <th>예약작업 종류</th>
+                <th>작업 주기</th>
+                <th>작업 대상</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>`;
 
     for (let i = 0; i < pageData.length; i++) {
         const item = pageData[i];
         const number = resultData.length - ((page - 1) * itemsPerPage + i);
 
         html += `
-      <tr>
-        <td>${number}</td>
-        <td>${item.code_name}</td>
-        <td>${item.job_type}</td>
-        <td>${item.reser_date} (`;
-        
-        if (pageData[i].reser_date == "매월") {
-
-            html += `${pageData[i].reser_date_day}일 ${pageData[i].reser_date_time}`;
-
-        } else if (pageData[i].reser_date == "매주") {
-
-            html += `${pageData[i].reser_date_time} ${pageData[i].reser_date_week}`;
-
-        } else if (pageData[i].reser_date == "매일") {
-
-            html += `${pageData[i].reser_date_time}`;
-
-        } else {
-
-            html += `${pageData[i].reser_date_ymd} ${pageData[i].reser_date_time}`;
-
-        }
-
-        html +=`)</td>
-        <td>${item.folder_path}</td>
-      </tr>`;
+        <tr>
+            <td>${number}</td>
+            <td>${item.code_name}</td>
+            <td>${item.job_type}</td>
+            <td>${item.reser_date} (${formatPeriodDetail(item)})</td>
+            <td>${item.folder_path}</td>
+            <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=task&type=moddify&num=${item.num}'">수정</button></td>
+            <td><button class="delete-btn" onclick="deleteTask(${item.num})">삭제</button></td>
+        </tr>`;
     }
 
     html += '</tbody></table><div class="pagination">';
+
     const totalPages = Math.ceil(resultData.length / itemsPerPage);
     if (page > 1) html += `<button onclick="renderPage(${page - 1})">이전</button>`;
     for (let i = 1; i <= totalPages; i++) {
         html += `<button onclick="renderPage(${i})" ${i === page ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
     }
     if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
-    html += '</div>';
 
+    html += '</div>';
     document.getElementById("task-table-wrapper").innerHTML = html;
 }
 
-    function submitBtn() {
-        const form = $("#taskForm");
-        const formData = form.serializeArray();
-        let targets = document.querySelectorAll("input[name=target]");
-        let schedules = document.querySelectorAll("input[name=schedule]");
-        let str = "";
-        let str2 = "";
-        for (target of targets) {
-            if (target.checked) {
-                if (str !== "") {
-                    str += ",";
-                }
-                str += target.value;
-            }
-        }
-
-        for (schedule of schedules) {
-            if (schedule.checked) {
-                if (str2 !== "") {
-                    str2 += ",";
-                }
-                str2 += schedule.value;
-            }
-        }
-
-        $("#targets").val(str);
-        $("#schedules").val(str2);
-        console.log(formData)
-        if (confirm("저장하시겠습니까?")) {
-            form.submit();
-        }
+function formatPeriodDetail(item) {
+    if (item.reser_date === "매월") {
+        return `${item.reser_date_day}일 ${item.reser_date_time}`;
+    } else if (item.reser_date === "매주") {
+        return `${item.reser_date_time} ${item.reser_date_week}`;
+    } else if (item.reser_date === "매일") {
+        return item.reser_date_time;
+    } else {
+        return `${item.reser_date_ymd} ${item.reser_date_time}`;
     }
+}
 
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get('type');
-    const num = params.get('num');
-
-    if(type === 'moddify'){
-        $("#type").val(type);
-        $("#num").val(num);
-
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            data: { num: num },
-            url: "/?url=TempDelController/tempDelInfo",
-            success: function(result) {
-                console.log(result)
-                
-                $("#period").val(result.reser_date);
-                $("#period").trigger("change");
-
-                if(result.reser_date == "매월"){
-                    $("#monthly_day").val(result.reser_date_day);
-                    $("#monthly_day").trigger("change");
-                    $("#monthly_time").val(result.reser_date_time);
-                }else if(result.reser_date == "매주"){
-                    $("#weekly_day").val(result.reser_date_week);
-                    $("#weekly_day").trigger("change");
-                    $("#weekly_time").val(result.reser_date_time);
-                }else if(result.reser_date == "매일"){
-                    $("#daily_time").val(result.reser_date_time);
-                }else{
-                    $("#once_date").val(result.reser_date_ymd);
-                    $("#once_date").trigger("change");
-                    $("#once_time").val(result.reser_date_time);
-                }
-                
-                $("#department").val(result.code_code_id);
-                $("#department").trigger("change");
-
-                $("#targets").val(result.del_target);
-                const targets = $("#targets").val();
-
-                const targetsSplit = targets.split(",");
-                console.log(targetsSplit)
-
-                for(target of targetsSplit){
-                    $(`input[name=target][value="${target.trim()}"]`).prop("checked", true);
-                }
-
-                $("#schedules").val(result.work_potin);
-                const schedules = $("#schedules").val();
-
-                const schedulesSplit = schedules.split(",");
-                console.log(schedulesSplit)
-
-                for(schedule of schedulesSplit){
-                    $(`input[name=schedule][value="${schedule.trim()}"]`).prop("checked", true);
-                }
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err.responseText);
-            }
-        });
+function deleteTask(num) {
+    if (confirm("정말 삭제하시겠습니까?")) {
+        // 여기에 Ajax 삭제 요청 추가 가능
+        alert(`삭제 처리 예정: ${num}`);
     }
+}
 
+function submitBtn() {
+    const form = $("#taskForm");
+    const formData = form.serializeArray();
+    console.log(formData);
+    if (confirm("저장하시겠습니까?")) {
+        form.submit();
+    }
+}
+
+// 수정 모드 처리
+const params = new URLSearchParams(window.location.search);
+const type = params.get('type');
+const num = params.get('num');
+
+if (type === 'moddify') {
+    $("#type").val(type);
+    $("#num").val(num);
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        data: {
+            num: num
+        },
+        url: "/?url=TempDelController/tempDelInfo",
+        success: function(result) {
+            $("#period").val(result.reser_date).trigger("change");
+
+            if (result.reser_date === "매월") {
+                $("#monthly_day").val(result.reser_date_day);
+                $("#monthly_time").val(result.reser_date_time);
+            } else if (result.reser_date === "매주") {
+                $("#weekly_day").val(result.reser_date_week);
+                $("#weekly_time").val(result.reser_date_time);
+            } else if (result.reser_date === "매일") {
+                $("#daily_time").val(result.reser_date_time);
+            } else {
+                $("#once_datetime").val(`${result.reser_date_ymd}T${result.reser_date_time}`);
+            }
+
+            $("#department").val(result.code_code_id);
+            $("#target_path").val(result.folder_path);
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err.responseText);
+        }
+    });
+}
+
+// 최초 리스트 로딩
 $.ajax({
     type: "GET",
     dataType: "json",
     url: "/?url=TempDelController/tempDelList",
     success: function(result) {
-        console.log(result)
         resultData = result;
         renderPage(1);
     },
@@ -309,5 +256,4 @@ $.ajax({
         console.error("데이터 불러오기 실패:", err);
     }
 });
-
 </script>

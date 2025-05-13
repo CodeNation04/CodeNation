@@ -3,7 +3,7 @@
 <div class="delete-manage-wrapper">
     <!-- 제목 + 등록 버튼 -->
     <div class="title-bar">
-        <h2>삭제 환경 관리</h2>
+        <h2>암호화 환경 관리</h2>
         <button id="toggleFormBtn">등록</button>
     </div>
 
@@ -42,10 +42,9 @@ const toggleBtn = document.getElementById("toggleFormBtn");
 
 // 등록 버튼
 toggleBtn.addEventListener("click", () => {
-    // document.getElementById("form-title").innerText = "삭제 환경 등록";
+    // document.getElementById("form-title").innerText = "암호화 환경 등록";
     // document.getElementById("submitBtn").innerText = "등록";
     // document.getElementById("deleteManageForm").reset();
-
     // formContainer.style.display = "block";
     // listContainer.style.display = "none";
     // toggleBtn.style.display = "none";
@@ -60,7 +59,7 @@ document.querySelectorAll(".edit-btn").forEach((btn) => {
         document.getElementById("file_ext").value = row.dataset.ext;
         document.getElementById("exclude_path").value = row.dataset.exclude;
 
-        document.getElementById("form-title").innerText = "삭제 환경 수정";
+        document.getElementById("form-title").innerText = "암호화 환경 수정";
         document.getElementById("submitBtn").innerText = "수정";
 
         formContainer.style.display = "block";
@@ -115,6 +114,23 @@ function listModidfy(num){
 }
 
 function manageListDel(num){
-
+    if(confirm("삭제하시겠습니까?")){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: { num: num },
+            url: "/?url=DeleteManageController/manageListdelete",
+            success: function(result) {
+                console.log(result)
+                if(result.success == true){
+                    alert('삭제완료되었습니다.');
+                    location.reload();
+                }
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err.responseText);
+            }
+        });
+    }
 }
 </script>

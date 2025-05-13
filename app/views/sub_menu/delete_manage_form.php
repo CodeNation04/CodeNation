@@ -62,6 +62,10 @@
 <script>
 
     $(document).ready(function(){
+        document.getElementById("form-title").innerText = "암호화 환경 등록";
+        document.getElementById("submitBtn").innerText = "등록";
+        document.getElementById("deleteManageForm").reset();
+
         const params = new URLSearchParams(window.location.search);
         const type = params.get('type');
         const num = params.get('num');
@@ -77,6 +81,45 @@
                 url: "/?url=DeleteManageController/deleteManageInfo",
                 success: function(result) {
                     console.log(result)
+
+                    let file_ext = result.file_ext.split(",").map(e => e.trim()).filter(e => e);
+                    if (!file_ext.length) return;
+
+                    let container = document.getElementById("extFields");
+                    let baseInput = container.querySelector('input[name="file_ext"]');
+                    baseInput.value = file_ext[0];
+
+                    file_ext.slice(1).forEach(ext => {
+                        container.insertAdjacentHTML("beforeend", `
+                            <div class="dynamic-field">
+                                <div class="input-wrapper">
+                                    <input type="text" name="file_ext" placeholder="예: docx" value="${ext}" required />
+                                    <button type="button" class="remove-btn" onclick="this.closest('.dynamic-field').remove()">×</button>
+                                </div>
+                            </div>
+                        `);
+                    });
+
+                    let exclude_path = result.exclude_path.split(",").map(e => e.trim()).filter(e => e);
+                    if (!exclude_path.length) return;
+
+                    let container2 = document.getElementById("excludeFields");
+                    let baseInput2 = container2.querySelector('input[name="exclude_path"]');
+                    baseInput2.value = exclude_path[0];
+
+                    exclude_path.slice(1).forEach(ext => {
+                        container2.insertAdjacentHTML("beforeend", `
+                            <div class="dynamic-field">
+                                <div class="input-wrapper">
+                                    <input type="text" name="exclude_path" placeholder="예: C:" value="${ext}" required />
+                                    <button type="button" class="remove-btn" onclick="this.closest('.dynamic-field').remove()">×</button>
+                                </div>
+                            </div>
+                        `);
+                    });
+
+                    $("#department").val(result.code_code_id).attr("selected",true);
+                    
                 },
                 error: function(err) {
                     console.error("데이터 불러오기 실패:", err.responseText);
