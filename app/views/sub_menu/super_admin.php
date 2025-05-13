@@ -6,19 +6,22 @@
     <title>최고 관리자 정보</title>
     <link rel="stylesheet" href="css/super_admin.css">
 </head>
-
+<?php
+ $session_id = $_SESSION['admin_id']
+?>
 <body>
     <div class="placeholder">
         <h2>최고 관리자 정보</h2>
         <form id="superForm" name="superForm" method="post">
+            <input type="hidden" name="session_id" id="session_id" value="<?=$session_id?>"/>
             <div class="form-row">
                 <label><strong>아이디</strong></label><br>
-                <input type="text" value="admin" name="admin_id" readonly />
+                <input type="text" name="admin_id" id="admin_id" readonly />
             </div>
 
             <div class="form-row">
                 <label><strong>접근 가능 IP</strong></label><br>
-                <input type="text" id="admin-ip" name="admin_ip" value="192.168.0.1" disabled />
+                <input type="text" id="admin-ip" name="admin_ip" disabled />
             </div>
 
             <!-- 비밀번호 입력란 (수정 시에만 표시) -->
@@ -42,6 +45,25 @@
     </div>
 
     <script>
+    $(document).ready(function(){
+        let session_id = document.getElementById("session_id").value
+        
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: { session_id: session_id },
+            url: "/?url=SuperAdminController/adminInfo",
+            success: function(result) {
+                console.log(result)
+                document.getElementById("admin_id").value = result.id;
+                document.getElementById("admin-ip").value = result.access_ip;
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    })
+
     function toggleEditMode() {
         const ipInput = document.getElementById("admin-ip");
         const passwordFields = document.getElementById("password-fields");

@@ -2,23 +2,27 @@
 
 class AuthController extends Controller {
     public function login() {
-        // echo '<pre>';
-        // print_r($_POST['id']);
-        // print_r($_POST['pw']);
-        // echo '</pre>';
+        // 접속 IP 출력
+        $ip = $_SERVER['REMOTE_ADDR'];
+        echo "<script>alert('접속 IP: {$ip}');</script>";
 
         $username = $_POST['id'] ?? '';
         $password = $_POST['pw'] ?? '';
         
         // 모델 사용
-        $admin = $this->model('Login')->getAdminByUsername($username);
-        
+        $admin = $this->model('Login')->getAdminByUsername($username,$ip);
+
         if ($admin && base64_decode($admin['pw']) === $password) {
             session_start();
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_type'] = $admin['admin_type'];
             echo json_encode(['status' => 'success']);
             header('Location: /?url=MainController/index');
+        }else if ($admin['ip'] !== $ip) {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
+            echo "<script>alert('ip가 허용되어있지않습니다.'); window.location.href='/?url=LoginController/login';</script>";
+            exit;
         } else {
             http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => 'Invalid login']);

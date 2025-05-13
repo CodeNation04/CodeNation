@@ -20,4 +20,15 @@ class SuperAdminController extends Controller {
             exit;
         }
     }
+
+    public function adminInfo() {
+        $id = $_GET['session_id'] ?? '';
+        
+        $admin = $this->model('SuperAdmin')->adminInfo($id);
+        if (!$admin) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($admin);
+        }
+    }
 }
