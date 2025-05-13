@@ -10,13 +10,18 @@
 <body>
 
     <div class="placeholder">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin-bottom:15px;">중간 관리자 목록</h2>
-            <button onclick="toggleForm()" id="toggle-button">추가</button>
+            <a href="?url=MainController/index&page=admin&form=show">
+                <button class="btn-confirm" id="toggle-button">추가</button>
+            </a>
         </div>
 
-        <!-- 중간 관리자 등록 폼 (초기 상태는 숨김) -->
-        <div id="register-form" style="display: none;">
+        <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>
+
+        <?php if ($formMode): ?>
+        <!-- 중간 관리자 등록 폼 -->
+        <div id="register-form">
             <form onsubmit="return registerManager(event)">
                 <div class="form-fields">
                     <div class="input-wrapper">
@@ -48,13 +53,13 @@
 
                 <div class="form-actions">
                     <button type="submit" class="submit-button">등록</button>
-                    <button type="button" class="cancel-button" onclick="cancelEdit()">취소</button>
+                    <a href="?url=MainController/index&page=admin">
+                        <button type="button" class="cancel-button">취소</button>
+                    </a>
                 </div>
             </form>
         </div>
-
-
-
+        <?php else: ?>
         <!-- 중간 관리자 목록 -->
         <div id="manager-list-section">
             <table class="manager-table">
@@ -72,30 +77,36 @@
                 </tbody>
             </table>
         </div>
+        <?php endif; ?>
     </div>
 
     <script>
-    // 중간관리자 목록 저장할 배열
-    const managerList = [];
-    let editIndex = -1; // 수정 중인 관리자 인덱스
+    // 페이지 로드 시 폼 상태 확인
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const formMode = urlParams.get('form');
+        const editIndex = urlParams.get('edit');
 
-    // 폼 토글 (등록/수정 모드)
-    function toggleForm() {
-        const form = document.getElementById('register-form');
-        const listSection = document.getElementById('manager-list-section');
-        const button = document.getElementById('toggle-button');
-
-        // 폼 표시/숨기기
-        if (form.style.display === 'block') {
-            form.style.display = 'none';
-            listSection.style.display = 'block';
-            button.textContent = '추가';
-            clearForm(); // 등록 모드로 초기화
+        if (formMode === 'show') {
+            showForm();
+            if (editIndex !== null) {
+                loadEditForm(editIndex);
+            }
         } else {
-            form.style.display = 'block';
-            listSection.style.display = 'none';
-            button.textContent = '목록 보기';
+            hideForm();
         }
+    };
+
+    // 폼 표시
+    function showForm() {
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('manager-list-section').style.display = 'none';
+    }
+
+    // 폼 숨기기
+    function hideForm() {
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('manager-list-section').style.display = 'block';
     }
 
     // 중간 관리자 등록/수정
@@ -134,26 +145,18 @@
         }
 
         renderManagerList();
-        clearForm();
-        toggleForm(); // 목록으로 돌아감
+        window.location.href = "?url=MainController/index&page=admin"; // 목록으로 이동
     }
 
-    // 입력 폼 초기화
-    function clearForm() {
-        document.getElementById('mgr-id').value = '';
-        document.getElementById('mgr-pw').value = '';
-        document.getElementById('mgr-pw-confirm').value = '';
-        document.getElementById('mgr-ip').value = '';
-        document.getElementById('mgr-dept').selectedIndex = 0;
-        document.getElementById('mgr-id').disabled = false;
-        document.getElementById('mgr-dept').disabled = false;
-        editIndex = -1;
-    }
-
-    // 수정 취소
-    function cancelEdit() {
-        clearForm();
-        toggleForm(); // 폼 숨기고 목록으로 돌아감
+    // 수정 모드 로드
+    function loadEditForm(index) {
+        const manager = managerList[index];
+        document.getElementById('mgr-id').value = manager.id;
+        document.getElementById('mgr-id').disabled = true;
+        document.getElementById('mgr-dept').value = manager.dept;
+        document.getElementById('mgr-ip').value = manager.ip;
+        editIndex = index;
+        showForm();
     }
 
     // 중간 관리자 목록 렌더링
@@ -168,7 +171,7 @@
                 <td>${manager.id}</td>
                 <td>${manager.ip}</td>
                 <td style="text-align:center;">
-                    <button onclick="editManager(${index})" class="edit-btn">수정</button>
+                    <a href="?url=MainController/index&page=admin&form=show&edit=${index}">수정</a>
                 </td>
                 <td style="text-align:center;">
                     <button onclick="deleteManager(${index})" class="delete-btn">삭제</button>
@@ -176,22 +179,6 @@
             </tr>
         `;
         });
-    }
-
-    // 중간 관리자 수정
-    function editManager(index) {
-        editIndex = index;
-        const manager = managerList[index];
-
-        document.getElementById('mgr-id').value = manager.id;
-        document.getElementById('mgr-id').disabled = true; // 아이디 수정 불가
-        document.getElementById('mgr-dept').value = manager.dept;
-        document.getElementById('mgr-dept').disabled = true; // 부서명 수정 불가
-        document.getElementById('mgr-ip').value = manager.ip;
-        document.getElementById('mgr-pw').value = '';
-        document.getElementById('mgr-pw-confirm').value = '';
-
-        toggleForm(); // 폼 보여주기
     }
 
     // 중간 관리자 삭제
