@@ -1,0 +1,131 @@
+/* 전체 wrapper */
+.export-wrapper {
+   padding: 20px;
+   font-size: 14px;
+}
+
+/* 상단 제목 + 드롭다운 + 검색 버튼 */
+.export-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
+}
+
+.export-header h2 {
+   font-size: 22px;
+   font-weight: bold;
+}
+
+.header-controls {
+   display: flex;
+   gap: 10px;
+   align-items: center;
+}
+
+.header-controls select {
+   padding: 8px 12px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 14px;
+}
+
+/* 🔍 검색 영역 (세로 정렬, 중앙 정렬, 넓은 인풋) */
+.search-section {
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+   margin-bottom: 24px;
+   background-color: #f9f9f9;
+   padding: 24px;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   max-width: 800px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.form-row {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+}
+
+.form-row label {
+   font-weight: bold;
+   margin-bottom: 6px;
+   font-size: 15px;
+}
+
+.form-row input,
+.form-row select {
+   padding: 12px 14px;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   font-size: 15px;
+   width: 100%;
+}
+
+/* 검색 버튼 영역 */
+.form-buttons {
+   display: flex;
+   justify-content: flex-end;
+   gap: 12px;
+   margin-top: 10px;
+}
+
+.btn-confirm {
+   background-color: #007bff;
+   color: white;
+   padding: 10px 24px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   font-size: 15px;
+}
+
+.btn-cancel {
+   background-color: #6c757d;
+   color: white;
+   padding: 10px 24px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   font-size: 15px;
+}
+
+.btn-confirm:hover {
+   background-color: #0056b3;
+}
+
+.btn-cancel:hover {
+   background-color: #5a6268;
+}
+
+/* 📋 테이블 영역 */
+.table-wrapper {
+   overflow-x: auto;
+   margin-top: 20px;
+}
+
+.export-table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.export-table th,
+.export-table td {
+   border: 1px solid #ddd;
+   padding: 10px;
+   text-align: center;
+   font-size: 14px;
+}
+
+.export-table th {
+   background-color: #f0f0f0;
+   font-weight: bold;
+}
+
+.export-table tr:hover {
+   background-color: #fdfdfd;
+}
