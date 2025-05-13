@@ -25,7 +25,7 @@
 
             <div class="form-row">
                 <strong>부서명</strong><br />
-                <select class="form-input" name="department" required>
+                <select class="form-input" id="department" name="department" required>
                     <option value="">부서 선택</option>
                     <option value="network">(주)에스엠에스</option>
                     <option value="security">보안팀</option>
@@ -35,7 +35,7 @@
 
             <div class="form-row">
                 <strong>예약작업 종류</strong><br />
-                <select class="form-input" name="job_type" required>
+                <select class="form-input" id="job_type" name="job_type" required>
                     <option value="">선택</option>
                     <option value="파일 암호화">파일 암호화</option>
                 </select>
@@ -157,8 +157,8 @@ function renderPage(page) {
             <td>${item.job_type}</td>
             <td>${item.reser_date} (${formatPeriodDetail(item)})</td>
             <td>${item.folder_path}</td>
-            <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=task&type=moddify&num=${item.num}'">수정</button></td>
-            <td><button class="delete-btn" onclick="deleteTask(${item.num})">삭제</button></td>
+            <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=task&form=show&type=moddify&num=${item.del_idx}'">수정</button></td>
+            <td><button class="delete-btn" onclick="deleteTask(${item.del_idx})">삭제</button></td>
         </tr>`;
     }
 
@@ -172,7 +172,9 @@ function renderPage(page) {
     if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
 
     html += '</div>';
-    document.getElementById("task-table-wrapper").innerHTML = html;
+
+    const wrapper = document.getElementById("task-table-wrapper");
+    if (wrapper) wrapper.innerHTML = html;
 }
 
 function formatPeriodDetail(item) {
@@ -183,22 +185,34 @@ function formatPeriodDetail(item) {
     } else if (item.reser_date === "매일") {
         return item.reser_date_time;
     } else {
-        return `${item.reser_date_ymd} ${item.reser_date_time}`;
+        return `${item.reser_date_time}`;
     }
 }
 
 function deleteTask(num) {
     if (confirm("정말 삭제하시겠습니까?")) {
-        // 여기에 Ajax 삭제 요청 추가 가능
-        alert(`삭제 처리 예정: ${num}`);
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {num:num},
+            url: "/?url=TempDelController/tempListDelete",
+            success: function(result) {
+                alert(result.message);
+                location.reload();
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
     }
 }
 
 function submitBtn() {
     const form = $("#taskForm");
     const formData = form.serializeArray();
-    console.log(formData);
+
     if (confirm("저장하시겠습니까?")) {
+        console.log(formData)
         form.submit();
     }
 }
@@ -220,6 +234,8 @@ if (type === 'moddify') {
         },
         url: "/?url=TempDelController/tempDelInfo",
         success: function(result) {
+            $("#department").val(result.code_code_id).trigger("change");
+            $("#job_type").val(result.job_type).trigger("change");
             $("#period").val(result.reser_date).trigger("change");
 
             if (result.reser_date === "매월") {
@@ -231,10 +247,9 @@ if (type === 'moddify') {
             } else if (result.reser_date === "매일") {
                 $("#daily_time").val(result.reser_date_time);
             } else {
-                $("#once_datetime").val(`${result.reser_date_ymd}T${result.reser_date_time}`);
+                $("#once_datetime").val(`${result.reser_date_time}`);
             }
 
-            $("#department").val(result.code_code_id);
             $("#target_path").val(result.folder_path);
         },
         error: function(err) {
@@ -249,6 +264,7 @@ $.ajax({
     dataType: "json",
     url: "/?url=TempDelController/tempDelList",
     success: function(result) {
+        console.log(result)
         resultData = result;
         renderPage(1);
     },
