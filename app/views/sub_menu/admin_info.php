@@ -12,11 +12,11 @@
     <div class="placeholder">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin-bottom:15px;">중간 관리자 목록</h2>
-            <button onclick="toggleForm()" id="toggle-button">등록</button>
+            <button onclick="toggleForm()" id="toggle-button">추가</button>
         </div>
 
-        <!-- 중간 관리자 등록 폼 -->
-        <div id="register-form">
+        <!-- 중간 관리자 등록 폼 (초기 상태는 숨김) -->
+        <div id="register-form" style="display: none;">
             <form onsubmit="return registerManager(event)">
                 <div class="form-fields">
                     <div class="input-wrapper">
@@ -80,20 +80,21 @@
     let editIndex = -1; // 수정 중인 관리자 인덱스
 
     // 폼 토글 (등록/수정 모드)
-    function toggleForm(isEdit = false) {
+    function toggleForm() {
         const form = document.getElementById('register-form');
         const listSection = document.getElementById('manager-list-section');
         const button = document.getElementById('toggle-button');
 
-        if (form.style.display === 'none' || isEdit) {
-            form.style.display = 'block';
-            listSection.style.display = 'none';
-            button.textContent = isEdit ? '목록 보기' : '등록';
-        } else {
+        // 폼 표시/숨기기
+        if (form.style.display === 'block') {
             form.style.display = 'none';
             listSection.style.display = 'block';
-            button.textContent = '등록';
-            clearForm();
+            button.textContent = '추가';
+            clearForm(); // 등록 모드로 초기화
+        } else {
+            form.style.display = 'block';
+            listSection.style.display = 'none';
+            button.textContent = '목록 보기';
         }
     }
 
@@ -115,15 +116,14 @@
             // 수정 모드
             managerList[editIndex].pw = pw;
             managerList[editIndex].ip = ip;
-            editIndex = -1;
             alert("중간 관리자 정보가 수정되었습니다.");
+            editIndex = -1;
         } else {
             // 등록 모드
             if (managerList.some((manager) => manager.id === id)) {
                 alert("이미 존재하는 아이디입니다.");
                 return;
             }
-
             managerList.push({
                 id,
                 pw,
@@ -134,8 +134,8 @@
         }
 
         renderManagerList();
-        toggleForm();
         clearForm();
+        toggleForm(); // 목록으로 돌아감
     }
 
     // 입력 폼 초기화
@@ -164,14 +164,14 @@
         managerList.forEach((manager, index) => {
             list.innerHTML += `
             <tr>
-                <td style="border: 1px solid #ccc; padding: 10px;">${manager.dept}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${manager.id}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${manager.ip}</td>
-                <td style="border: 1px solid #ccc; padding: 10px; text-align:center;">
-                    <button onclick="editManager(${index})" style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px;">수정</button>
+                <td>${manager.dept}</td>
+                <td>${manager.id}</td>
+                <td>${manager.ip}</td>
+                <td style="text-align:center;">
+                    <button onclick="editManager(${index})" class="edit-btn">수정</button>
                 </td>
-                <td style="border: 1px solid #ccc; padding: 10px; text-align:center;">
-                    <button onclick="deleteManager(${index})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 5px;">삭제</button>
+                <td style="text-align:center;">
+                    <button onclick="deleteManager(${index})" class="delete-btn">삭제</button>
                 </td>
             </tr>
         `;
@@ -191,7 +191,7 @@
         document.getElementById('mgr-pw').value = '';
         document.getElementById('mgr-pw-confirm').value = '';
 
-        toggleForm(true);
+        toggleForm(); // 폼 보여주기
     }
 
     // 중간 관리자 삭제

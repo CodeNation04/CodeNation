@@ -1,0 +1,74 @@
+/* 전체 레이아웃 */
+.placeholder {
+   max-width: 1500px;
+   margin: 0 auto;
+   padding: 20px;
+}
+
+.placeholder h2 {
+   margin-bottom: 30px;
+}
+
+.placeholder form {
+   margin-bottom: 10px;
+}
+
+/* 입력 필드 스타일 */
+.placeholder input[type="text"],
+.placeholder input[type="password"] {
+   width: 100%;
+   padding: 10px;
+   margin-top: 10px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   box-sizing: border-box;
+}
+
+.placeholder input[readonly] {
+   background-color: #f2f2f2;
+   cursor: not-allowed;
+}
+
+.placeholder input:disabled {
+   background-color: #f2f2f2;
+   cursor: not-allowed;
+}
+
+/* 비밀번호 필드 (수정 시만 표시) */
+#password-fields {
+   display: none;
+}
+
+/* 버튼 스타일 */
+.placeholder button {
+   cursor: pointer;
+   background-color: #007bff;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 5px;
+   transition: background 0.3s;
+}
+
+.placeholder button:hover {
+   background-color: #0056b3;
+}
+
+.placeholder button.cancel-btn {
+   background-color: #dc3545;
+}
+
+.placeholder button.cancel-btn:hover {
+   background-color: #c82333;
+}
+
+/* 버튼 정렬 */
+.placeholder .form-actions {
+   text-align: right;
+   margin-top: 15px;
+}
+
+.placeholder button#save-btn,
+.placeholder button#cancel-btn {
+   display: none;
+}
