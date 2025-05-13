@@ -1,8 +1,9 @@
 <link rel="stylesheet" href="css/delete_manage_form.css" />
 
 <div class="delete-manage-form">
-    <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm" name="deleteManageForm">
-        <h3 id="form-title">삭제 환경 등록</h3>
+    <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm"
+        name="deleteManageForm">
+        <h3 id="form-title">암호화 환경 등록</h3>
 
         <!-- 부서명 -->
         <div class="form-row">
@@ -56,16 +57,15 @@
 </div>
 
 <script>
+$("#submitBtn").click(function() {
+    const form = $("#deleteManageForm");
+    const formData = form.serializeArray();
 
-    $("#submitBtn").click(function(){
-        const form = $("#deleteManageForm");
-        const formData = form.serializeArray();
-
-        console.log(formData)
-        if (confirm("저장하시겠습니까?")) {
-            // form.submit();
-        }
-    })
+    console.log(formData)
+    if (confirm("저장하시겠습니까?")) {
+        // form.submit();
+    }
+})
 
 function addField(containerId, inputName) {
     const container = document.getElementById(containerId);
@@ -97,5 +97,4 @@ function addField(containerId, inputName) {
     div.appendChild(wrapper);
     container.appendChild(div);
 }
-
 </script>
