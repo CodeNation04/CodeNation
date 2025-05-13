@@ -79,6 +79,24 @@
     const managerList = [];
     let editIndex = -1; // 수정 중인 관리자 인덱스
 
+    $(document).ready(function(){
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AdminInfoController/adminInfoList",
+            success: function(result) {
+                console.log(result)
+                result.forEach((item) => {
+                    managerList.push(item);
+                })
+                renderManagerList()
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    })
+
     // 폼 토글 (등록/수정 모드)
     function toggleForm() {
         const form = document.getElementById('register-form');
@@ -156,6 +174,8 @@
         toggleForm(); // 폼 숨기고 목록으로 돌아감
     }
 
+
+
     // 중간 관리자 목록 렌더링
     function renderManagerList() {
         const list = document.getElementById('manager-list');
@@ -164,14 +184,14 @@
         managerList.forEach((manager, index) => {
             list.innerHTML += `
             <tr>
-                <td>${manager.dept}</td>
+                <td>${manager.code_name}</td>
                 <td>${manager.id}</td>
-                <td>${manager.ip}</td>
+                <td>${manager.access_ip}</td>
                 <td style="text-align:center;">
-                    <button onclick="editManager(${index})" class="edit-btn">수정</button>
+                    <button onclick="editManager(${manager.id})" class="edit-btn">수정</button>
                 </td>
                 <td style="text-align:center;">
-                    <button onclick="deleteManager(${index})" class="delete-btn">삭제</button>
+                    <button onclick="deleteManager(${manager.id})" class="delete-btn">삭제</button>
                 </td>
             </tr>
         `;
