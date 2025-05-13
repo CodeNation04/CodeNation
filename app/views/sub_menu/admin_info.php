@@ -1,56 +1,207 @@
-<div class="placeholder" style="max-width: 1500px; margin: 0 auto;">
-    <h3 style="margin-bottom:15px;">중간 관리자 등록</h3>
-    <form onsubmit="return registerManager(event)">
-        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
-                <label>아이디</label><br>
-                <input type="text" id="mgr-id" required style="width: 100%; padding: 8px; margin-top:10px;" />
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-                <label>비밀번호</label><br>
-                <input type="password" id="mgr-pw" required style="width: 100%; padding: 8px; margin-top:10px;" />
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-                <label>접근 가능 IP</label><br>
-                <input type="text" id="mgr-ip" required style="width: 100%; padding: 8px; margin-top:10px;" />
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-                <label>부서명</label><br>
-                <select id="mgr-dept" style="width: 100%; padding: 8px; margin-top:10px;">
-                    <option>보안팀</option>
-                    <option>인사팀</option>
-                    <option>개발팀</option>
-                </select>
-            </div>
-        </div>
-        <div style="text-align: right; margin-top: 20px;">
-            <button type="submit"
-                style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px;">등록</button>
-        </div>
-    </form>
+<!DOCTYPE html>
+<html lang="ko">
 
-    <h2 style="margin-bottom:15px;">중간 관리자 목록</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ccc; padding: 10px;">부서</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">아이디</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">접근 IP</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">수정</th>
-            </tr>
-        </thead>
-        <tbody id="manager-list">
+<head>
+    <meta charset="UTF-8">
+    <title>중간 관리자 목록</title>
+    <link rel="stylesheet" href="css/admin_info.css">
+</head>
+
+<body>
+
+    <div class="placeholder">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin-bottom:15px;">중간 관리자 목록</h2>
+            <button onclick="toggleForm()" id="toggle-button">등록</button>
+        </div>
+
+        <!-- 중간 관리자 등록 폼 -->
+        <div id="register-form">
+            <form onsubmit="return registerManager(event)">
+                <div class="form-fields">
+                    <div class="input-wrapper">
+                        <label>아이디</label>
+                        <input type="text" id="mgr-id" required />
+                    </div>
+                    <div class="input-wrapper">
+                        <label>접근 가능 IP</label>
+                        <input type="text" id="mgr-ip" required />
+                    </div>
+                    <div class="input-wrapper">
+                        <label>비밀번호</label>
+                        <input type="password" id="mgr-pw" required />
+                    </div>
+                    <div class="input-wrapper">
+                        <label>비밀번호 확인</label>
+                        <input type="password" id="mgr-pw-confirm" required />
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <label>부서명</label>
+                    <select id="mgr-dept">
+                        <option value="(주)에스엠에스">(주)에스엠에스</option>
+                        <option value="보안팀">보안팀</option>
+                        <option value="인프라팀">인프라팀</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-button">등록</button>
+                    <button type="button" class="cancel-button" onclick="cancelEdit()">취소</button>
+                </div>
+            </form>
+        </div>
+
+
+
+        <!-- 중간 관리자 목록 -->
+        <div id="manager-list-section">
+            <table class="manager-table">
+                <thead>
+                    <tr>
+                        <th>부서</th>
+                        <th>아이디</th>
+                        <th>접근가능 IP</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="manager-list">
+                    <!-- 동적으로 추가될 관리자 목록 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    // 중간관리자 목록 저장할 배열
+    const managerList = [];
+    let editIndex = -1; // 수정 중인 관리자 인덱스
+
+    // 폼 토글 (등록/수정 모드)
+    function toggleForm(isEdit = false) {
+        const form = document.getElementById('register-form');
+        const listSection = document.getElementById('manager-list-section');
+        const button = document.getElementById('toggle-button');
+
+        if (form.style.display === 'none' || isEdit) {
+            form.style.display = 'block';
+            listSection.style.display = 'none';
+            button.textContent = isEdit ? '목록 보기' : '등록';
+        } else {
+            form.style.display = 'none';
+            listSection.style.display = 'block';
+            button.textContent = '등록';
+            clearForm();
+        }
+    }
+
+    // 중간 관리자 등록/수정
+    function registerManager(event) {
+        event.preventDefault();
+        const id = document.getElementById('mgr-id').value.trim();
+        const pw = document.getElementById('mgr-pw').value.trim();
+        const pwConfirm = document.getElementById('mgr-pw-confirm').value.trim();
+        const ip = document.getElementById('mgr-ip').value.trim();
+        const dept = document.getElementById('mgr-dept').value;
+
+        if (pw !== pwConfirm) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        if (editIndex >= 0) {
+            // 수정 모드
+            managerList[editIndex].pw = pw;
+            managerList[editIndex].ip = ip;
+            editIndex = -1;
+            alert("중간 관리자 정보가 수정되었습니다.");
+        } else {
+            // 등록 모드
+            if (managerList.some((manager) => manager.id === id)) {
+                alert("이미 존재하는 아이디입니다.");
+                return;
+            }
+
+            managerList.push({
+                id,
+                pw,
+                ip,
+                dept
+            });
+            alert("중간 관리자가 등록되었습니다.");
+        }
+
+        renderManagerList();
+        toggleForm();
+        clearForm();
+    }
+
+    // 입력 폼 초기화
+    function clearForm() {
+        document.getElementById('mgr-id').value = '';
+        document.getElementById('mgr-pw').value = '';
+        document.getElementById('mgr-pw-confirm').value = '';
+        document.getElementById('mgr-ip').value = '';
+        document.getElementById('mgr-dept').selectedIndex = 0;
+        document.getElementById('mgr-id').disabled = false;
+        document.getElementById('mgr-dept').disabled = false;
+        editIndex = -1;
+    }
+
+    // 수정 취소
+    function cancelEdit() {
+        clearForm();
+        toggleForm(); // 폼 숨기고 목록으로 돌아감
+    }
+
+    // 중간 관리자 목록 렌더링
+    function renderManagerList() {
+        const list = document.getElementById('manager-list');
+        list.innerHTML = '';
+
+        managerList.forEach((manager, index) => {
+            list.innerHTML += `
             <tr>
-                <td style="border: 1px solid #ccc; padding: 10px;">보안팀</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">manager1</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">192.168.1.100</td>
-                <td style="border: 1px solid #ccc; padding: 10px; text-align:center;"><button
-                        style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px;">수정</button>
+                <td style="border: 1px solid #ccc; padding: 10px;">${manager.dept}</td>
+                <td style="border: 1px solid #ccc; padding: 10px;">${manager.id}</td>
+                <td style="border: 1px solid #ccc; padding: 10px;">${manager.ip}</td>
+                <td style="border: 1px solid #ccc; padding: 10px; text-align:center;">
+                    <button onclick="editManager(${index})" style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px;">수정</button>
+                </td>
+                <td style="border: 1px solid #ccc; padding: 10px; text-align:center;">
+                    <button onclick="deleteManager(${index})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 5px;">삭제</button>
                 </td>
             </tr>
-            <!-- 실제 DB 연동 시 반복 출력 예정 -->
-        </tbody>
-    </table>
+        `;
+        });
+    }
 
+    // 중간 관리자 수정
+    function editManager(index) {
+        editIndex = index;
+        const manager = managerList[index];
 
-</div>
+        document.getElementById('mgr-id').value = manager.id;
+        document.getElementById('mgr-id').disabled = true; // 아이디 수정 불가
+        document.getElementById('mgr-dept').value = manager.dept;
+        document.getElementById('mgr-dept').disabled = true; // 부서명 수정 불가
+        document.getElementById('mgr-ip').value = manager.ip;
+        document.getElementById('mgr-pw').value = '';
+        document.getElementById('mgr-pw-confirm').value = '';
+
+        toggleForm(true);
+    }
+
+    // 중간 관리자 삭제
+    function deleteManager(index) {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            managerList.splice(index, 1);
+            renderManagerList();
+        }
+    }
+    </script>
+</body>
+
+</html>

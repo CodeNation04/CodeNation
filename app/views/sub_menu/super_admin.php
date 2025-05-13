@@ -86,12 +86,12 @@ function cancelEdit() {
             <div style="margin-bottom: 15px;">
                 <label><strong>새 비밀번호</strong></label><br>
                 <input type="password" id="admin-password" name="admin_password" placeholder="변경할 경우만 입력"
-                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
+                    style="margin-top:10px; width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
             <div style="margin-bottom: 15px;">
                 <label><strong>새 비밀번호 확인</strong></label><br>
                 <input type="password" id="admin-password-com" name="admin_password_com" placeholder="변경할 경우만 입력"
-                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
+                    style="margin-top:10px; width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
         </div>
 

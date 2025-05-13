@@ -1,0 +1,130 @@
+/* 전체 레이아웃 */
+.placeholder {
+   max-width: 1500px;
+   margin: 0 auto;
+   padding: 20px;
+}
+
+/* 등록 버튼 스타일 */
+#toggle-button {
+   padding: 10px 20px;
+   background: #007bff;
+   color: white;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+#toggle-button:hover {
+   background: #0056b3;
+}
+
+/* 등록 폼 스타일 */
+#register-form {
+   margin-top: 15px;
+   padding: 15px;
+   background: #f9f9f9;
+   border: 1px solid #ddd;
+   border-radius: 5px;
+   display: none;
+}
+
+.form-fields {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 15px;
+   margin-bottom: 15px;
+}
+
+.input-wrapper {
+   flex: 1 1 45%; /* 기본 넓이 48% */
+   min-width: 200px;
+}
+
+.form-row.full-width {
+   width: 100%; /* 부서명은 전체 넓이 */
+   margin-top: 10px;
+}
+
+#register-form input,
+#register-form select {
+   width: 100%;
+   padding: 8px;
+   margin-top: 5px;
+   box-sizing: border-box;
+}
+
+#register-form .form-actions {
+   text-align: right;
+   margin-top: 20px;
+}
+
+#register-form .submit-button {
+   background: #007bff;
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+#register-form .cancel-button {
+   background: #dc3545;
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+#register-form .submit-button:hover {
+   background: #0056b3;
+}
+
+#register-form .cancel-button:hover {
+   background: #c82333;
+}
+
+/* 테이블 스타일 */
+.manager-table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 20px;
+}
+
+.manager-table th,
+.manager-table td {
+   border: 1px solid #ccc;
+   padding: 10px;
+   text-align: center;
+   vertical-align: middle;
+}
+
+.manager-table th {
+   background-color: #f2f2f2;
+   font-weight: bold;
+}
+
+.manager-table button {
+   padding: 5px 10px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   color: white;
+}
+
+.manager-table .edit-btn {
+   background-color: #007bff;
+}
+
+.manager-table .delete-btn {
+   background-color: #dc3545;
+}
+
+.manager-table .edit-btn:hover {
+   background-color: #0056b3;
+}
+
+.manager-table .delete-btn:hover {
+   background-color: #c82333;
+}
