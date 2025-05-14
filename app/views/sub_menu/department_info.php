@@ -84,6 +84,7 @@ window.onload = function() {
     const num = params.get('num');
 
     if (type === 'moddify') {
+        document.getElementById("type").value = type;
         $.ajax({
             type: "GET",
             dataType: "json",

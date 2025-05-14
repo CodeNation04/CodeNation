@@ -3,6 +3,7 @@
 class AgentUserController extends Controller {
     public function agentUserSubmit() {
         $type = $_POST['type'] ?? '';
+        $num = $_POST['num'] ?? 0;
         $code_id = $_POST['department'] ?? '';
         $name = $_POST['name'] ?? '';
         $phone = $_POST['phone'] ?? '';
@@ -12,7 +13,7 @@ class AgentUserController extends Controller {
         if($type !== "moddify"){
             $temp = $this->model('AgentUser')->insertAgentUser($code_id,$name,$phone,$email,$etc);
         }else{
-            $temp = $this->model('AgentUser')->updateAgentUser($code_id,$name,$phone,$email,$etc);
+            $temp = $this->model('AgentUser')->updateAgentUser($num,$code_id,$name,$phone,$email,$etc);
         }
 
         if ($temp) {
