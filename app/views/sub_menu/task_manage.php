@@ -1,7 +1,7 @@
 <?php
 // task_manage.php
 ?>
-<link rel="stylesheet" href="/css/task_manage.css" />
+<link rel="stylesheet" href="css/task_manage.css" />
 
 <div class="task-manage-wrapper">
     <div class="form-header">

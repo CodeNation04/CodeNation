@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>i-Mon 관리</title>
-    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="css/main.css" />
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
@@ -25,6 +25,8 @@
                     class="menu-item <?= ($page === 'super') ? 'active' : '' ?>">최고관리자</a>
                 <a href="/?url=MainController/index&page=admin"
                     class="menu-item <?= ($page === 'admin') ? 'active' : '' ?>">관리자 목록</a>
+                <a href="/?url=MainController/index&page=deptName"
+                    class="menu-item <?= ($page === 'deptName') ? 'active' : '' ?>">부서 추가</a>
                 <a href="/?url=MainController/index&page=dept"
                     class="menu-item <?= ($page === 'dept') ? 'active' : '' ?>">부서 정보 관리</a>
                 <a href="/?url=MainController/index&page=export"
@@ -70,6 +72,7 @@
                 switch ($page) {
                     case "super": include $view_path . "super_admin.php"; break;
                     case "admin": include $view_path . "admin_info.php"; break;
+                    case "deptName": include $view_path . "add_department.php"; break;
                     case "dept": include $view_path . "department_info.php"; break;
                     case "log": include $view_path . "log_view.php"; break;
                     case "task": include $view_path . "task_manage.php"; break;

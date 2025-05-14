@@ -14,7 +14,6 @@ class SuperAdminController extends Controller {
                     window.location.href='/?url=MainController/index&page=super';
                 </script>";
         } else {
-            http_response_code(401);
             // echo json_encode(['status' => 'error', 'message' => 'error']);
             echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=super';</script>";
             exit;

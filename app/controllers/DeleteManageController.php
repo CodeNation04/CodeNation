@@ -21,7 +21,6 @@ class DeleteManageController extends Controller {
                     window.location.href='/?url=MainController/index&page=delete';
                 </script>";
         } else {
-            http_response_code(401);
             echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=delete';</script>";
             exit;
         }
@@ -57,7 +56,6 @@ class DeleteManageController extends Controller {
         if ($temp) {
             echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
         } else {
-            http_response_code(500);
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
     }

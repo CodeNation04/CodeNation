@@ -29,7 +29,6 @@ class ExportController extends Controller {
         if ($temp) {
             echo json_encode(["success" => true, "message" => "${status}처리되었습니다."]);
         } else {
-            http_response_code(500);
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
     }

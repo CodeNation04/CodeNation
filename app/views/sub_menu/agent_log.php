@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent 로그 조회</title>
-    <link rel="stylesheet" href="/css/agent_info.css" />
+    <link rel="stylesheet" href="css/agent_info.css" />
 
 </head>
 

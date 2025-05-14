@@ -4,7 +4,7 @@ class AuthController extends Controller {
     public function login() {
         // 접속 IP 출력
         $ip = $_SERVER['REMOTE_ADDR'];
-        echo "<script>alert('접속 IP: {$ip}');</script>";
+        // echo "<script>alert('접속 IP: {$ip}');</script>";
 
         $username = $_POST['id'] ?? '';
         $password = $_POST['pw'] ?? '';
@@ -19,12 +19,10 @@ class AuthController extends Controller {
             echo json_encode(['status' => 'success']);
             header('Location: /?url=MainController/index');
         }else if ($admin['ip'] !== $ip) {
-            http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
             echo "<script>alert('ip가 허용되어있지않습니다.'); window.location.href='/?url=LoginController/login';</script>";
             exit;
         } else {
-            http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
             echo "<script>alert('아이디 또는 비밀번호가 올바르지 않습니다.'); window.location.href='/?url=LoginController/login';</script>";
             exit;
