@@ -25,15 +25,15 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
     <div class="search-section" id="searchSection" style="display: none;">
         <form id="searchForm">
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
-                <div class="form-row">
-                    <label>부서명</label>
-                    <select class="form-input" id="dept_name" name="department" required>
-                        <option value="">부서 선택</option>
-                        <option value="network">(주)에스엠에스</option>
-                        <option value="security">보안팀</option>
-                        <option value="infra">인프라팀</option>
-                    </select>
-                </div>
+            <div class="form-row">
+                <label>부서명</label>
+                <select class="form-input" id="dept_name" name="department" required>
+                    <option value="">부서 선택</option>
+                    <option value="network">(주)에스엠에스</option>
+                    <option value="security">보안팀</option>
+                    <option value="infra">인프라팀</option>
+                </select>
+            </div>
             <?php endif; ?>
             <div class="form-row">
                 <label>Hostname</label>

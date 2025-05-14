@@ -1,7 +1,4 @@
-<?php
-// department_info.php
-?>
-<link rel="stylesheet" href="css/department_info.css" />
+@ -5,196 +5,204 @@
 
 <div class="dept-wrapper">
     <div class="dept-header">
@@ -27,12 +24,8 @@
     <?php if ($formMode): ?>
     <div class="dept-form-card" id="formSection">
         <form id="deptForm" method="post" action="/?url=AgentUserController/agentUserSubmit">
-<<<<<<< Updated upstream
-            <input type="hidden" id="type" name="type"/>
-            <input type="hidden" id="num" name="num"/>
-=======
             <input type="hidden" id="type" name="type" />
->>>>>>> Stashed changes
+            <input type="hidden" id="num" name="num" />
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
@@ -175,9 +168,6 @@ function renderPage(page) {
 
 // 수정 모드 처리 (DB에서 불러오기)
 function editDept(num) {
-<<<<<<< Updated upstream
-    location.href="/?url=MainController/index&page=dept&form=show&type=moddify&num="+ num;
-=======
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -201,7 +191,7 @@ function editDept(num) {
             console.error("데이터 불러오기 실패:", err);
         }
     });
->>>>>>> Stashed changes
+    location.href = "/?url=MainController/index&page=dept&form=show&type=moddify&num=" + num;
 }
 
 // 저장/수정 버튼 클릭 시
@@ -220,6 +210,23 @@ function submitBtn() {
 
 // 삭제
 function deleteDept(num) {
+    // if (confirm("정말 삭제하시겠습니까?")) {
+    //     $.ajax({
+    //         type: "POST",
+    //         dataType: "json",
+    //         url: "/?url=TempDelController/tempDelDelete",
+    //         data: {
+    //             num: num
+    //         },
+    //         success: function(response) {
+    //             alert(response.message);
+    //             loadDepartmentList();
+    //         },
+    //         error: function(err) {
+    //             console.error("삭제 실패:", err);
+    //         }
+    //     });
+    // }
     if (confirm("정말 삭제하시겠습니까?")) {
         $.ajax({
             type: "POST",
