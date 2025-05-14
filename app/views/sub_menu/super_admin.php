@@ -12,7 +12,7 @@
 
 <body>
     <div class="placeholder">
-        <div style="display:flex; align-items:center">
+        <div class="title" style="display:flex; align-items:center">
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>최고 관리자 정보</h1>
         </div>

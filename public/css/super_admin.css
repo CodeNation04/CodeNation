@@ -1,12 +1,7 @@
 /* 전체 레이아웃 */
 .placeholder {
-   max-width: 1500px;
    margin: 0 auto;
    padding: 20px;
-}
-
-.placeholder h2 {
-   margin-bottom: 30px;
 }
 
 .placeholder form {

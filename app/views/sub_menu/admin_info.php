@@ -215,7 +215,7 @@
                         <td>${manager.id}</td>
                         <td>${manager.access_ip}</td>
                         <td style="text-align:center;">
-                            <a href="?url=MainController/index&page=admin&form=show&type=moddify&edit=${manager.id}">수정</a>
+                            <a href="?url=MainController/index&page=admin&form=show&type=moddify&edit=${manager.id}" class="edit-btn">수정</a>
                         </td>
                         <td style="text-align:center;">
                             <button onclick="deleteManager('${manager.id}')" class="delete-btn">삭제</button>

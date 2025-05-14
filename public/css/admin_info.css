@@ -114,11 +114,24 @@
 }
 
 .manager-table .edit-btn {
-   background-color: #007bff;
+   background-color: transparent;
+   border: none;
+   color: #007bff;
+   font-size: 14px;
+   cursor: pointer;
+   padding: 0;
+   font-weight: bold;
+   text-decoration: none;
 }
 
 .manager-table .delete-btn {
-   background-color: #dc3545;
+   background-color: transparent;
+   border: none;
+   font-size: 14px;
+   cursor: pointer;
+   padding: 0;
+   font-weight: bold;
+   color: #dc3545;
 }
 
 .manager-table .edit-btn:hover {
