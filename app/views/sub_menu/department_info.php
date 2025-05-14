@@ -1,4 +1,7 @@
-@ -5,196 +5,204 @@
+<?php
+// department_info.php
+?>
+<link rel="stylesheet" href="css/department_info.css" />
 
 <div class="dept-wrapper">
     <div class="dept-header">
@@ -168,6 +171,7 @@ function renderPage(page) {
 
 // 수정 모드 처리 (DB에서 불러오기)
 function editDept(num) {
+
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -210,23 +214,6 @@ function submitBtn() {
 
 // 삭제
 function deleteDept(num) {
-    // if (confirm("정말 삭제하시겠습니까?")) {
-    //     $.ajax({
-    //         type: "POST",
-    //         dataType: "json",
-    //         url: "/?url=TempDelController/tempDelDelete",
-    //         data: {
-    //             num: num
-    //         },
-    //         success: function(response) {
-    //             alert(response.message);
-    //             loadDepartmentList();
-    //         },
-    //         error: function(err) {
-    //             console.error("삭제 실패:", err);
-    //         }
-    //     });
-    // }
     if (confirm("정말 삭제하시겠습니까?")) {
         $.ajax({
             type: "POST",
