@@ -6,7 +6,10 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
 
 <div class="export-wrapper">
     <div class="export-header">
-        <h2>외부 반출 요청 관리</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>외부 반출 요청 관리</h1>
+        </div>
         <div class="header-controls">
             <select id="filterSelect" onchange="filterByStatus()">
                 <option value="전체">전체</option>

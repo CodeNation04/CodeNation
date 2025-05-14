@@ -9,11 +9,15 @@
 <?php
  $session_id = $_SESSION['admin_id']
 ?>
+
 <body>
     <div class="placeholder">
-        <h2>최고 관리자 정보</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>최고 관리자 정보</h1>
+        </div>
         <form id="superForm" name="superForm" method="post">
-            <input type="hidden" name="session_id" id="session_id" value="<?=$session_id?>"/>
+            <input type="hidden" name="session_id" id="session_id" value="<?=$session_id?>" />
             <div class="form-row">
                 <label><strong>아이디</strong></label><br>
                 <input type="text" name="admin_id" id="admin_id" readonly />
@@ -45,13 +49,15 @@
     </div>
 
     <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         let session_id = document.getElementById("session_id").value
-        
+
         $.ajax({
             type: "GET",
             dataType: "json",
-            data: { session_id: session_id },
+            data: {
+                session_id: session_id
+            },
             url: "/?url=SuperAdminController/adminInfo",
             success: function(result) {
                 console.log(result)

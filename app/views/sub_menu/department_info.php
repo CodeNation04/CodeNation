@@ -5,7 +5,10 @@
 
 <div class="dept-wrapper">
     <div class="dept-header">
-        <h2>부서 정보 관리</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>부서 정보 관리</h1>
+        </div>
         <a href="?url=MainController/index&page=dept&form=show">
             <button class="btn-confirm">등록</button>
         </a>
@@ -24,8 +27,12 @@
     <?php if ($formMode): ?>
     <div class="dept-form-card" id="formSection">
         <form id="deptForm" method="post" action="/?url=AgentUserController/agentUserSubmit">
+<<<<<<< Updated upstream
             <input type="hidden" id="type" name="type"/>
             <input type="hidden" id="num" name="num"/>
+=======
+            <input type="hidden" id="type" name="type" />
+>>>>>>> Stashed changes
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
@@ -42,11 +49,11 @@
             </div>
             <div class="form-row">
                 <label for="phone">전화번호</label>
-                <input type="text" id="phone" name="phone"/>
+                <input type="text" id="phone" name="phone" />
             </div>
             <div class="form-row">
                 <label for="email">이메일</label>
-                <input type="email" id="email" name="email"/>
+                <input type="email" id="email" name="email" />
             </div>
             <div class="form-row">
                 <label for="note">비고</label>
@@ -161,18 +168,44 @@ function renderPage(page) {
 
     html += '</tbody></table>';
     const deptTableBody = document.getElementById("deptTableBody");
-    if(deptTableBody){
+    if (deptTableBody) {
         deptTableBody.innerHTML = html;
     }
 }
 
 // 수정 모드 처리 (DB에서 불러오기)
 function editDept(num) {
+<<<<<<< Updated upstream
     location.href="/?url=MainController/index&page=dept&form=show&type=moddify&num="+ num;
+=======
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        data: {
+            num: num
+        },
+        url: "/?url=TempDelController/tempDelInfo", // 수정할 부서 정보 API
+        success: function(result) {
+            $("#dept_id").val(result.del_idx);
+            $("#dept_name").val(result.code_name).prop("readonly", true); // 부서명 수정 불가
+            $("#manager").val(result.name);
+            $("#phone").val(result.phone);
+            $("#email").val(result.email);
+            $("#note").val(result.etc);
+            $("#mode").val("update");
+            history.pushState({}, '',
+                `?url=MainController/index&page=department&form=show&type=moddify&num=${result.del_idx}`
+            );
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
+>>>>>>> Stashed changes
 }
 
 // 저장/수정 버튼 클릭 시
-function submitBtn(){
+function submitBtn() {
     const name = $("#dept_name").val();
     const form = $("#deptForm")
 
@@ -180,7 +213,7 @@ function submitBtn(){
         alert("부서명은 필수입니다.");
         return;
     }
-    if(confirm("저장하시겠습니까?")){
+    if (confirm("저장하시겠습니까?")) {
         form.submit();
     }
 }

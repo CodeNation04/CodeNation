@@ -11,7 +11,10 @@
 
     <div class="placeholder">
         <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin-bottom:15px;">중간 관리자 목록</h2>
+            <div style="display:flex; align-items:center">
+                <h1 style="font-weight:900; margin-right:12px;">| </h1>
+                <h1>중간 관리자 목록</h1>
+            </div>
             <a href="?url=MainController/index&page=admin&form=show">
                 <button type="button" class="btn-confirm" id="toggle-button">추가</button>
             </a>
@@ -23,7 +26,7 @@
         <!-- 중간 관리자 등록 폼 -->
         <div id="register-form">
             <form onsubmit="return registerManager(event)" method="POST" action="/?url=AdminInfoController/adminInfo">
-                <input type="hidden" id="type" name="type"/>
+                <input type="hidden" id="type" name="type" />
                 <div class="form-fields">
                     <div class="input-wrapper">
                         <label>아이디</label>
@@ -31,13 +34,13 @@
                             $type = $_GET['type'] ?? ""; 
                             if($type !== "moddify"){
                         ?>
-                            <input type="text" id="mgr-id" name="admin_id" required />
-                            <button onclick="duplicateCheck()">ID중복확인</button>
+                        <input type="text" id="mgr-id" name="admin_id" required />
+                        <button onclick="duplicateCheck()">ID중복확인</button>
                         <?php }else{ ?>
-                            <input type="text" id="mgr-id" required disabled/>
-                            <input type="hidden" id="admin_id" name="admin_id"/>
+                        <input type="text" id="mgr-id" required disabled />
+                        <input type="hidden" id="admin_id" name="admin_id" />
                         <?php } ?>
-                        <input type="hidden" id="duplicate"/>
+                        <input type="hidden" id="duplicate" />
                     </div>
                     <div class="input-wrapper">
                         <label>접근 가능 IP</label>
@@ -94,7 +97,7 @@
     <script>
     // 페이지 로드 시 폼 상태 확인
     let managerList = [];
-    $(document).ready(function(){
+    $(document).ready(function() {
         const urlParams = new URLSearchParams(window.location.search);
         const formMode = urlParams.get('form');
         const editIndex = urlParams.get('edit');
@@ -116,20 +119,22 @@
                 console.error("데이터 불러오기 실패:", err);
             }
         });
-    
+
         if (formMode === 'show') {
             showForm();
         } else {
             hideForm();
         }
-        
-        if(typeIndex == "moddify"){
+
+        if (typeIndex == "moddify") {
             document.getElementById("type").value = typeIndex;
 
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                data: {id: editIndex},
+                data: {
+                    id: editIndex
+                },
                 url: "/?url=AdminInfoController/adminInfoObj",
                 success: function(result) {
                     console.log(result)
@@ -149,13 +154,17 @@
         // 폼 표시
         function showForm() {
             document.getElementById('register-form').style.display = 'block';
-            if(list_section) {document.getElementById('manager-list-section').style.display = 'none'};
+            if (list_section) {
+                document.getElementById('manager-list-section').style.display = 'none'
+            };
         }
 
         // 폼 숨기기
         function hideForm() {
             document.getElementById('register-form').style.display = 'none';
-            if(list_section) {document.getElementById('manager-list-section').style.display = 'block'};
+            if (list_section) {
+                document.getElementById('manager-list-section').style.display = 'block'
+            };
         }
 
         // 중간 관리자 등록/수정
@@ -181,13 +190,13 @@
             } else {
                 // 등록 모드
                 const duplicate = document.getElementById("duplicate").value
-                if(duplicate !== true){
+                if (duplicate !== true) {
                     alert("중복체크를 확인해주세요.");
                     return;
-                }else if(duplicate == null || duplicate == "" || duplicate == undefined){
+                } else if (duplicate == null || duplicate == "" || duplicate == undefined) {
                     alert("중복체크를 확인해주세요.");
                     return;
-                }  
+                }
             }
 
             window.location.href = "?url=MainController/index&page=admin"; // 목록으로 이동
@@ -196,7 +205,7 @@
         // 중간 관리자 목록 렌더링
         function renderManagerList() {
             const list = document.getElementById('manager-list');
-            if(list){
+            if (list) {
                 list.innerHTML = '';
 
                 managerList.forEach((manager, index) => {
@@ -224,13 +233,15 @@
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                data: {id: index},
+                data: {
+                    id: index
+                },
                 url: "/?url=AdminInfoController/adminInfoDelete",
                 success: function(result) {
                     console.log(result)
-                    if(result.success == true){
+                    if (result.success == true) {
                         alert(`${result.message}`);
-                        window.location.href='/?url=MainController/index&page=admin';
+                        window.location.href = '/?url=MainController/index&page=admin';
                     }
                 },
                 error: function(err) {
@@ -240,13 +251,15 @@
         }
     }
 
-    function duplicateCheck(){
-        const mgr_id =document.getElementById("mgr-id").value;
+    function duplicateCheck() {
+        const mgr_id = document.getElementById("mgr-id").value;
         console.log(mgr_id)
         $.ajax({
             type: "POST",
             dataType: "json",
-            data: {id: mgr_id},
+            data: {
+                id: mgr_id
+            },
             url: "/?url=AdminInfoController/duplicateCheck",
             success: function(result) {
                 console.log(result)

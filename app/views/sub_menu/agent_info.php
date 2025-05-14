@@ -10,7 +10,10 @@
 
 <body>
     <div class="container">
-        <h2>Agent 정보 조회</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>Agent 정보 조회</h1>
+        </div>
         <form method="get">
             <div>
                 <label for="name">사용자명</label>

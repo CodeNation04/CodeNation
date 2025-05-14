@@ -13,12 +13,6 @@
    margin-bottom: 24px;
 }
 
-.title-bar h2 {
-   font-size: 20px;
-   font-weight: bold;
-   margin: 0;
-}
-
 .title-bar button {
    background-color: #2f80ed;
    color: white;
