@@ -30,17 +30,17 @@ body {
 .sidebar h2 {
    text-align: center;
    margin-bottom: 30px;
-   font-size: 18px;
+   font-size: 20px;
 }
 
 .menu-group {
-   margin-bottom: 25px;
+   margin-bottom: 15px;
 }
 
 .menu-group-title {
    padding: 10px 20px;
    font-weight: bold;
-   font-size: 15px;
+   font-size: 18px;
    background-color: #35335e;
 }
 
