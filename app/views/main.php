@@ -14,7 +14,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- <h2>i-Mon Admin</h2> -->
-            <img src="/asset/logo.png" style="width:120px; margin-left:55px; margin-bottom:10px;" />
+            <img src="/asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
 
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
             <div class="menu-group">
