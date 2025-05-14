@@ -6,7 +6,7 @@
 <div class="task-manage-wrapper">
     <div class="form-header">
         <div style="display:flex; align-items:center">
-            <img src="/asset/title_bar.png" style="height:24px; margin-right:8px" />
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>예약작업 관리</h1>
         </div>
         <a href="?url=MainController/index&page=task&form=show">
