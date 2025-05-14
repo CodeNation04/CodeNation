@@ -60,7 +60,7 @@
             return $stmt->execute();;
         }
 
-        public function selectagentUserList(){
+        public function selectAgentUserList(){
 
             $stmt = $this->db->prepare("SELECT  a.user_idx,
                                                 a.code_code_id,
@@ -77,6 +77,51 @@
                                         ORDER BY a.user_idx DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function selectAgentUserInfo($num){
+
+            $stmt = $this->db->prepare("SELECT  *
+                                        FROM user_agent_info
+                                        WHERE user_idx = :num");
+
+            $stmt->bindParam(':num', $num);                            
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function agentUserDel($num){
+            $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $update_ip = $_SERVER['REMOTE_ADDR'];
+
+            $sql = "UPDATE user_agent_info
+                    SET del_yn = 'Y',
+                        update_date = :update_date,
+                        update_ip = :update_ip
+                    WHERE user_idx = :num";
+            
+            $params = [
+                ':num' => $num,
+                ':update_date' => $update_date,
+                ':update_ip' => $update_ip
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();;
         }
     }
 ?>

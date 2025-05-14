@@ -25,6 +25,7 @@
     <div class="dept-form-card" id="formSection">
         <form id="deptForm" method="post" action="/?url=AgentUserController/agentUserSubmit">
             <input type="hidden" id="type" name="type"/>
+            <input type="hidden" id="num" name="num"/>
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
@@ -75,7 +76,36 @@ let resultData = [];
 
 // 최초 리스트 로딩 (DB에서 데이터 불러오기)
 window.onload = function() {
+
     loadDepartmentList();
+
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    const num = params.get('num');
+
+    if (type === 'moddify') {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: {
+                num: num
+            },
+            url: "/?url=AgentUserController/agentUserInfo", // 수정할 부서 정보 API
+            success: function(result) {
+                console.log(result)
+                $("#num").val(result.user_idx);
+                $("#dept_name").val(result.code_code_id).trigger("change"); // 부서명 수정 불가
+                $("#manager").val(result.user_name);
+                $("#phone").val(result.user_phone);
+                $("#email").val(result.user_email);
+                $("#note").val(result.etc);
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    }
+
 };
 
 // DB에서 부서 목록 불러오기
@@ -138,29 +168,7 @@ function renderPage(page) {
 
 // 수정 모드 처리 (DB에서 불러오기)
 function editDept(num) {
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        data: {
-            num: num
-        },
-        url: "/?url=TempDelController/tempDelInfo", // 수정할 부서 정보 API
-        success: function(result) {
-            $("#dept_id").val(result.del_idx);
-            $("#dept_name").val(result.code_name).prop("readonly", true); // 부서명 수정 불가
-            $("#manager").val(result.name);
-            $("#phone").val(result.phone);
-            $("#email").val(result.email);
-            $("#note").val(result.etc);
-            $("#mode").val("update");
-            history.pushState({}, '',
-                `?url=MainController/index&page=department&form=show&type=moddify&num=${result.del_idx}`
-                );
-        },
-        error: function(err) {
-            console.error("데이터 불러오기 실패:", err);
-        }
-    });
+    location.href="/?url=MainController/index&page=dept&form=show&type=moddify&num="+ num;
 }
 
 // 저장/수정 버튼 클릭 시
@@ -179,22 +187,22 @@ function submitBtn(){
 
 // 삭제
 function deleteDept(num) {
-    // if (confirm("정말 삭제하시겠습니까?")) {
-    //     $.ajax({
-    //         type: "POST",
-    //         dataType: "json",
-    //         url: "/?url=TempDelController/tempDelDelete",
-    //         data: {
-    //             num: num
-    //         },
-    //         success: function(response) {
-    //             alert(response.message);
-    //             loadDepartmentList();
-    //         },
-    //         error: function(err) {
-    //             console.error("삭제 실패:", err);
-    //         }
-    //     });
-    // }
+    if (confirm("정말 삭제하시겠습니까?")) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/?url=AgentUserController/agentUserDel",
+            data: {
+                num: num
+            },
+            success: function(response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function(err) {
+                console.error("삭제 실패:", err);
+            }
+        });
+    }
 }
 </script>

@@ -30,11 +30,38 @@ class AgentUserController extends Controller {
     public function agentUserList() {
         header('Content-Type: application/json');
         
-        $temp = $this->model('AgentUser')->selectagentUserList();
+        $temp = $this->model('AgentUser')->selectAgentUserList();
         if (!$temp) {
             echo json_encode(["error" => "No data found."]);
         } else {
             echo json_encode($temp);
+        }
+    }
+
+    public function agentUserInfo() {
+        $num = $_GET['num'] ?? '';
+        header('Content-Type: application/json');
+        
+        $temp = $this->model('AgentUser')->selectAgentUserInfo($num);
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
+
+    public function agentUserDel(){
+        $num = $_POST['num'] ?? '';
+
+        $temp = $this->model('AgentUser')->agentUserDel($num);
+
+        header('Content-Type: application/json');
+
+        if ($temp) {
+            echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
     }
 

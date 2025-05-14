@@ -16,27 +16,31 @@
             <!-- <h2>i-Mon Admin</h2> -->
             <img src="/asset/logo.png" style="width:120px; margin-left:55px; margin-bottom:10px;" />
 
-            <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
+            
             <div class="menu-group">
                 <div class="menu-group-title">조직 및 관리자</div>
-                <a href="/?url=MainController/index&page=super" class="menu-item">최고관리자</a>
-                <a href="/?url=MainController/index&page=admin" class="menu-item">관리자 목록</a>
-                <a href="/?url=MainController/index&page=dept" class="menu-item">부서 정보 관리</a>
+                <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
+                    <a href="/?url=MainController/index&page=super" class="menu-item">최고관리자</a>
+                    <a href="/?url=MainController/index&page=admin" class="menu-item">관리자 목록</a>
+                    <a href="/?url=MainController/index&page=dept" class="menu-item">부서 정보 관리</a>
+                <?php endif; ?>
                 <a href="/?url=MainController/index&page=export" class="menu-item">외부 반출 승인 관리</a>
             </div>
-
-            <div class="menu-group">
-                <div class="menu-group-title">정책 설정</div>
-                <a href="/?url=MainController/index&page=task" class="menu-item">Agent 예약 작업 관리</a>
-                <a href="/?url=MainController/index&page=delete" class="menu-item">Agent 암호화 환경 관리</a>
-            </div>
+            <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>      
+                <div class="menu-group">
+                    <div class="menu-group-title">정책 설정</div>
+                    <a href="/?url=MainController/index&page=task" class="menu-item">Agent 예약 작업 관리</a>
+                    <a href="/?url=MainController/index&page=delete" class="menu-item">Agent 암호화 환경 관리</a>
+                </div>
             <?php endif; ?>
 
             <div class="menu-group">
                 <div class="menu-group-title">정보 조회</div>
                 <a href="/?url=MainController/index&page=agent" class="menu-item">Agent 정보 조회</a>
                 <a href="/?url=MainController/index&page=agentlog" class="menu-item">Agent 로그 조회</a>
-                <a href="/?url=MainController/index&page=log" class="menu-item">감사 로그 조회</a>
+                <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
+                    <a href="/?url=MainController/index&page=log" class="menu-item">감사 로그 조회</a>
+                <?php endif; ?>
             </div>
         </div>
 
