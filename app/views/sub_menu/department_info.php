@@ -1,7 +1,7 @@
 <?php
 // department_info.php
 ?>
-<link rel="stylesheet" href="css/department_info.css" />
+<link rel="stylesheet" href="/css/department_info.css" />
 
 <div class="dept-wrapper">
     <div class="dept-header">

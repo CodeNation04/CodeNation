@@ -13,7 +13,7 @@
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar">
-            <img src="/asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
+            <img src="asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
 
             <?php
             $page = $_GET['page'] ?? "";

@@ -20,4 +20,24 @@ class Database {
             die("DB 연결 실패: " . $e->getMessage());
         }
     }
+
+    // private $host = 'localhost';       // MySQL 호스트
+    // private $username = 'imon';        // 사용자명
+    // private $password = 'test8877!';        // 비밀번호
+    // private $database = 'imon';        // 데이터베이스명              // 포트 번호
+
+    // public $pdo;
+
+    // public function __construct() {
+    //     try {
+    //         $this->pdo = new PDO(
+    //             "mysql:host={$this->host};dbname={$this->database};charset=utf8",
+    //             $this->username,
+    //             $this->password
+    //         );
+    //         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //     } catch (PDOException $e) {
+    //         die("DB 연결 실패: " . $e->getMessage());
+    //     }
+    // }
 }

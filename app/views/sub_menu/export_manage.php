@@ -2,7 +2,7 @@
 // export_manage.php
 $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
 ?>
-<link rel="stylesheet" href="css/export_manage.css" />
+<link rel="stylesheet" href="/css/export_manage.css" />
 
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

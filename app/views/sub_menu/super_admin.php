@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>최고 관리자 정보</title>
-    <link rel="stylesheet" href="css/super_admin.css">
+    <link rel="stylesheet" href="/css/super_admin.css">
 </head>
 <?php
  $session_id = $_SESSION['admin_id']
