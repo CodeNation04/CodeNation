@@ -5,7 +5,10 @@
 
 <div class="task-manage-wrapper">
     <div class="form-header">
-        <h2>예약작업 관리</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>예약작업 관리</h1>
+        </div>
         <a href="?url=MainController/index&page=task&form=show">
             <button class="btn-confirm">추가</button>
         </a>

@@ -16,7 +16,10 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
 
 <div class="export-wrapper">
     <div class="export-header">
-        <h2>외부 반출 요청 관리</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>외부 반출 요청 관리</h1>
+        </div>
         <div class="header-controls">
             <select id="filterSelect" onchange="filterByStatus()">
                 <option value="전체">전체</option>
@@ -38,15 +41,15 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
                 <input type="hidden" id="exter_status" value="<?=$exter_status?>"/>
             <?php }?>
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
-                <div class="form-row">
-                    <label>부서명</label>
-                    <select class="form-input" id="dept_name" name="department" required>
-                        <option value="">부서 선택</option>
-                        <option value="network">(주)에스엠에스</option>
-                        <option value="security">보안팀</option>
-                        <option value="infra">인프라팀</option>
-                    </select>
-                </div>
+            <div class="form-row">
+                <label>부서명</label>
+                <select class="form-input" id="dept_name" name="department" required>
+                    <option value="">부서 선택</option>
+                    <option value="network">(주)에스엠에스</option>
+                    <option value="security">보안팀</option>
+                    <option value="infra">인프라팀</option>
+                </select>
+            </div>
             <?php endif; ?>
             <div class="form-row">
                 <label>Hostname</label>

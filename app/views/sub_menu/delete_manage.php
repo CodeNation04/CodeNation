@@ -3,7 +3,10 @@
 <div class="delete-manage-wrapper">
     <!-- 제목 + 등록 버튼 -->
     <div class="title-bar">
-        <h2>암호화 환경 관리</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>암호화 환경 관리</h1>
+        </div>
         <button id="toggleFormBtn">등록</button>
     </div>
 
@@ -15,7 +18,7 @@
     <div id="formContainer">
         <?php include "delete_manage_form.php";?>
     </div>
-    <?php } else{?> 
+    <?php } else{?>
     <!-- 리스트 -->
     <div id="listContainer" class="delete-manage-list">
         <table>
@@ -32,7 +35,7 @@
             </tbody>
         </table>
     </div>
-    <?php }?> 
+    <?php }?>
 </div>
 
 <script>
@@ -48,7 +51,7 @@ toggleBtn.addEventListener("click", () => {
     // formContainer.style.display = "block";
     // listContainer.style.display = "none";
     // toggleBtn.style.display = "none";
-    location.href="/?url=MainController/index&page=delete&form=show"
+    location.href = "/?url=MainController/index&page=delete&form=show"
 });
 
 // 수정 버튼
@@ -81,7 +84,7 @@ function cancelForm() {
     // formContainer.style.display = "none";
     // listContainer.style.display = "block";
     // toggleBtn.style.display = "inline-block";
-    location.href="/?url=MainController/index&page=delete";
+    location.href = "/?url=MainController/index&page=delete";
 }
 
 $.ajax({
@@ -91,7 +94,7 @@ $.ajax({
     success: function(result) {
         console.log(result)
         let html;
-        for(let i = 0; i<result.length;i++){
+        for (let i = 0; i < result.length; i++) {
             html += `
                         <tr>
                             <td>${result[i].code_name}</td>
@@ -109,20 +112,22 @@ $.ajax({
     }
 });
 
-function listModidfy(num){
-    location.href="/?url=MainController/index&page=delete&form=show&type=moddify&num=" + num;
+function listModidfy(num) {
+    location.href = "/?url=MainController/index&page=delete&form=show&type=moddify&num=" + num;
 }
 
-function manageListDel(num){
-    if(confirm("삭제하시겠습니까?")){
+function manageListDel(num) {
+    if (confirm("삭제하시겠습니까?")) {
         $.ajax({
             type: "POST",
             dataType: "json",
-            data: { num: num },
+            data: {
+                num: num
+            },
             url: "/?url=DeleteManageController/manageListdelete",
             success: function(result) {
                 console.log(result)
-                if(result.success == true){
+                if (result.success == true) {
                     alert('삭제완료되었습니다.');
                     location.reload();
                 }

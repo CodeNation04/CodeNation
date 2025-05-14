@@ -9,7 +9,10 @@
 
 <body>
     <div class="container">
-        <h2>감사 로그 조회</h2>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>감사 로그 조회</h1>
+        </div>
         <form method="get">
             <div>
                 <label for="id">아이디</label>

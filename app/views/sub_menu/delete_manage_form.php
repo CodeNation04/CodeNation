@@ -3,7 +3,10 @@
 <div class="delete-manage-form">
     <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm"
         name="deleteManageForm">
-        <h3 id="form-title">암호화 환경 등록</h3>
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1 id="form-title">암호화 환경 등록</h1>
+        </div>
 
         <!-- 부서명 -->
         <div class="form-row">
@@ -25,7 +28,7 @@
             <div id="extFields" class="dynamic-field-group">
                 <div class="dynamic-field">
                     <div class="input-wrapper">
-                        <input type="hidden" id="file_exts" name="file_exts"/>
+                        <input type="hidden" id="file_exts" name="file_exts" />
                         <input type="text" name="file_ext" placeholder="예: docx" required />
                         <button type="button" class="remove-btn" disabled style="visibility: hidden;">×</button>
                     </div>
@@ -42,7 +45,7 @@
             <div id="excludeFields" class="dynamic-field-group">
                 <div class="dynamic-field">
                     <div class="input-wrapper">
-                        <input type="hidden" id="exclude_paths" name="exclude_paths"/>
+                        <input type="hidden" id="exclude_paths" name="exclude_paths" />
                         <input type="text" name="exclude_path" placeholder="예: C:/예외1" required />
                         <button type="button" class="remove-btn" disabled style="visibility: hidden;">×</button>
                     </div>
@@ -69,30 +72,30 @@ $("#submitBtn").click(function() {
     }
 })
 
-    function addField(containerId, inputName) {
-        const container = document.getElementById(containerId);
-        const div = document.createElement("div");
-        div.className = "dynamic-field";
+function addField(containerId, inputName) {
+    const container = document.getElementById(containerId);
+    const div = document.createElement("div");
+    div.className = "dynamic-field";
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "input-wrapper";
+    const wrapper = document.createElement("div");
+    wrapper.className = "input-wrapper";
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = inputName;
-        input.required = true;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = inputName;
+    input.required = true;
 
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "remove-btn";
-        removeBtn.textContent = "x";
-        removeBtn.onclick = function() {
-            if (container.querySelectorAll(".dynamic-field").length > 1) {
-                container.removeChild(div);
-            } else {
-                alert("최소 1개 항목은 필요합니다.");
-            }
-        };
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "remove-btn";
+    removeBtn.textContent = "x";
+    removeBtn.onclick = function() {
+        if (container.querySelectorAll(".dynamic-field").length > 1) {
+            container.removeChild(div);
+        } else {
+            alert("최소 1개 항목은 필요합니다.");
+        }
+    };
 
     wrapper.appendChild(input);
     wrapper.appendChild(removeBtn);

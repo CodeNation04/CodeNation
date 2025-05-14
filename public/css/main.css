@@ -44,24 +44,22 @@ body {
    background-color: #35335e;
 }
 
-/* 메뉴 항목: 기본 상태 */
 .menu-item {
    display: block;
    padding: 10px 30px;
    font-size: 14px;
-   cursor: pointer;
    color: #ecf0f1;
    text-decoration: none;
    position: relative;
    transition: color 0.3s;
 }
 
-/* ✅ 메뉴 항목 hover 시 텍스트 색상만 노란색으로 */
+/* 호버 시 */
 .menu-item:hover {
    color: #f1c40f;
 }
 
-/* ✅ 메뉴 항목 밑줄 효과 */
+/* 밑줄 */
 .menu-item::after {
    content: "";
    position: absolute;
@@ -73,12 +71,21 @@ body {
    transition: width 0.4s ease;
 }
 
-/* ✅ 호버 시 밑줄 왼쪽 → 오른쪽으로 확장 */
 .menu-item:hover::after {
-   width: calc(100% - 60px); /* 전체 너비 - 좌우 padding */
+   width: calc(100% - 60px);
 }
 
-/* 메인 콘텐츠 */
+/* ✅ 활성화된 메뉴 항목: 텍스트 색상만 유지하고 밑줄 제거 */
+.menu-item.active {
+   color: #f1c40f;
+   font-weight: bold;
+}
+
+.menu-item.active::after {
+   display: none;
+}
+
+/* 메인 */
 .main {
    flex: 1;
    display: flex;
