@@ -32,12 +32,7 @@
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
-                <select class="form-input" id="dept_name" name="department" required>
-                    <option value="">부서 선택</option>
-                    <option value="network">(주)에스엠에스</option>
-                    <option value="security">보안팀</option>
-                    <option value="infra">인프라팀</option>
-                </select>
+                <input class="form-input" id="dept_name" name="department" required />
             </div>
             <div class="form-row">
                 <label for="manager">담당자명</label>

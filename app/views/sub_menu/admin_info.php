@@ -11,7 +11,7 @@
 
     <div class="placeholder">
         <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display:flex; align-items:center">
+            <div class="title" style="display:flex; align-items:center">
                 <h1 style="font-weight:900; margin-right:12px;">| </h1>
                 <h1>중간 관리자 목록</h1>
             </div>
@@ -34,8 +34,10 @@
                             $type = $_GET['type'] ?? ""; 
                             if($type !== "moddify"){
                         ?>
-                        <input type="text" id="mgr-id" name="admin_id" required />
-                        <button onclick="duplicateCheck()">ID중복확인</button>
+                        <div id="id_input">
+                            <input type="text" id="mgr-id" name="admin_id" required />
+                            <button class="check_btn" onclick="duplicateCheck()">ID중복확인</button>
+                        </div>
                         <?php }else{ ?>
                         <input type="text" id="mgr-id" required disabled />
                         <input type="hidden" id="admin_id" name="admin_id" />
