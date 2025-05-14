@@ -3,11 +3,6 @@
 <div class="delete-manage-form">
     <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm"
         name="deleteManageForm">
-        <div style="display:flex; align-items:center">
-            <h1 style="font-weight:900; margin-right:12px;">| </h1>
-            <h1 id="form-title">암호화 환경 등록</h1>
-        </div>
-
         <!-- 부서명 -->
         <div class="form-row">
             <label for="department">부서명</label>
