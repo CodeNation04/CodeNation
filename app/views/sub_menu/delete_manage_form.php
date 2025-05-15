@@ -7,10 +7,6 @@
         <div class="form-row">
             <label for="department">부서명</label>
             <select name="department" id="department" required>
-                <option value="">부서 선택</option>
-                <option value="security">보안팀</option>
-                <option value="development">개발팀</option>
-                <option value="operate">운영팀</option>
             </select>
         </div>
 
@@ -57,6 +53,25 @@
 </div>
 
 <script>
+$(document).ready(function(){
+    $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AgentUserController/selectDeptList",
+            success: function(result) {
+                let html = '';
+                result.forEach((item) => {
+                    console.log(item)
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                });
+                $("#department").html(html)
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+})
+
 $("#submitBtn").click(function() {
     const form = $("#deleteManageForm");
     const formData = form.serializeArray();

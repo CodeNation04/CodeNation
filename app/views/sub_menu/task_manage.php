@@ -29,10 +29,6 @@
             <div class="form-row">
                 <strong>부서명</strong><br />
                 <select class="form-input" id="department" name="department" required>
-                    <option value="">부서 선택</option>
-                    <option value="network">(주)에스엠에스</option>
-                    <option value="security">보안팀</option>
-                    <option value="infra">인프라팀</option>
                 </select>
             </div>
 
@@ -117,6 +113,25 @@
 </div>
 
 <script>
+$(document).ready(function(){
+    $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AgentUserController/selectDeptList",
+            success: function(result) {
+                let html = '';
+                result.forEach((item) => {
+                    console.log(item)
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                });
+                $("#department").html(html)
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+})
+
 function handlePeriodChange() {
     const period = document.getElementById("period").value;
     document.getElementById("onceFields").style.display = period === "한번" ? "block" : "none";

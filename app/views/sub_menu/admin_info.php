@@ -61,9 +61,6 @@
                 <div class="form-row full-width">
                     <label>부서명</label>
                     <select id="mgr-dept" name="department">
-                        <option value="network">(주)에스엠에스</option>
-                        <option value="security">보안팀</option>
-                        <option value="infra">인프라팀</option>
                     </select>
                 </div>
 
@@ -111,7 +108,6 @@
             dataType: "json",
             url: "/?url=AdminInfoController/adminInfoList",
             success: function(result) {
-                console.log(result)
                 result.forEach((item) => {
                     managerList.push(item);
                 })
@@ -128,6 +124,23 @@
             hideForm();
         }
 
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AgentUserController/selectDeptList",
+            success: function(result) {
+                let html = '';
+                result.forEach((item) => {
+                    console.log(item)
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                });
+                $("#mgr-dept").html(html)
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+
         if (typeIndex == "moddify") {
             document.getElementById("type").value = typeIndex;
 
@@ -139,7 +152,6 @@
                 },
                 url: "/?url=AdminInfoController/adminInfoObj",
                 success: function(result) {
-                    console.log(result)
                     $("#mgr-id").val(result.id)
                     $("#admin_id").val(result.id)
                     $("#mgr-pw").val(result.pw_decoded)
@@ -240,7 +252,6 @@
                 },
                 url: "/?url=AdminInfoController/adminInfoDelete",
                 success: function(result) {
-                    console.log(result)
                     if (result.success == true) {
                         alert(`${result.message}`);
                         window.location.href = '/?url=MainController/index&page=admin';

@@ -44,10 +44,6 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
             <div class="form-row">
                 <label>부서명</label>
                 <select class="form-input" id="dept_name" name="department" required>
-                    <option value="">부서 선택</option>
-                    <option value="network">(주)에스엠에스</option>
-                    <option value="security">보안팀</option>
-                    <option value="infra">인프라팀</option>
                 </select>
             </div>
             <?php endif; ?>
@@ -131,6 +127,23 @@ $(document).ready(function(){
             console.error("데이터 불러오기 실패:", err);
         }
     });
+
+    $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AgentUserController/selectDeptList",
+            success: function(result) {
+                let html = '';
+                result.forEach((item) => {
+                    console.log(item)
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                });
+                $("#dept_name").html(html)
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
 
 })
 

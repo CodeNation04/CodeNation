@@ -32,7 +32,8 @@
 
             <div class="form-row">
                 <label for="dept_name">부서명</label>
-                <input class="form-input" id="dept_name" name="department" required />
+                <select class="form-input" id="dept_name" name="department">
+                </select>
             </div>
             <div class="form-row">
                 <label for="manager">담당자명</label>
@@ -104,6 +105,23 @@ window.onload = function() {
             }
         });
     }
+
+    $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/?url=AgentUserController/selectDeptList",
+            success: function(result) {
+                let html = '';
+                result.forEach((item) => {
+                    console.log(item)
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                });
+                $("#dept_name").html(html)
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
 
 };
 
