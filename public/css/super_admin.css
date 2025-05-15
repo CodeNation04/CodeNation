@@ -17,15 +17,17 @@
    border: 1px solid #ccc;
    border-radius: 5px;
    box-sizing: border-box;
+   font-size: 16px;
 }
 
 .placeholder input[readonly] {
-   background-color: #f2f2f2;
+   background-color: #dbdbdb;
    cursor: not-allowed;
 }
 
 .placeholder input:disabled {
-   background-color: #f2f2f2;
+   background-color: #dbdbdb;
+   color: black;
    cursor: not-allowed;
 }
 
