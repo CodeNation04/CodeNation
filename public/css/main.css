@@ -6,7 +6,7 @@
 
 body {
    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-   background-color: #f4f6f8;
+   background-color: #eee;
 }
 
 .layout {
@@ -20,7 +20,7 @@ body {
    top: 0;
    left: 0;
    width: 240px;
-   background-color: #070a3c;
+   background-color: #00023e;
    color: white;
    padding: 20px 0;
    min-height: 100vh;
@@ -41,7 +41,7 @@ body {
    padding: 10px 20px;
    font-weight: bold;
    font-size: 18px;
-   background-color: #35335e;
+   background-color: #ffffff27;
 }
 
 .menu-item {
