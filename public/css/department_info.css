@@ -88,6 +88,7 @@
 .dept-table th,
 .dept-table td {
    border: 1px solid #ddd;
+   border-radius: 3px;
    padding: 10px;
    text-align: center;
 }

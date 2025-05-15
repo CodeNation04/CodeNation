@@ -1,22 +1,43 @@
-.add-dept-wrapper {
-   padding: 30px;
-   background-color: #f9f9f9;
-   max-width: 500px;
-   margin: 0 auto;
-   font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-   font-size: 14px;
+.form-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
 }
 
 .form-header h1 {
-   margin-bottom: 24px;
-   font-size: 20px;
    font-weight: bold;
+   margin: 0;
    color: #333;
+}
+
+.dept-table {
+   background-color: white;
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.dept-table th,
+.dept-table td {
+   border: 1px solid #ddd;
+   padding: 10px;
+   border-radius: 3px;
    text-align: center;
 }
 
+.dept-table th {
+   background-color: #3e568c;
+   color: white;
+   font-weight: bold;
+}
+
+.dept-table tr:hover {
+   background-color: #f9f9fd;
+}
+
 .form-row {
-   margin-bottom: 16px;
+   margin-bottom: 12px;
+   max-width: 400px;
 }
 
 .form-row label {
@@ -28,25 +49,25 @@
 
 .form-row input[type="text"] {
    width: 100%;
-   padding: 8px 10px;
+   padding: 6px 10px;
    border: 1px solid #ccc;
-   border-radius: 4px;
+   border-radius: 3px;
    font-size: 14px;
 }
 
 .form-buttons {
    display: flex;
-   justify-content: center;
    gap: 10px;
-   margin-top: 20px;
+   margin-top: 16px;
 }
 
+/* 버튼 공통 */
 .btn-confirm {
    background-color: #007bff;
    color: white;
-   padding: 8px 16px;
+   padding: 6px 14px;
    border: none;
-   border-radius: 4px;
+   border-radius: 3px;
    cursor: pointer;
    font-size: 14px;
 }
@@ -54,17 +75,45 @@
 .btn-cancel {
    background-color: #6c757d;
    color: white;
-   padding: 8px 16px;
+   padding: 6px 14px;
    border: none;
-   border-radius: 4px;
+   border-radius: 3px;
    cursor: pointer;
    font-size: 14px;
 }
 
 .btn-confirm:hover {
-   background-color: #0056b3;
+   background-color: #00b368;
 }
 
 .btn-cancel:hover {
    background-color: #5a6268;
+}
+
+/* 수정 / 삭제 버튼 */
+.edit-btn,
+.delete-btn {
+   background-color: transparent;
+   border: none;
+   font-size: 14px;
+   font-weight: bold;
+   cursor: pointer;
+   padding: 0;
+}
+
+.edit-btn {
+   color: #007bff;
+}
+
+.edit-btn:hover {
+   text-decoration: underline;
+}
+
+.delete-btn {
+   color: #dc3545;
+   margin-left: 6px;
+}
+
+.delete-btn:hover {
+   text-decoration: underline;
 }
