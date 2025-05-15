@@ -166,5 +166,130 @@
             
             return $stmt->execute();;
         }
+
+        public function selectDeptList(){
+
+            $stmt = $this->db->prepare("SELECT  *
+                                        FROM code
+                                        WHERE sub_id = 'department'
+                                        ORDER BY create_date DESC");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function insertDeptInfo($code_name,$code_id){
+            $create_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $create_ip = $_SERVER['REMOTE_ADDR'];
+            
+            $sql = "INSERT INTO code(code_id,
+                                    code_name,
+                                    sub_id,
+                                    create_ip,
+                                    create_date)
+                            VALUES(:code_id,
+                                   :code_name,
+                                   'department',
+                                   :create_ip,
+                                   :create_date)";
+            
+            $params = [
+                ':code_id' => $code_id,
+                ':code_name' => $code_name,
+                ':create_ip' => $create_ip,
+                ':create_date' => $create_date
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();;
+        }
+
+        public function updateDeptInfo($code_name,$code_id){
+            $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $update_ip = $_SERVER['REMOTE_ADDR'];
+            
+            $sql = "UPDATE code
+                    SET code_name = :code_name,
+                        update_ip = :update_ip,
+                        update_date = :update_date
+                    WHERE code_id = :code_id";
+            
+            $params = [
+                ':code_id' => $code_id,
+                ':code_name' => $code_name,
+                ':update_ip' => $update_ip,
+                ':update_date' => $update_date
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();;
+        }
+
+        public function selectdeptInfo($num){
+
+            $stmt = $this->db->prepare("SELECT *
+                                        FROM code
+                                        WHERE code_id = :num");
+
+            $stmt->bindParam(':num', $num);                            
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function deptInfoDel($code_id){
+            $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $update_ip = $_SERVER['REMOTE_ADDR'];
+
+            $sql = "DELETE FROM code
+                    WHERE code_id = :code_id";
+            
+            $params = [
+                ':code_id' => $code_id
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();;
+        }
     }
 ?>

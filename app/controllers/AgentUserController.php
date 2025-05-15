@@ -64,4 +64,62 @@ class AgentUserController extends Controller {
         }
     }
 
+    public function selectDeptList(){
+        header('Content-Type: application/json');
+        
+        $temp = $this->model('AgentUser')->selectDeptList();
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
+
+    public function deptInfoAdd(){
+        $type = $_POST['type'] ?? '';
+        $code_name = $_POST['dept_name'] ?? '';
+        $code_id = $_POST['dept_code'] ?? '';
+
+        if($type !== "moddify"){
+            $temp = $this->model('AgentUser')->insertDeptInfo($code_name,$code_id);
+        }else{
+            $temp = $this->model('AgentUser')->updateDeptInfo($code_name,$code_id);
+        }
+
+        if ($temp) {
+            echo "<script>
+                    alert('성공적으로 저정되었습니다.');
+                    window.location.href='/?url=MainController/index&page=department';
+                </script>";
+        } else {
+            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=department';</script>";
+            exit;
+        }
+    }
+
+    public function deptInfo() {
+        $num = $_GET['num'] ?? '';
+        header('Content-Type: application/json');
+        
+        $temp = $this->model('AgentUser')->selectdeptInfo($num);
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
+
+    public function deptInfoDel(){
+        $code_id = $_POST['num'] ?? '';
+
+        $temp = $this->model('AgentUser')->deptInfoDel($code_id);
+
+        header('Content-Type: application/json');
+
+        if ($temp) {
+            echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
+        } else {
+            echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
+        }
+    }
 }
