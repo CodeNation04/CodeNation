@@ -43,6 +43,13 @@
    border-radius: 3px;
 }
 
+/* 등록된 부서는 선택 불가 + 회색 처리 */
+.form-row select option:disabled {
+   color: #999;
+   background-color: #f0f0f0;
+   font-style: italic;
+}
+
 .form-buttons {
    display: flex;
    gap: 10px;
@@ -113,7 +120,6 @@
    border: none;
    font-weight: bold;
    cursor: pointer;
-   text-decoration: underline;
    padding: 0;
    font-size: 14px;
    text-decoration: none;
@@ -126,6 +132,7 @@
 .delete-btn {
    color: #dc3545;
 }
+
 .pagination {
    margin-top: 10px;
    text-align: center;
