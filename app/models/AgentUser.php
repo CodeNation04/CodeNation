@@ -172,6 +172,7 @@
             $stmt = $this->db->prepare("SELECT  *
                                         FROM code
                                         WHERE sub_id = 'department'
+                                        AND del_yn = 'N'
                                         ORDER BY create_date DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -267,7 +268,8 @@
             $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
             $update_ip = $_SERVER['REMOTE_ADDR'];
 
-            $sql = "DELETE FROM code
+            $sql = "UPDATE code
+                    SET del_yn = 'Y'
                     WHERE code_id = :code_id";
             
             $params = [
