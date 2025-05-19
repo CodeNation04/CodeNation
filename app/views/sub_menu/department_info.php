@@ -69,7 +69,6 @@ window.onload = function() {
     const type = params.get('type');
     const num = params.get('num');
 
-    // 등록/수정 화면이면 부서 select options 먼저 로딩
     if (document.getElementById("dept_name")) {
         loadRegisteredDeptCodes(() => {
             loadDeptSelectOptions(() => {
@@ -83,7 +82,6 @@ window.onload = function() {
     }
 };
 
-// 부서명 select option용: 등록된 부서 목록 로딩
 function loadRegisteredDeptCodes(callback) {
     $.ajax({
         type: "GET",
@@ -99,7 +97,6 @@ function loadRegisteredDeptCodes(callback) {
     });
 }
 
-// select 옵션 로딩
 function loadDeptSelectOptions(callback) {
     $.ajax({
         type: "GET",
@@ -121,7 +118,6 @@ function loadDeptSelectOptions(callback) {
     });
 }
 
-// 수정 폼 값 불러오기
 function loadEditForm(num) {
     $("#type").val("moddify");
     $.ajax({
@@ -133,7 +129,7 @@ function loadEditForm(num) {
         url: "/?url=AgentUserController/agentUserInfo",
         success: function(result) {
             $("#num").val(result.user_idx);
-            $("#dept_name").val(result.code_code_id).prop("disabled", true); // 수정 시 변경불가
+            $("#dept_name").val(result.code_code_id).prop("disabled", true);
             $("#manager").val(result.user_name);
             $("#phone").val(result.user_phone);
             $("#email").val(result.user_email);
@@ -145,7 +141,6 @@ function loadEditForm(num) {
     });
 }
 
-// 부서 목록 테이블 불러오기
 function loadDepartmentList() {
     $.ajax({
         type: "GET",
@@ -161,7 +156,6 @@ function loadDepartmentList() {
     });
 }
 
-// 페이지 테이블 렌더링
 function renderPage(page) {
     const itemsPerPage = 10;
     const start = (page - 1) * itemsPerPage;
@@ -196,15 +190,24 @@ function renderPage(page) {
     });
 
     html += '</tbody></table>';
+
+    // 페이징 UI
+    const totalPages = Math.ceil(resultData.length / itemsPerPage);
+    html += '<div class="pagination">';
+    if (page > 1) html += `<button onclick="renderPage(${page - 1})">이전</button>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="renderPage(${i})" class="${i === page ? 'active' : ''}">${i}</button>`;
+    }
+    if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
+    html += '</div>';
+
     document.getElementById("deptTableBody").innerHTML = html;
 }
 
-// 수정 이동
 function editDept(num) {
     location.href = "/?url=MainController/index&page=dept&form=show&type=moddify&num=" + num;
 }
 
-// 저장
 function submitBtn() {
     const name = $("#dept_name").val();
     if (!name) {
@@ -216,7 +219,6 @@ function submitBtn() {
     }
 }
 
-// 삭제
 function deleteDept(num) {
     if (confirm("정말 삭제하시겠습니까?")) {
         $.ajax({
