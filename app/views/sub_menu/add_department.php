@@ -30,18 +30,18 @@
     <!-- ✅ 등록 폼 화면 -->
     <div class="form-card">
         <form id="addDeptForm" method="post" action="/?url=AgentUserController/deptInfoAdd">
-            <input type="hidden" id="type" name="type" required/>
+            <input type="hidden" id="type" name="type" required />
             <div class="form-row">
                 <label for="dept_name">부서명</label>
                 <input type="text" id="dept_name" name="dept_name" required placeholder="예: 보안팀" />
             </div>
             <?php if (!$typeMode): ?>
-                <div class="form-row">
-                    <label for="dept_code">부서코드</label>
-                    <input type="text" id="dept_code" name="dept_code" required placeholder="예: SEC001" />
-                </div>
+            <div class="form-row">
+                <label for="dept_code">부서코드</label>
+                <input type="text" id="dept_code" name="dept_code" required placeholder="예: SEC001" />
+            </div>
             <?php else: ?>
-                <input type="hidden" id="dept_code" name="dept_code" required/>
+            <input type="hidden" id="dept_code" name="dept_code" required />
             <?php endif; ?>
             <div class="form-buttons">
                 <a href="?url=MainController/index&page=department">
@@ -55,58 +55,57 @@
 </div>
 
 <script>
-    $(document).ready(function(){
-        const params = new URLSearchParams(window.location.search);
-        const type = params.get('type');
-        const num = params.get('num');
+$(document).ready(function() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    const num = params.get('num');
 
-        if (type === 'moddify') {
-            document.getElementById("type").value = type;
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                data: {
-                    num: num
-                },
-                url: "/?url=AgentUserController/deptInfo", // 수정할 부서 정보 API
-                success: function(result) {
-                    console.log(result)
-                    $("#dept_code").val(result.code_id);
-                    $("#dept_name").val(result.code_name);
-                },
-                error: function(err) {
-                    console.error("데이터 불러오기 실패:", err);
-                }
-            });
-        }
+    if (type === 'moddify') {
+        document.getElementById("type").value = type;
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: {
+                num: num
+            },
+            url: "/?url=AgentUserController/deptInfo",
+            success: function(result) {
+                $("#dept_code").val(result.code_id);
+                $("#dept_name").val(result.code_name);
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    }
 
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let resultData = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let resultData = [];
 
-        function renderPage(page) {
-            currentPage = page;
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = resultData.slice(start, end);
+    function renderPage(page) {
+        currentPage = page;
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = resultData.slice(start, end);
 
-            let html = `<table class="dept-table">
+        let html = `<table class="dept-table">
             <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>부서명</th>
-                        <th>부서코드</th>
-                        <th>수정</th>
-                        <th>삭제</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+                <tr>
+                    <th>번호</th>
+                    <th>부서명</th>
+                    <th>부서코드</th>
+                    <th>수정</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>`;
 
-            for (let i = 0; i < pageData.length; i++) {
-                const item = pageData[i];
-                const number = resultData.length - ((page - 1) * itemsPerPage + i);
+        for (let i = 0; i < pageData.length; i++) {
+            const item = pageData[i];
+            const number = resultData.length - ((page - 1) * itemsPerPage + i);
 
-                html += `
+            html += `
                 <tr>
                     <td>${number}</td>
                     <td>${item.code_name}</td>
@@ -114,39 +113,42 @@
                     <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=department&form=show&type=moddify&num=${item.code_id}'">수정</button></td>
                     <td><button class="delete-btn" onclick="deleteDept('${item.code_id}')">삭제</button></td>
                 </tr>`;
-            }
-
-            html += '</tbody></table><div class="pagination">';
-
-            const totalPages = Math.ceil(resultData.length / itemsPerPage);
-            if (page > 1) html += `<button onclick="renderPage(${page - 1})">이전</button>`;
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button onclick="renderPage(${i})" ${i === page ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
-            }
-            if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
-
-            html += '</div>';
-
-            const wrapper = document.getElementById("task-table-wrapper");
-            if (wrapper) wrapper.innerHTML = html;
         }
 
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AgentUserController/selectDeptList",
-            success: function(result) {
-                console.log(result)
-                resultData = result;
-                renderPage(1);
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
-    })
+        html += '</tbody></table><div class="pagination">';
 
-    function deleteDept(num) {
+        const totalPages = Math.ceil(resultData.length / itemsPerPage);
+        if (page > 1) html += `<button onclick="renderPage(${page - 1})">이전</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            html +=
+                `<button onclick="renderPage(${i})" ${i === page ? 'style="font-weight:bold;"' : ''}>${i}</button>`;
+        }
+        if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
+
+        html += '</div>';
+
+        const wrapper = document.getElementById("task-table-wrapper");
+        if (wrapper) wrapper.innerHTML = html;
+    }
+
+    // ✅ 페이징 함수 글로벌 등록
+    window.renderPage = renderPage;
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            resultData = result;
+            renderPage(1);
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
+});
+
+function deleteDept(num) {
     if (confirm("정말 삭제하시겠습니까?")) {
         $.ajax({
             type: "POST",
