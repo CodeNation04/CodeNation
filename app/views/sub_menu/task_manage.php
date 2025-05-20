@@ -12,7 +12,7 @@
             <h1>예약작업 관리</h1>
         </div>
         <a href="?url=MainController/index&page=task&form=show">
-            <button class="btn-confirm"> + </button>
+            <button class="btn-confirm">등록</button>
         </a>
     </div>
 

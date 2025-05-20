@@ -12,7 +12,7 @@
             <h1>부서 정보 관리</h1>
         </div>
         <a href="?url=MainController/index&page=dept&form=show">
-            <button class="btn-confirm">+</button>
+            <button class="btn-confirm">등록</button>
         </a>
     </div>
 
@@ -54,7 +54,7 @@
 
             <div class="form-buttons-wrapper">
                 <div class="form-buttons">
-                    <button type="button" class="btn-confirm" onclick="submitBtn()">저장</button>
+                    <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
                     <a href="?url=MainController/index&page=dept">
                         <button type="button" class="btn-cancel">취소</button>
                     </a>

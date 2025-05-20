@@ -16,7 +16,7 @@
                 <h1>중간 관리자 목록</h1>
             </div>
             <a href="?url=MainController/index&page=admin&form=show">
-                <button type="button" class="btn-confirm" id="toggle-button">+</button>
+                <button type="button" class="btn-confirm" id="toggle-button">등록</button>
             </a>
         </div>
 
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="submit-button">등록</button>
+                    <button type="submit" class="submit-button">확인</button>
                     <a href="?url=MainController/index&page=admin">
                         <button type="button" class="cancel-button">취소</button>
                     </a>

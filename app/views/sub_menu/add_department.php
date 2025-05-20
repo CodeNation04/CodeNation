@@ -18,7 +18,7 @@
         </div>
         <?php if (!$formMode): ?>
         <a href="?url=MainController/index&page=department&form=show">
-            <button class="btn-confirm">+</button>
+            <button class="btn-confirm">등록</button>
         </a>
         <?php endif; ?>
     </div>
@@ -44,7 +44,7 @@
             <?php endif; ?>
             <div class="form-buttons-wrapper">
                 <div class="form-buttons">
-                    <button type="submit" class="btn-confirm">저장</button>
+                    <button type="submit" class="btn-confirm">확인</button>
                     <a href="?url=MainController/index&page=department">
                         <button type="button" class="btn-cancel">취소</button>
                     </a>
