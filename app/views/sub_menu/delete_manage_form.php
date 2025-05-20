@@ -45,9 +45,11 @@
         </div>
 
         <!-- 버튼 -->
-        <div class="form-row buttons">
-            <button type="button" id="submitBtn">확인</button>
-            <button type="button" onclick="cancelForm()">취소</button>
+        <div class="form-buttons-wrapper">
+            <div class="form-row buttons">
+                <button type="button" id="submitBtn">확인</button>
+                <button type="button" onclick="cancelForm()">취소</button>
+            </div>
         </div>
     </form>
 </div>

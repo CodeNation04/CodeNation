@@ -5,9 +5,11 @@
    height: 100%;
    font-size: 16px;
 }
+
 h1 {
    color: #00023e;
 }
+
 .task-manage-wrapper h2 {
    margin-bottom: 16px;
 }
@@ -76,14 +78,16 @@ h1 {
    background-color: #5a6268;
 }
 
-/* 입력 폼 요소 */
+/* 입력 폼 */
 .form-card {
    margin-top: 10px;
 }
+
 .form-card label {
    margin-bottom: 6px;
    font-weight: 500;
 }
+
 .form-row {
    display: flex;
    flex-direction: column;
@@ -100,7 +104,13 @@ h1 {
    max-width: 500px;
 }
 
-/* 폼 내부 버튼 영역 */
+/* ✅ 버튼을 입력창 너비 기준 오른쪽 정렬 */
+.form-buttons-wrapper {
+   max-width: 500px;
+   display: flex;
+   justify-content: flex-end;
+}
+
 .form-buttons {
    display: flex;
    gap: 10px;
@@ -133,7 +143,7 @@ h1 {
 
 .pagination button.active {
    background-color: #007bff;
-   color: #fff;
+   color: white;
    font-weight: bold;
    border: none;
 }

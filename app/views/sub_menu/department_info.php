@@ -49,11 +49,13 @@
                 <textarea id="note" name="etc"></textarea>
             </div>
 
-            <div class="form-buttons">
-                <button type="button" class="btn-confirm" onclick="submitBtn()">저장</button>
-                <a href="?url=MainController/index&page=dept">
-                    <button type="button" class="btn-cancel">취소</button>
-                </a>
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button type="button" class="btn-confirm" onclick="submitBtn()">저장</button>
+                    <a href="?url=MainController/index&page=dept">
+                        <button type="button" class="btn-cancel">취소</button>
+                    </a>
+                </div>
             </div>
         </form>
     </div>
