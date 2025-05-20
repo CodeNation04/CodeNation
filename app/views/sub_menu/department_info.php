@@ -10,7 +10,7 @@
             <h1>부서 정보 관리</h1>
         </div>
         <a href="?url=MainController/index&page=dept&form=show">
-            <button class="btn-confirm">등록</button>
+            <button class="btn-confirm">+</button>
         </a>
     </div>
 

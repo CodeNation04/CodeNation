@@ -16,7 +16,7 @@
                 <h1>중간 관리자 목록</h1>
             </div>
             <a href="?url=MainController/index&page=admin&form=show">
-                <button type="button" class="btn-confirm" id="toggle-button">추가</button>
+                <button type="button" class="btn-confirm" id="toggle-button">+</button>
             </a>
         </div>
 

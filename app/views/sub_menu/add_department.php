@@ -18,7 +18,7 @@
 
         <?php if (!$formMode): ?>
         <a href="?url=MainController/index&page=department&form=show">
-            <button class="btn-confirm">추가</button>
+            <button class="btn-confirm">+</button>
         </a>
         <?php endif; ?>
     </div>
