@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>중간 관리자 목록</title>
-    <link rel="stylesheet" href="/css/admin_info.css">
+    <link rel="stylesheet" href="css/admin_info.css">
 </head>
 
 <body>

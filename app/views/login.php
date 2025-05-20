@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <title>로그인</title>
-    <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/login.css" />
 </head>
 
 <body>
     <div class="login-container">
         <div class="login-image">
-            <img src="/asset/sample.jpg" alt="로그인 이미지">
+            <img src="asset/sample.jpg" alt="로그인 이미지">
         </div>
         <div class="login-form">
             <p class="login-title">i-Mon 관리자 페이지</p>

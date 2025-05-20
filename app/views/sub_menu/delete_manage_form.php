@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/delete_manage_form.css" />
+<link rel="stylesheet" href="css/delete_manage_form.css" />
 
 <div class="delete-manage-form">
     <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm"

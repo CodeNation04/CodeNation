@@ -154,4 +154,15 @@ class AgentUserController extends Controller {
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
     }
+
+    public function selectLogList(){
+        header('Content-Type: application/json');
+        
+        $temp = $this->model('AgentUser')->selectLogList();
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
 }
