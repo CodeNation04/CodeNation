@@ -79,7 +79,6 @@
    font-size: 14px;
 }
 
-/* ✅ 입력창 너비에 맞게 버튼 영역 정렬 */
 .form-buttons-wrapper {
    max-width: 400px;
 }
@@ -144,31 +143,4 @@
 
 .delete-btn:hover {
    text-decoration: underline;
-}
-
-.pagination {
-   display: flex;
-   justify-content: center;
-   gap: 6px;
-   margin-top: 20px;
-}
-
-.pagination button {
-   padding: 6px 10px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   background-color: white;
-   cursor: pointer;
-   font-size: 13px;
-   transition: all 0.2s ease;
-}
-
-.pagination button:hover {
-   background-color: #f0f0f0;
-}
-
-.pagination button[style*="font-weight:bold"] {
-   background-color: #3e568c;
-   color: white;
-   border-color: #3e568c;
 }
