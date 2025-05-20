@@ -1,7 +1,7 @@
 <?php
 // add_department.php
 ?>
-<link rel="stylesheet" href="css/add_department.css" />
+<link rel="stylesheet" href="/css/add_department.css" />
 
 <div class="add-dept-wrapper">
     <?php 

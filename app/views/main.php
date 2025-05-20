@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>i-Mon 관리</title>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="/css/main.css" />
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
@@ -13,7 +13,7 @@
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar">
-            <img src="asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
+            <img src="/asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
             
             <?php
             $page = $_GET['page'] ?? "";

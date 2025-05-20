@@ -124,6 +124,7 @@ class AgentUserController extends Controller {
     }
 
     public function agentUserData() {
+        $code_id = $_POST['code_id'] ?? '';
         $hostname = $_POST['hostname'] ?? '';
         $ip = $_POST['ip'] ?? 0;
         $username = $_POST['username'] ?? '';
@@ -132,19 +133,19 @@ class AgentUserController extends Controller {
         $cnt = $this->model('AgentUser')->countAgentUser($hostname,$ip,$username);
 
         if($cnt == 0){
-            $temp = $this->model('AgentUser')->insertAgentUserData($hostname,$ip,$username,$token);
+            $temp = $this->model('AgentUser')->insertAgentUserData($hostname,$ip,$username,$token,$code_id);
 
             $work_type = $username. "님이 로그인 하셨습니다.";
             $work_result = "성공";
             $work_info = "로그인";
-            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info);
+            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id);
         }else{
-            $temp = $this->model('AgentUser')->updateAgentUserData($hostname,$ip,$username,$token);
+            $temp = $this->model('AgentUser')->updateAgentUserData($hostname,$ip,$username,$token,$code_id);
 
             $work_type = $username. "님이 로그인 하셨습니다.";
             $work_result = "성공";
             $work_info = "로그인";
-            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info);
+            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id);
         }
 
         if ($temp) {

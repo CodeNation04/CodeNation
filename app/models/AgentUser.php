@@ -308,13 +308,14 @@
             return $stmt->fetchColumn();
         }
 
-        public function insertAgentUserData($hostname,$ip,$username,$token){
+        public function insertAgentUserData($hostname,$ip,$username,$token,$code_id){
             $create_ip = $_SERVER['REMOTE_ADDR'];
             
             $sql = "INSERT INTO user_agent_info(user_id,
                                                 user_name,
                                                 user_ip,
                                                 host_name,
+                                                code_code_id,
                                                 create_ip,
                                                 create_date
                                                 )
@@ -322,6 +323,7 @@
                                    :username,
                                    :ip,
                                    :hostname,
+                                   :code_id,
                                    :create_ip,
                                    now())";
             
@@ -330,6 +332,7 @@
                 ':ip' => $ip,
                 ':username' => $username,
                 ':token' => $token,
+                ':code_id' => $code_id,
                 ':create_ip' => $create_ip
             ];
 
@@ -351,11 +354,12 @@
             return $stmt->execute();;
         }
 
-        public function updateAgentUserData($hostname,$ip,$username,$token){
+        public function updateAgentUserData($hostname,$ip,$username,$token,$code_id){
             $update_ip = $_SERVER['REMOTE_ADDR'];
             
             $sql = "UPDATE user_agent_info
                     SET user_id = :token,
+                        code_code_id = :code_id,
                         update_ip = :update_ip,
                         update_date = now()
                     WHERE user_name = :username
@@ -388,13 +392,14 @@
             return $stmt->execute();;
         }
 
-        public function insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info){  
+        public function insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id){  
             $sql = "INSERT INTO user_agent_log(user_id,
                                                 user_name,
                                                 host_name,
                                                 work_type,
                                                 work_result,
                                                 work_info,
+                                                code_code_id,
                                                 create_date
                                                 )
                             VALUES(:token,
@@ -403,10 +408,12 @@
                                    :work_type,
                                    :work_result,
                                    :work_info,
+                                   :code_id,
                                    now())";
             
             $params = [
                 ':hostname' => $hostname,
+                ':code_id' => $code_id,
                 ':username' => $username,
                 ':work_type' => $work_type,
                 ':work_result' => $work_result,
