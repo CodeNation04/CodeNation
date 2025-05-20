@@ -101,13 +101,15 @@
                     placeholder="예: C:/Documents/Important" required />
             </div>
 
-            <div class="form-buttons">
-                <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
-                <a href="?url=MainController/index&page=task">
-                    <button type="button" class="btn-cancel">취소</button>
-                </a>
-
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
+                    <a href="?url=MainController/index&page=task">
+                        <button type="button" class="btn-cancel">취소</button>
+                    </a>
+                </div>
             </div>
+
         </form>
     </div>
     <?php endif; ?>

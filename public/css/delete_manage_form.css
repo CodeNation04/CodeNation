@@ -38,9 +38,9 @@
    right: 6px;
    top: 50%;
    transform: translateY(-50%);
-   background: none !important; /* ✅ 배경 제거 */
-   border: none !important; /* ✅ 테두리 제거 */
-   color: black !important; /* ✅ 글자색 */
+   background: none !important;
+   border: none !important;
+   color: black !important;
    font-size: 16px;
    font-weight: bold;
    cursor: pointer;
@@ -64,9 +64,17 @@
    cursor: pointer;
 }
 
+/* ✅ 버튼을 오른쪽 정렬로 감싸는 래퍼 */
+.form-buttons-wrapper {
+   max-width: 500px;
+   display: flex;
+   justify-content: flex-end;
+}
+
 .form-row.buttons {
    display: flex;
    gap: 10px;
+   margin-top: 16px;
 }
 
 #submitBtn {
@@ -75,6 +83,7 @@
    border: none;
    padding: 8px 16px;
    border-radius: 4px;
+   cursor: pointer;
 }
 
 button[type="button"] {
@@ -83,4 +92,13 @@ button[type="button"] {
    border: none;
    padding: 8px 16px;
    border-radius: 4px;
+   cursor: pointer;
+}
+
+#submitBtn:hover {
+   background-color: #1c60c6;
+}
+
+button[type="button"]:hover {
+   background-color: #5a6268;
 }
