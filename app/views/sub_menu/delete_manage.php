@@ -7,7 +7,7 @@
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>암호화 환경 관리</h1>
         </div>
-        <button id="toggleFormBtn">등록</button>
+        <button id="toggleFormBtn"> + </button>
     </div>
 
     <!-- 등록/수정 폼 -->

@@ -27,13 +27,13 @@
             <input type="hidden" name="num" id="num" value="" />
 
             <div class="form-row">
-                <strong>부서명</strong><br />
+                <label>부서명</label>
                 <select class="form-input" id="department" name="department" required>
                 </select>
             </div>
 
             <div class="form-row">
-                <strong>예약작업 종류</strong><br />
+                <label>예약작업 종류</label>
                 <select class="form-input" id="job_type" name="job_type" required>
                     <option value="">선택</option>
                     <option value="파일 암호화">파일 암호화</option>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="form-row">
-                <strong>작업 주기</strong><br />
+                <label>작업 주기</label>
                 <select class="form-input" name="period" id="period" required onchange="handlePeriodChange()">
                     <option value="">작업 주기 선택</option>
                     <option value="한번">한번</option>
@@ -96,7 +96,7 @@
             </div>
 
             <div class="form-row">
-                <strong>작업 대상 (디스크/폴더명)</strong><br />
+                <label>작업 대상 (디스크/폴더명)</label>
                 <input type="text" class="form-input" name="target_path" id="target_path"
                     placeholder="예: C:/Documents/Important" required />
             </div>

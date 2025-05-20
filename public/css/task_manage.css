@@ -51,23 +51,23 @@
 .btn-confirm {
    background-color: #007bff;
    color: white;
-   padding: 6px 14px;
+   padding: 8px 16px;
    border: none;
-   border-radius: 3px;
+   border-radius: 4px;
    cursor: pointer;
 }
 
 .btn-cancel {
    background-color: #6c757d;
    color: white;
-   padding: 6px 14px;
+   padding: 8px 16px;
    border: none;
-   border-radius: 3px;
+   border-radius: 4px;
    cursor: pointer;
 }
 
 .btn-confirm:hover {
-   background-color: #00b368;
+   background-color: #1c60c6;
 }
 
 .btn-cancel:hover {
@@ -78,17 +78,24 @@
 .form-card {
    margin-top: 10px;
 }
-
+.form-card label {
+   margin-bottom: 6px;
+   font-weight: 500;
+}
 .form-row {
-   margin-bottom: 12px;
-   max-width: 400px;
+   display: flex;
+   flex-direction: column;
+   justify-content: start;
+   align-items: start;
+   margin-bottom: 15px;
 }
 
 .form-input {
    width: 100%;
-   padding: 6px 10px;
+   padding: 8px 10px;
    border: 1px solid #ccc;
    border-radius: 3px;
+   max-width: 500px;
 }
 
 /* 폼 내부 버튼 영역 */

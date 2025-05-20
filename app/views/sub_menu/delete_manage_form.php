@@ -14,7 +14,7 @@
         <div class="form-row">
             <div class="form-label-row">
                 <label>암호화 대상 파일 확장자</label>
-                <button type="button" class="add-btn" onclick="addField('extFields', 'file_ext')">추가</button>
+                <button type="button" class="add-btn" onclick="addField('extFields', 'file_ext')">+</button>
             </div>
             <div id="extFields" class="dynamic-field-group">
                 <div class="dynamic-field">
@@ -31,7 +31,7 @@
         <div class="form-row">
             <div class="form-label-row">
                 <label>예외 폴더 경로</label>
-                <button type="button" class="add-btn" onclick="addField('excludeFields', 'exclude_path')">추가</button>
+                <button type="button" class="add-btn" onclick="addField('excludeFields', 'exclude_path')">+</button>
             </div>
             <div id="excludeFields" class="dynamic-field-group">
                 <div class="dynamic-field">
@@ -46,30 +46,30 @@
 
         <!-- 버튼 -->
         <div class="form-row buttons">
-            <button type="button" id="submitBtn">등록</button>
+            <button type="button" id="submitBtn">확인</button>
             <button type="button" onclick="cancelForm()">취소</button>
         </div>
     </form>
 </div>
 
 <script>
-$(document).ready(function(){
+$(document).ready(function() {
     $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AgentUserController/selectDeptList",
-            success: function(result) {
-                let html = '';
-                result.forEach((item) => {
-                    console.log(item)
-                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
-                });
-                $("#department").html(html)
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '';
+            result.forEach((item) => {
+                console.log(item)
+                html += `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#department").html(html)
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
 })
 
 $("#submitBtn").click(function() {
