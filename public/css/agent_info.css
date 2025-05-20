@@ -1,17 +1,8 @@
 /* 전체 컨테이너 스타일 */
-.container {
-   margin: 0 auto;
-   background-color: #ffffff;
-   padding: 20px 30px;
-   border-radius: 8px;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
 
 /* 제목 스타일 */
-.container h2 {
+.container h1 {
    margin-bottom: 20px;
-   font-size: 24px;
-   color: #333;
 }
 
 /* 입력 폼 스타일 */

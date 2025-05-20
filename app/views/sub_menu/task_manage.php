@@ -10,7 +10,7 @@
             <h1>예약작업 관리</h1>
         </div>
         <a href="?url=MainController/index&page=task&form=show">
-            <button class="btn-confirm">추가</button>
+            <button class="btn-confirm"> + </button>
         </a>
     </div>
 
@@ -102,10 +102,11 @@
             </div>
 
             <div class="form-buttons">
+                <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
                 <a href="?url=MainController/index&page=task">
                     <button type="button" class="btn-cancel">취소</button>
                 </a>
-                <button type="button" class="btn-confirm" onclick="submitBtn()">확인</button>
+
             </div>
         </form>
     </div>
@@ -113,23 +114,23 @@
 </div>
 
 <script>
-$(document).ready(function(){
+$(document).ready(function() {
     $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AgentUserController/selectDeptList",
-            success: function(result) {
-                let html = '';
-                result.forEach((item) => {
-                    console.log(item)
-                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
-                });
-                $("#department").html(html)
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '';
+            result.forEach((item) => {
+                console.log(item)
+                html += `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#department").html(html)
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
 })
 
 function handlePeriodChange() {
