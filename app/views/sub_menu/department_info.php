@@ -1,7 +1,9 @@
 <?php
 // department_info.php
 ?>
-<link rel="stylesheet" href="css/department_info.css" />
+<link rel="stylesheet" href="/css/department_info.css" />
+<link rel="stylesheet" href="css/pagination.css">
+<script src="/js/pagination.js"></script>
 
 <div class="dept-wrapper">
     <div class="dept-header">
@@ -20,6 +22,7 @@
 
     <?php if (!$formMode): ?>
     <div class="dept-table-wrapper" id="deptTableBody"></div>
+    <div class="pagination"></div>
     <?php endif; ?>
 
     <?php if ($formMode): ?>
@@ -150,60 +153,30 @@ function loadDepartmentList() {
         url: "/?url=AgentUserController/agentUserList",
         success: function(result) {
             resultData = result;
-            renderPage(1);
+            setupPagination({
+                data: resultData,
+                itemsPerPage: 10,
+                containerId: "deptTableBody",
+                paginationClass: "pagination",
+                renderRowHTML: (pageData) => {
+                    return `<table class=\"dept-table\"><thead><tr><th>부서명</th><th>담당자명</th><th>전화번호</th><th>이메일</th><th>비고</th><th>수정</th><th>삭제</th></tr></thead><tbody>` +
+                        pageData.map(item => `
+                            <tr>
+                                <td>${item.code_name}</td>
+                                <td>${item.user_name}</td>
+                                <td>${item.user_phone}</td>
+                                <td>${item.user_email}</td>
+                                <td>${item.etc}</td>
+                                <td><button class=\"edit-btn\" onclick=\"editDept(${item.user_idx})\">수정</button></td>
+                                <td><button class=\"delete-btn\" onclick=\"deleteDept(${item.user_idx})\">삭제</button></td>
+                            </tr>`).join('') + '</tbody></table>';
+                }
+            });
         },
         error: function(err) {
             console.error("부서 목록 불러오기 실패:", err);
         }
     });
-}
-
-function renderPage(page) {
-    const itemsPerPage = 10;
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    const pageData = resultData.slice(start, end);
-
-    let html = `<table class="dept-table">
-        <thead>
-            <tr>
-                <th>부서명</th>
-                <th>담당자명</th>
-                <th>전화번호</th>
-                <th>이메일</th>
-                <th>비고</th>
-                <th>수정</th>
-                <th>삭제</th>
-            </tr>
-        </thead>
-        <tbody>`;
-
-    pageData.forEach((item) => {
-        html += `
-        <tr>
-            <td>${item.code_name}</td>
-            <td>${item.user_name}</td>
-            <td>${item.user_phone}</td>
-            <td>${item.user_email}</td>
-            <td>${item.etc}</td>
-            <td><button class="edit-btn" onclick="editDept(${item.user_idx})">수정</button></td>
-            <td><button class="delete-btn" onclick="deleteDept(${item.user_idx})">삭제</button></td>
-        </tr>`;
-    });
-
-    html += '</tbody></table>';
-
-    // 페이징 UI
-    const totalPages = Math.ceil(resultData.length / itemsPerPage);
-    html += '<div class="pagination">';
-    if (page > 1) html += `<button onclick="renderPage(${page - 1})">이전</button>`;
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button onclick="renderPage(${i})" class="${i === page ? 'active' : ''}">${i}</button>`;
-    }
-    if (page < totalPages) html += `<button onclick="renderPage(${page + 1})">다음</button>`;
-    html += '</div>';
-
-    document.getElementById("deptTableBody").innerHTML = html;
 }
 
 function editDept(num) {

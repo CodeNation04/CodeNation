@@ -1,0 +1,41 @@
+.pagination {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 24px;
+   gap: 6px;
+   font-size: 14px;
+}
+
+.pagination button {
+   padding: 6px 14px;
+   min-width: 36px;
+   border: 1px solid #ccc;
+   background-color: #f9f9f9;
+   color: #333;
+   border-radius: 6px;
+   cursor: pointer;
+   font-weight: 500;
+   transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+   background-color: #e1e6f0; /* 연한 블루톤 */
+   color: #050981; /* i-Mon 포인트 네이비 */
+   border-color: #adbfdc;
+}
+
+.pagination button.active,
+.pagination button[style*="font-weight:bold"] {
+   background-color: #282b95; /* i-Mon 메인 네이비 */
+   color: #fff;
+   border-color: #00023e;
+   font-weight: bold;
+}
+
+.pagination button:disabled {
+   background-color: #eee;
+   color: #999;
+   border-color: #ddd;
+   cursor: not-allowed;
+}

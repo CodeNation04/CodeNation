@@ -1,4 +1,3 @@
-/* 예약 작업 관리 전체 레이아웃 */
 .task-manage-wrapper {
    display: flex;
    flex-direction: column;
@@ -21,7 +20,6 @@ h1 {
    margin-bottom: 12px;
 }
 
-/* 테이블 스타일 */
 .task-table-wrapper {
    flex: 1;
    overflow-x: auto;
@@ -51,7 +49,6 @@ h1 {
    background-color: #f9f9fd;
 }
 
-/* 공통 버튼 스타일 */
 .btn-confirm {
    background-color: #007bff;
    color: white;
@@ -78,7 +75,6 @@ h1 {
    background-color: #5a6268;
 }
 
-/* 입력 폼 */
 .form-card {
    margin-top: 10px;
 }
@@ -104,7 +100,6 @@ h1 {
    max-width: 500px;
 }
 
-/* ✅ 버튼을 입력창 너비 기준 오른쪽 정렬 */
 .form-buttons-wrapper {
    max-width: 500px;
    display: flex;
@@ -117,43 +112,6 @@ h1 {
    margin-top: 16px;
 }
 
-/* 페이지네이션 */
-.pagination {
-   display: flex;
-   justify-content: center;
-   margin-top: 12px;
-   font-size: 14px;
-   gap: 5px;
-}
-
-.pagination button {
-   background: none;
-   border: 1px solid #ccc;
-   color: #007bff;
-   cursor: pointer;
-   padding: 6px 10px;
-   border-radius: 3px;
-}
-
-.pagination button:hover {
-   background-color: #007bff;
-   color: #fff;
-   font-weight: bold;
-}
-
-.pagination button.active {
-   background-color: #007bff;
-   color: white;
-   font-weight: bold;
-   border: none;
-}
-
-.pagination button:disabled {
-   color: #ccc;
-   cursor: default;
-}
-
-/* 수정/삭제 버튼 */
 .edit-btn,
 .delete-btn {
    background-color: transparent;
