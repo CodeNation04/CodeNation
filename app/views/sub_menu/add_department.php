@@ -43,11 +43,15 @@
             <?php else: ?>
             <input type="hidden" id="dept_code" name="dept_code" required />
             <?php endif; ?>
-            <div class="form-buttons">
-                <a href="?url=MainController/index&page=department">
-                    <button type="button" class="btn-cancel">취소</button>
-                </a>
-                <button type="submit" class="btn-confirm">저장</button>
+
+            <!-- ✅ 버튼을 입력창 길이 기준으로 정렬 -->
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button type="submit" class="btn-confirm">저장</button>
+                    <a href="?url=MainController/index&page=department">
+                        <button type="button" class="btn-cancel">취소</button>
+                    </a>
+                </div>
             </div>
         </form>
     </div>
@@ -131,7 +135,6 @@ $(document).ready(function() {
         if (wrapper) wrapper.innerHTML = html;
     }
 
-    // ✅ 페이징 함수 글로벌 등록
     window.renderPage = renderPage;
 
     $.ajax({

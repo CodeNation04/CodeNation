@@ -1,4 +1,3 @@
-/* 제목 영역 */
 .form-header {
    display: flex;
    justify-content: space-between;
@@ -9,16 +8,14 @@
 .form-header h1 {
    font-weight: bold;
    margin: 0;
-
    color: #00023e;
 }
 
-/* 테이블 */
 .dept-table {
    background-color: white;
    width: 100%;
    border-collapse: collapse;
-   table-layout: fixed; /* 열 고정 */
+   table-layout: fixed;
 }
 
 .dept-table th,
@@ -40,30 +37,28 @@
    background-color: #f9f9fd;
 }
 
-/* 열 너비 고정 */
 .dept-table th:nth-child(1),
 .dept-table td:nth-child(1) {
-   width: 80px; /* 번호 */
+   width: 80px;
 }
 
 .dept-table th:nth-child(2),
 .dept-table td:nth-child(2) {
-   width: 200px; /* 부서명 */
+   width: 200px;
 }
 
 .dept-table th:nth-child(3),
 .dept-table td:nth-child(3) {
-   width: 200px; /* 부서코드 */
+   width: 200px;
 }
 
 .dept-table th:nth-child(4),
 .dept-table td:nth-child(4),
 .dept-table th:nth-child(5),
 .dept-table td:nth-child(5) {
-   width: 80px; /* 수정, 삭제 */
+   width: 80px;
 }
 
-/* 등록 폼 */
 .form-row {
    margin-bottom: 12px;
    max-width: 400px;
@@ -84,13 +79,18 @@
    font-size: 14px;
 }
 
+/* ✅ 입력창 너비에 맞게 버튼 영역 정렬 */
+.form-buttons-wrapper {
+   max-width: 400px;
+}
+
 .form-buttons {
    display: flex;
    gap: 10px;
    margin-top: 16px;
+   justify-content: flex-end;
 }
 
-/* 버튼 공통 */
 .btn-confirm {
    background-color: #007bff;
    color: white;
@@ -119,7 +119,6 @@
    background-color: #5a6268;
 }
 
-/* 수정 / 삭제 버튼 */
 .edit-btn,
 .delete-btn {
    background-color: transparent;
@@ -147,7 +146,6 @@
    text-decoration: underline;
 }
 
-/* 페이징 */
 .pagination {
    display: flex;
    justify-content: center;
