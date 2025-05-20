@@ -9,99 +9,99 @@
             $this->db = $database->pdo;
         }
 
-        // public function insertAgentUser($code_id,$name,$phone,$email,$etc){
-        //     $create_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
-        //     $create_ip = $_SERVER['REMOTE_ADDR'];
+        public function insertAgentUser($code_id,$name,$phone,$email,$etc){
+            $create_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $create_ip = $_SERVER['REMOTE_ADDR'];
             
-        //     $sql = "INSERT INTO user_agent_info(code_code_id,
-        //                                         user_name,
-        //                                         user_phone,
-        //                                         user_email,
-        //                                         etc,
-        //                                         create_ip,
-        //                                         create_date,
-        //                                         del_yn,
-        //                                         user_type)
-        //                     VALUES(:code_id,
-        //                            :name,
-        //                            :phone,
-        //                            :email,
-        //                            :etc,
-        //                            :create_ip,
-        //                            :create_date,
-        //                            'N',
-        //                            '팀장')";
+            $sql = "INSERT INTO user_agent_info(code_code_id,
+                                                user_name,
+                                                user_phone,
+                                                user_email,
+                                                etc,
+                                                create_ip,
+                                                create_date,
+                                                del_yn,
+                                                user_type)
+                            VALUES(:code_id,
+                                   :name,
+                                   :phone,
+                                   :email,
+                                   :etc,
+                                   :create_ip,
+                                   :create_date,
+                                   'N',
+                                   '팀장')";
             
-        //     $params = [
-        //         ':code_id' => $code_id,
-        //         ':name' => $name,
-        //         ':phone' => $phone,
-        //         ':email' => $email,
-        //         ':etc' => $etc,
-        //         ':create_ip' => $create_ip,
-        //         ':create_date' => $create_date
-        //     ];
+            $params = [
+                ':code_id' => $code_id,
+                ':name' => $name,
+                ':phone' => $phone,
+                ':email' => $email,
+                ':etc' => $etc,
+                ':create_ip' => $create_ip,
+                ':create_date' => $create_date
+            ];
 
-        //     $debugSql = $sql;
-        //     foreach ($params as $key => $val) {
-        //         $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
-        //         $debugSql = str_replace($key, $safeVal, $debugSql);
-        //     }
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
 
-        //     // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
-        //     echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
 
-        //     // 쿼리 실행
-        //     $stmt = $this->db->prepare($sql);
-        //     foreach ($params as $key => $val) {
-        //         $stmt->bindValue($key, $val);
-        //     }
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
             
-        //     return $stmt->execute();;
-        // }
+            return $stmt->execute();;
+        }
 
-        // public function updateAgentUser($num,$code_id,$name,$phone,$email,$etc){
-        //     $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
-        //     $update_ip = $_SERVER['REMOTE_ADDR'];
+        public function updateAgentUser($num,$code_id,$name,$phone,$email,$etc){
+            $update_date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+            $update_ip = $_SERVER['REMOTE_ADDR'];
             
-        //     $sql = "UPDATE user_agent_info
-        //             SET code_code_id = :code_id,
-        //                 user_name = :name,
-        //                 user_phone = :phone,
-        //                 user_email = :email,
-        //                 etc = :etc,
-        //                 update_ip = :update_ip,
-        //                 update_date = :update_date
-        //             WHERE user_idx = :num";
+            $sql = "UPDATE user_agent_info
+                    SET code_code_id = :code_id,
+                        user_name = :name,
+                        user_phone = :phone,
+                        user_email = :email,
+                        etc = :etc,
+                        update_ip = :update_ip,
+                        update_date = :update_date
+                    WHERE user_idx = :num";
             
-        //     $params = [
-        //         'num' => $num,
-        //         ':code_id' => $code_id,
-        //         ':name' => $name,
-        //         ':phone' => $phone,
-        //         ':email' => $email,
-        //         ':etc' => $etc,
-        //         ':update_ip' => $update_ip,
-        //         ':update_date' => $update_date
-        //     ];
+            $params = [
+                'num' => $num,
+                ':code_id' => $code_id,
+                ':name' => $name,
+                ':phone' => $phone,
+                ':email' => $email,
+                ':etc' => $etc,
+                ':update_ip' => $update_ip,
+                ':update_date' => $update_date
+            ];
 
-        //     $debugSql = $sql;
-        //     foreach ($params as $key => $val) {
-        //         $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
-        //         $debugSql = str_replace($key, $safeVal, $debugSql);
-        //     }
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
 
-        //     // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
-        //     echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
 
-        //     // 쿼리 실행
-        //     $stmt = $this->db->prepare($sql);
-        //     foreach ($params as $key => $val) {
-        //         $stmt->bindValue($key, $val);
-        //     }
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
             
-        //     return $stmt->execute();;
-        // }
+            return $stmt->execute();;
+        }
 
         public function selectAgentUserList(){
 

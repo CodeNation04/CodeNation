@@ -84,7 +84,7 @@
         dataType: "json",
         url: "/?url=AgentUserController/selectDeptList",
         success: function(result) {
-            let html = '';
+            let html = '<option value="">전체</option>';
             result.forEach((item) => {
                 html +=
                     `<option value="${item.code_id}">${item.code_name}</option>`;
