@@ -109,12 +109,15 @@
                                                 a.code_code_id,
                                                 (SELECT code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name,
                                                 a.user_id,
+                                                a.user_ip,
+                                                a.host_name,
                                                 a.user_name,
                                                 a.user_phone,
                                                 a.user_email,
                                                 a.user_type,
                                                 a.etc,
-                                                a.del_yn
+                                                a.del_yn,
+                                                a.update_date
                                         FROM user_agent_info a
                                         WHERE a.del_yn = 'N'
                                         ORDER BY a.user_idx DESC");
@@ -317,7 +320,9 @@
                                                 host_name,
                                                 code_code_id,
                                                 create_ip,
-                                                create_date
+                                                del_yn,
+                                                create_date,
+                                                update_date
                                                 )
                             VALUES(:token,
                                    :username,
@@ -325,6 +330,8 @@
                                    :hostname,
                                    :code_id,
                                    :create_ip,
+                                   'N',
+                                   now(),
                                    now())";
             
             $params = [
@@ -437,6 +444,23 @@
             }
             
             return $stmt->execute();;
+        }
+
+        public function selectLogList(){
+
+            $stmt = $this->db->prepare("SELECT  a.code_code_id,
+                                                (SELECT code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name,
+                                                a.user_id,
+                                                a.host_name,
+                                                a.user_name,
+                                                a.work_type,
+                                                a.work_result,
+                                                a.work_info,
+                                                a.create_date
+                                        FROM user_agent_log a
+                                        ORDER BY create_date DESC");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 ?>

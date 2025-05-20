@@ -33,9 +33,9 @@
         ip: ip,
         username: username,
         token: token,
-        work_info : '로그인'
+        work_info : '로그아웃'
       },
-      url: "/?url=AgentUserController/agentUserData",
+      url: "/?url=AgentUserController/logAdd",
       success: function (result) {
         if (result.success == true) {
           location.href = "/";

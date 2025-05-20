@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent 로그 조회</title>
-    <link rel="stylesheet" href="/css/agent_info.css" />
+    <link rel="stylesheet" href="css/agent_info.css" />
 
 </head>
 
@@ -48,10 +48,6 @@
                         <select id="dept" name="dept" class="custom-select">
                             <option value="">-- 부서 선택 --</option>
                             <!-- 샘플부서, db에서 불러와야함 -->
-                            <option value="의무기록과">의무기록과</option>
-                            <option value="전산실">전산실</option>
-                            <option value="원무과">원무과</option>
-                            <option value="진료지원팀">진료지원팀</option>
                         </select>
                         <span class="custom-arrow">▼</span>
                     </div>
@@ -83,17 +79,48 @@
         direction: 'asc'
     };
 
+     $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '';
+            result.forEach((item) => {
+                html +=
+                    `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#dept").html(html);
+        },
+        error: function(err) {
+            console.error("부서 옵션 로딩 실패:", err);
+        }
+    });
+
     // ✅ 샘플 로그 데이터
-    const logs = Array.from({
-        length: 50
-    }, (_, i) => ({
-        dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
-        name: `사용자${i + 1}`,
-        hostname: `hostname${i+1}`,
-        type: ["로그인", "로그아웃", "체크", "삭제로그", "설정정보요청"][i % 5],
-        result: i % 2 === 0 ? "성공" : "실패",
-        info: `작업 정보 ${i + 1}`
-    }));
+    // const logs = Array.from({
+    //     length: 50
+    // }, (_, i) => ({
+    //     dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
+    //     name: `사용자${i + 1}`,
+    //     hostname: `hostname${i+1}`,
+    //     type: ["로그인", "로그아웃", "체크", "삭제로그", "설정정보요청"][i % 5],
+    //     result: i % 2 === 0 ? "성공" : "실패",
+    //     info: `작업 정보 ${i + 1}`
+    // }));
+    let logs;
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectLogList",
+        success: function(result) {
+            console.log(result)
+            logs = result;
+        },
+        error: function(err) {
+            console.error("부서 목록 불러오기 실패:", err);
+        }
+    });
 
     // ✅ 로그 검색
     function searchLogs() {
@@ -103,10 +130,10 @@
         const dept = document.getElementById("dept").value.trim();
 
         filteredLogs = logs.filter(log =>
-            (!name || log.name.includes(name)) &&
-            (!hostname || agent.hostname.includes(hostname)) &&
-            (!type || log.type === type) &&
-            (!dept || log.dept === dept)
+            (!name || log.user_name.includes(name)) &&
+            (!hostname || agent.host_name.includes(hostname)) &&
+            (!type || log.work_type.includes(type)) &&
+            (!dept || log.code_code_id === dept)
         );
 
         if (currentSort.column) sortFilteredLogs();
@@ -161,12 +188,12 @@
                     <tbody>`;
             paginatedLogs.forEach(log => {
                 table += `<tr>
-                        <td>${log.dept}</td>
-                        <td>${log.name}</td>
-                        <td>${log.hostname}</td>
-                        <td>${log.type}</td>
-                        <td>${log.result}</td>
-                        <td>${log.info}</td>
+                        <td>${log.code_name}</td>
+                        <td>${log.user_name}</td>
+                        <td>${log.host_name}</td>
+                        <td>${log.work_type}</td>
+                        <td>${log.work_result}</td>
+                        <td>${log.work_info}</td>
                     </tr>`;
             });
             table += `</tbody></table>`;

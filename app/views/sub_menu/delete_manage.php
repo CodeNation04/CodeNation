@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/delete_manage.css" />
+<link rel="stylesheet" href="css/delete_manage.css" />
 
 <div class="delete-manage-wrapper">
     <!-- 제목 + 등록 버튼 -->

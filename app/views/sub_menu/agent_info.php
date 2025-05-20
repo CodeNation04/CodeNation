@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent 정보 조회</title>
-    <link rel="stylesheet" href="/css/agent_info.css" />
+    <link rel="stylesheet" href="css/agent_info.css" />
 
 </head>
 
@@ -36,10 +36,6 @@
                     <select id="dept" name="dept" class="custom-select">
                         <option value="">-- 부서 선택 --</option>
                         <!-- 샘플부서, db에서 불러와야함 -->
-                        <option value="의무기록과">의무기록과</option>
-                        <option value="전산실">전산실</option>
-                        <option value="원무과">원무과</option>
-                        <option value="진료지원팀">진료지원팀</option>
                     </select>
                     <span class="custom-arrow">▼</span>
                 </div>
@@ -68,28 +64,48 @@
         direction: 'asc'
     };
 
-    // ✅ 샘플 데이터
-    const agents = Array.from({
-        length: 50
-    }, (_, i) => ({
-        dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
-        name: `사용자${i + 1}`,
-        ip: `192.168.0.${100 + i}`,
-        hostname: `hostname${i+1}`,
-        last_login: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
-    }));
+     $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '';
+            result.forEach((item) => {
+                html +=
+                    `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#dept").html(html);
+        },
+        error: function(err) {
+            console.error("부서 옵션 로딩 실패:", err);
+        }
+    });
+
+    let agents;
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/agentUserList",
+        success: function(result) {
+            agents = result;
+        },
+        error: function(err) {
+            console.error("부서 목록 불러오기 실패:", err);
+        }
+    });
 
     function searchAgents() {
         const name = document.getElementById("name").value.trim();
         const ip = document.getElementById("ip").value.trim();
         const hostname = document.getElementById("hostname").value.trim();
         const dept = document.getElementById("dept").value.trim();
-
+        console.log("agents :: ",agents)
         filtered = agents.filter(agent =>
-            (!name || agent.name.includes(name)) &&
-            (!ip || agent.ip.includes(ip)) &&
-            (!hostname || agent.hostname.includes(hostname)) &&
-            (!dept || agent.dept === dept)
+            (!name || agent.user_name.includes(name)) &&
+            (!ip || agent.user_ip.includes(ip)) &&
+            (!hostname || agent.host_name.includes(hostname)) &&
+            (!dept || agent.code_code_id === dept)
         );
 
         currentPage = 1;
@@ -130,7 +146,7 @@
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
         const paginatedData = filtered.slice(start, end);
-
+        console.log(paginatedData)
         if (paginatedData.length > 0) {
             let table = `<table class="result-table">
                     <thead>
@@ -145,11 +161,11 @@
                     <tbody>`;
             paginatedData.forEach(agent => {
                 table += `<tr>
-                        <td>${agent.dept}</td>
-                        <td>${agent.name}</td>
-                        <td>${agent.ip}</td>
-                        <td>${agent.hostname}</td>
-                        <td>${agent.last_login}</td>
+                        <td>${agent.code_name}</td>
+                        <td>${agent.user_name}</td>
+                        <td>${agent.user_ip}</td>
+                        <td>${agent.host_name}</td>
+                        <td>${agent.update_date}</td>
                     </tr>`;
             });
             table += `</tbody></table>`;

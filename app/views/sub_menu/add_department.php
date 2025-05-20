@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/pagination.css">
 <script src="/js/pagination.js"></script>
 
+
 <div class="add-dept-wrapper">
     <?php 
         $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; 
