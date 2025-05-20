@@ -34,11 +34,11 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
     <div class="search-section" id="searchSection" style="display: none;">
         <form id="searchForm" method="POST" action="/?url=MainController/index&page=export">
             <?php  if ($_SERVER['REQUEST_METHOD'] === 'POST') { ?>
-                <input type="hidden" id="code_id" value="<?=$code_id?>"/>
-                <input type="hidden" id="host_name" value="<?=$host_name?>"/>
-                <input type="hidden" id="user_name" value="<?=$user_name?>"/>
-                <input type="hidden" id="externally" value="<?=$externally?>"/>
-                <input type="hidden" id="exter_status" value="<?=$exter_status?>"/>
+            <input type="hidden" id="code_id" value="<?=$code_id?>" />
+            <input type="hidden" id="host_name" value="<?=$host_name?>" />
+            <input type="hidden" id="user_name" value="<?=$user_name?>" />
+            <input type="hidden" id="externally" value="<?=$externally?>" />
+            <input type="hidden" id="exter_status" value="<?=$exter_status?>" />
             <?php }?>
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
             <div class="form-row">
@@ -99,7 +99,7 @@ const isSuperAdmin = <?php echo $isSuperAdmin ? 'true' : 'false'; ?>;
 
 let dataList = [];
 
-$(document).ready(function(){
+$(document).ready(function() {
     const codePram = $("#code_id").val();
     const hostPram = $("#host_name").val();
     const namePram = $("#user_name").val();
@@ -109,12 +109,12 @@ $(document).ready(function(){
     $.ajax({
         type: "GET",
         dataType: "json",
-        data:{
-            code_id : codePram,
-            host_name : hostPram,
-            user_name : namePram,
-            externally : externallyPram,
-            exter_status : statusPram
+        data: {
+            code_id: codePram,
+            host_name: hostPram,
+            user_name: namePram,
+            externally: externallyPram,
+            exter_status: statusPram
         },
         url: "/?url=ExportController/exportList", // 수정할 부서 정보 API
         success: function(result) {
@@ -129,35 +129,36 @@ $(document).ready(function(){
     });
 
     $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AgentUserController/selectDeptList",
-            success: function(result) {
-                let html = '';
-                result.forEach((item) => {
-                    console.log(item)
-                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
-                });
-                $("#dept_name").html(html)
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '';
+            result.forEach((item) => {
+                console.log(item)
+                html += `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#dept_name").html(html)
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
 
 })
 
 function processRequest(id, status) {
-    if (confirm(`${status} 처리하시겠습니까?`)){
+    if (confirm(`${status} 처리하시겠습니까?`)) {
         $.ajax({
             type: "POST",
             dataType: "json",
-            data: {id : id,
-                    status : status
+            data: {
+                id: id,
+                status: status
             },
             url: "/?url=ExportController/exportStatusReq",
             success: function(result) {
-                if(result.success == true){
+                if (result.success == true) {
                     alert(result.message);
                     location.reload();
                 }
@@ -210,5 +211,4 @@ function cancelSearch() {
     document.getElementById("filterSelect").style.display = "inline-block";
     document.getElementById("searchSection").style.display = "none";
 }
-
 </script>

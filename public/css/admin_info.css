@@ -1,7 +1,9 @@
 /* 전체 레이아웃 */
 .placeholder {
    margin: 0 auto;
-   padding: 20px;
+}
+h1 {
+   color: #00023e;
 }
 
 /* 추가 버튼 스타일 */

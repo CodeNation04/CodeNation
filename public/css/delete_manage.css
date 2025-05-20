@@ -4,7 +4,9 @@
    align-items: center;
    margin-bottom: 24px;
 }
-
+h1 {
+   color: #00023e;
+}
 .title-bar button {
    background-color: #2f80ed;
    color: white;

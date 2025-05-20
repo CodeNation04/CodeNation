@@ -4,7 +4,6 @@
    display: flex;
    flex-direction: column;
    font-size: 16px;
-   padding: 20px;
 }
 
 .dept-header {
@@ -14,9 +13,8 @@
    margin-bottom: 16px;
 }
 
-.dept-header h2 {
-   font-size: 20px;
-   font-weight: bold;
+h1 {
+   color: #00023e;
 }
 
 .dept-form-card {
