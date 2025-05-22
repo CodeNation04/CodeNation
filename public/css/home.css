@@ -1,0 +1,14 @@
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+
+.placeholder > div {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border: 1px solid #00023e;
+  border-radius: 20px;
+  padding: 20px;
+}
