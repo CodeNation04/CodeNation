@@ -13,8 +13,9 @@
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar">
-            <img src="asset/logo_light.png" style="width:120px; margin-left:55px; margin-bottom:8px;" />
-            
+            <a href="/?url=MainController/index"><img src="asset/logo_light.png"
+                    style="width:120px; margin-left:55px; margin-bottom:8px;" /></a>
+
             <?php
             $page = $_GET['page'] ?? "";
             if ($_SESSION['admin_type'] === '최고관리자'):
@@ -52,7 +53,7 @@
                     class="menu-item <?= ($page === 'log') ? 'active' : '' ?>">감사 로그 조회</a>
             </div>
         </div>
-        
+
         <!-- Main -->
         <div class="main">
             <div class="header">
