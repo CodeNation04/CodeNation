@@ -1,4 +1,4 @@
-<div class="placeholder">
+<div class="placeholder" id="item-wrap">
     <div>
         <h1>바차트</h1>
         <canvas id="bar-chart" style="height:400px; width:100%"></canvas>
