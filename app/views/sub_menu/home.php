@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <link rel="stylesheet" href="public/css/home.css" />
 <div class="placeholder" id="item-wrap">
     <div>
         <h1>바차트</h1>
