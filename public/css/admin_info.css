@@ -15,10 +15,10 @@ h1 {
    margin-bottom: 20px;
 }
 
-/* 등록 버튼 스타일 */
-#toggle-button {
+/* 공통 등록 버튼 스타일 */
+.btn-register {
    padding: 6px 14px;
-   background: #007bff;
+   background-color: #007bff;
    color: white;
    border: none;
    border-radius: 3px;
@@ -26,8 +26,8 @@ h1 {
    font-size: 14px;
 }
 
-#toggle-button:hover {
-   background: #0056b3;
+.btn-register:hover {
+   background-color: #0056b3;
 }
 
 /* 등록 폼 스타일 */

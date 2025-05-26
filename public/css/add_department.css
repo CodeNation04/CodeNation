@@ -11,6 +11,21 @@
    color: #00023e;
 }
 
+/* ✅ 등록 버튼 통일 클래스 */
+.btn-register {
+   padding: 6px 14px;
+   background-color: #007bff;
+   color: white;
+   border: none;
+   border-radius: 3px;
+   cursor: pointer;
+   font-size: 14px;
+}
+
+.btn-register:hover {
+   background-color: #0056b3;
+}
+
 .dept-table {
    background-color: white;
    width: 100%;

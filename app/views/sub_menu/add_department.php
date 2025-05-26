@@ -19,7 +19,7 @@
         </div>
         <?php if (!$formMode): ?>
         <a href="?url=MainController/index&page=department&form=show">
-            <button class="btn-confirm">등록</button>
+            <button type="button" class="btn-register">등록</button>
         </a>
         <?php endif; ?>
     </div>
