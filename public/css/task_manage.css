@@ -52,18 +52,18 @@ h1 {
 .btn-confirm {
    background-color: #007bff;
    color: white;
-   padding: 8px 16px;
+   padding: 6px 14px;
    border: none;
-   border-radius: 4px;
+   border-radius: 3px;
    cursor: pointer;
 }
 
 .btn-cancel {
    background-color: #6c757d;
    color: white;
-   padding: 8px 16px;
+   padding: 6px 14px;
    border: none;
-   border-radius: 4px;
+   border-radius: 3px;
    cursor: pointer;
 }
 
@@ -73,6 +73,21 @@ h1 {
 
 .btn-cancel:hover {
    background-color: #5a6268;
+}
+
+/* ✅ 상단 등록 버튼 통일 스타일 */
+.btn-register {
+   background-color: #007bff;
+   color: white;
+   padding: 6px 14px;
+   border: none;
+   border-radius: 3px;
+   cursor: pointer;
+   font-size: 14px;
+}
+
+.btn-register:hover {
+   background-color: #0056b3;
 }
 
 .form-card {

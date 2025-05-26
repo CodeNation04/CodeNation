@@ -12,8 +12,9 @@
             <h1>예약작업 관리</h1>
         </div>
         <a href="?url=MainController/index&page=task&form=show">
-            <button class="btn-confirm">등록</button>
+            <button class="btn-register">등록</button>
         </a>
+
     </div>
 
     <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>

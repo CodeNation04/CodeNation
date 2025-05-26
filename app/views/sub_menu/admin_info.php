@@ -10,13 +10,14 @@
 <body>
 
     <div class="placeholder">
+        <!-- 관리자 목록 상단 영역 -->
         <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="title" style="display:flex; align-items:center">
                 <h1 style="font-weight:900; margin-right:12px;">| </h1>
                 <h1>중간 관리자 목록</h1>
             </div>
             <a href="?url=MainController/index&page=admin&form=show">
-                <button type="button" class="btn-confirm" id="toggle-button">등록</button>
+                <button type="button" class="btn-register" id="toggle-button">등록</button>
             </a>
         </div>
 
