@@ -33,4 +33,19 @@ class ExportController extends Controller {
         }
     }
 
+    public function exportCnt() {
+        $exter_status = $_GET["exter_status"] ?? '';
+        $date = $_GET["exter_date"] ?? '';
+
+        header('Content-Type: application/json');
+        
+        $temp = $this->model('Export')->exportCnt($exter_status,$date);
+        
+        if (!$temp) {
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($temp);
+        }
+    }
+
 }

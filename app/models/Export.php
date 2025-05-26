@@ -97,5 +97,44 @@
             
             return $stmt->execute();;
         }
+
+        public function exportCnt($exter_status,$date) {
+            if ($date == "year") {
+                // 최근 15년간 년도별 카운트
+                $stmt = $this->db->prepare("
+                    SELECT YEAR(create_date) AS period, COUNT(*) AS count
+                    FROM externally_info
+                    WHERE exter_status = :exter_status
+                    AND create_date >= DATE_SUB(CURDATE(), INTERVAL 15 YEAR)
+                    GROUP BY YEAR(create_date)
+                    ORDER BY period DESC
+                ");
+            } else if ($date == "month") {
+                // 최근 1년간 월별 카운트
+                $stmt = $this->db->prepare("
+                    SELECT DATE_FORMAT(create_date, '%Y-%m') AS period, COUNT(*) AS count
+                    FROM externally_info
+                    WHERE exter_status = :exter_status
+                    AND create_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+                    GROUP BY DATE_FORMAT(create_date, '%Y-%m')
+                    ORDER BY period DESC
+                ");
+            } else {
+                // 최근 1주일간 일별 카운트
+                $stmt = $this->db->prepare("
+                    SELECT DATE(create_date) AS period, COUNT(*) AS count
+                    FROM externally_info
+                    WHERE exter_status = :exter_status
+                    AND create_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                    GROUP BY DATE(create_date)
+                    ORDER BY period DESC
+                ");
+            }
+
+            // 바인딩 예시
+            $stmt->bindParam(':exter_status', $exter_status);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 ?>

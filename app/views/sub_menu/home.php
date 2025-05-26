@@ -2,22 +2,28 @@
 <link rel="stylesheet" href="public/css/home.css" />
 
 <div class="placeholder" id="item-wrap">
-    <!-- 바 차트 -->
     <div>
-        <h1>바차트</h1>
+        <h1>로그</h1>
         <canvas id="bar-chart" style="height:400px; width:100%"></canvas>
     </div>
 
-    <!-- 라인 차트 -->
     <div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h1>라인차트</h1>
+            <h1>외부반출승인관리</h1>
             <div>
                 <label for="unit-selector">단위:</label>
-                <select id="unit-selector">
+                <select id="unit-selector" name="exter_date"  onchange="selectExter()">
                     <option value="year">년</option>
                     <option value="month">월</option>
                     <option value="week">주</option>
+                </select>
+            </div>
+            <div>
+                <label for="exter-selector">단위:</label>
+                <select id="exter-selector" name="exter_status" onchange="selectExter()">
+                    <option value="요청">요청</option>
+                    <option value="승인">승인</option>
+                    <option value="반려">반려</option>
                 </select>
             </div>
         </div>
@@ -26,7 +32,10 @@
 </div>
 
 <script>
-// 바차트
+function selectLog(){
+    
+}
+
 new Chart(document.getElementById("bar-chart"), {
     type: 'bar',
     data: {
@@ -48,7 +57,31 @@ new Chart(document.getElementById("bar-chart"), {
     }
 });
 
-// 라인차트 데이터셋
+function selectExter(){
+    let exter_status = $("#exter-selector").val();
+    let exter_date = $("#unit-selector").val();
+    console.log(exter_status)
+    console.log(exter_date)
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        data : {
+            exter_status : exter_status,
+            exter_date : exter_date
+        },
+        url: "/?url=ExportController/exportCnt",
+        success: function(result) { 
+            console.log(result)
+
+
+        },
+        error: function(err) {
+            console.error("데이터 불러오기 실패:", err);
+        }
+    });
+}
+
 const chartData = {
     year: {
         labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
