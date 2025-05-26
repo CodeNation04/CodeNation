@@ -10,26 +10,6 @@
         <h1>라인차트</h1>
         <canvas id="line-chart" style="height:400px; width:100%"></canvas>
     </div>
-
-    <div>
-        <h1>파이 차트</h1>
-        <canvas id="pie-chart" style="height:400px; width:100%"></canvas>
-    </div>
-
-    <div>
-        <h1>레이더 차트</h1>
-        <canvas id="radar-chart" style="height:400px; width:100%"></canvas>
-    </div>
-    
-    <div>
-        <h1>도넛 차트</h1>
-        <canvas id="doughnut-chart" style="height:400px; width:100%"></canvas>
-    </div>
-
-    <div>
-        <h1>수평 바 차트</h1>
-        <canvas id="bar-chart-horizontal" style="height:400px; width:100%"></canvas>
-    </div>
 </div>
 
 <script>
@@ -91,98 +71,6 @@
             display: true,
             text: 'World population per region (in millions)'
             }
-        }
-    });
-
-    new Chart(document.getElementById("pie-chart"), {
-        type: 'pie',
-        data: {
-        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-        datasets: [{
-            label: "Population (millions)",
-            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-            data: [2478,5267,734,784,433]
-        }]
-        },
-        options: {
-        title: {
-            display: true,
-            text: 'Predicted world population (millions) in 2050'
-        }
-        }
-    });
-
-    new Chart(document.getElementById("radar-chart"), {
-        type: 'radar',
-        data: {
-        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-        datasets: [
-            {
-            label: "1950",
-            fill: true,
-            backgroundColor: "rgba(179,181,198,0.2)",
-            borderColor: "rgba(179,181,198,1)",
-            pointBorderColor: "#fff",
-            pointBackgroundColor: "rgba(179,181,198,1)",
-            data: [8.77,55.61,21.69,6.62,6.82]
-            }, {
-            label: "2050",
-            fill: true,
-            backgroundColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            pointBorderColor: "#fff",
-            pointBackgroundColor: "rgba(255,99,132,1)",
-            pointBorderColor: "#fff",
-            data: [25.48,54.16,7.61,8.06,4.45]
-            }
-        ]
-        },
-        options: {
-        title: {
-            display: true,
-            text: 'Distribution in % of world population'
-        }
-        }
-    });
-
-    new Chart(document.getElementById("doughnut-chart"), {
-        type: 'doughnut',
-        data: {
-        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-        datasets: [
-            {
-            label: "Population (millions)",
-            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-            data: [2478,5267,734,784,433]
-            }
-        ]
-        },
-        options: {
-        title: {
-            display: true,
-            text: 'Predicted world population (millions) in 2050'
-        }
-        }
-    });
-
-    new Chart(document.getElementById("bar-chart-horizontal"), {
-        type: 'horizontalBar',
-        data: {
-        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-        datasets: [
-            {
-            label: "Population (millions)",
-            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-            data: [2478,5267,734,784,433]
-            }
-        ]
-        },
-        options: {
-        legend: { display: false },
-        title: {
-            display: true,
-            text: 'Predicted world population (millions) in 2050'
-        }
         }
     });
 </script>

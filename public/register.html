@@ -1,57 +1,16 @@
-<!-- echo "<script>console.log('호스트이름 : ". php_uname('n') ."  ,    IP : " . $_SERVER['REMOTE_ADDR'] ."');</script>"; -->
-
 <?php
-    echo "<script>console.log('" . $_GET['code_id'] . " " . $_GET['hostname'] . " " . $_GET['ip'] . " " . $_GET['username'] . " " . $_GET['token'] . "');</script>";
+header('Content-Type: application/json');
 
-    if(isset($_GET['code_id']) &&
-       isset($_GET['hostname']) &&
-       isset($_GET['ip']) &&
-       isset($_GET['username']) &&
-       isset($_GET['token'])){
-?>
-<input type="hidden" id="code_id" value="<?=$_GET['code_id']?>" />
-<input type="hidden" id="hostname" value="<?=$_GET['hostname']?>" />
-<input type="hidden" id="ip" value="<?=$_GET['ip']?>" />
-<input type="hidden" id="username" value="<?=$_GET['username']?>" />
-<input type="hidden" id="token" value="<?=$_GET['token']?>" />
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
-<script>
-  $(document).ready(function () {
-    const code_id = $("#code_id").val();
-    const hostname = $("#hostname").val();
-    const ip = $("#ip").val();
-    const username = $("#username").val();
-    const token = $("#token").val();
-
-    $.ajax({
-      type: "POST",
-      dataType: "json",
-      data: {
-        code_id: code_id,
-        hostname: hostname,
-        ip: ip,
-        username: username,
-        token: token,
-        work_info : '로그인'
-      },
-      url: "/?url=AgentUserController/agentUserData",
-      success: function (result) {
-        if (result.success == true) {
-          location.href = "/";
-        } else {
-          alert(result.message);
-        }
-      },
-      error: function (err) {
-        console.error("데이터 불러오기 실패:", err);
-      },
-    });
-  });
-</script>
-<?php }else{?>
-<script>
-  alert("잘못된 접근입니다.");
-  location.href = "/";
-</script>
-<?php }?>
+if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
+    $data = [
+        'code_id' =>
+$_POST['code_id'], 'hostname' => $_POST['hostname'], 'ip' => $_POST['ip'],
+'username' => $_POST['username'], 'token' => $_POST['token'], 'work_info' =>
+'로그인' ]; $ch = curl_init(); curl_setopt($ch, CURLOPT_URL,
+"http://localhost/?url=AgentUserController/agentUserData"); curl_setopt($ch,
+CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS,
+http_build_query($data)); curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch); if ($response === false) { echo json_encode([
+'success' => false, 'message' => 'cURL 오류: ' . curl_error($ch) ]); } else {
+echo $response; } curl_close($ch); } else { echo json_encode([ 'success' =>
+false, 'message' => '요청 파라미터 부족' ]); } ?>
