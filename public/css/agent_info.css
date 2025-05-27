@@ -107,14 +107,9 @@
 
 /* 깔끔한 표 스타일 */
 .result-table {
+   background-color: white;
    width: 100%;
    border-collapse: collapse;
-   font-family: Arial, sans-serif;
-   margin-top: 20px;
-   background-color: #fff;
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-   border: 1px solid #ddd;
-   margin-bottom: 30px;
 }
 
 .result-table thead {
@@ -122,11 +117,13 @@
 }
 
 .result-table thead th {
-   padding: 12px;
+   border: 1px solid #ddd;
+   padding: 10px;
+   border-radius: 3px;
    text-align: center;
-   font-weight: bold;
-   border-bottom: 2px solid #ddd;
-   color: #333;
+   background-color: #3e568c;
+   color: white;
+   cursor: pointer;
 }
 
 .result-table tbody tr {
@@ -139,12 +136,10 @@
 }
 
 .result-table tbody td {
+   border: 1px solid #ddd;
    padding: 10px;
-   color: #333;
+   border-radius: 3px;
    text-align: center;
-   vertical-align: middle;
-   border-bottom: 1px solid #ddd;
-   word-wrap: break-word;
 }
 
 /* 첫 번째 열은 넓게 */

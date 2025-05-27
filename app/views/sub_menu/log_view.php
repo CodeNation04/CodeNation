@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>감사 로그 조회</title>
     <link rel="stylesheet" href="css/agent_info.css" />
+    <link rel="stylesheet" href="css/pagination.css">
+    <script src="/js/pagination.js"></script>
 </head>
 
 <body>
@@ -44,12 +46,7 @@
             <label for="dept">부서 선택</label>
             <div class="custom-select-wrapper">
                 <select id="dept" name="dept" class="custom-select">
-                    <option value="">-- 부서 선택 --</option>
-                    <!-- 샘플부서, db에서 불러와야함 -->
-                    <option value="의무기록과">의무기록과</option>
-                    <option value="전산실">전산실</option>
-                    <option value="원무과">원무과</option>
-                    <option value="진료지원팀">진료지원팀</option>
+                   
                 </select>
                 <span class="custom-arrow">▼</span>
             </div>
@@ -66,146 +63,151 @@
     </div>
 
     <script>
-    const itemsPerPage = 10;
-    let currentPage = 1;
+
     let currentSort = {
         column: null,
         direction: 'asc'
     };
     let filtered = [];
 
-    // ✅ 샘플데이터 (나중에 DB에서 받아올 예정)
-    const auditLogs = Array.from({
-        length: 50
-    }, (_, i) => ({
-        dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
-        id: `admin${i + 1}`,
-        type: ["로그인", "로그아웃", "예약 추가", "예약 삭제", "중간관리자 등록", "중간관리자 수정", "부서 등록", "부서 수정", "암호화 환경 등록",
-            "암호화 환경 수정",
-            "암호화 환경 삭제", "외부 반출 요청 승인/반려"
-        ][i % 12],
-        info: `로그 작업 정보 ${i + 1}`,
-        time: `2025-05-08 ${String(i % 24).padStart(2, '0')}:00`
-    }));
+    let auditLogs = [];
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/?url=AgentUserController/selectDeptList",
+        success: function(result) {
+            let html = '<option value="">전체</option>';
+            result.forEach((item) => {
+                html +=
+                    `<option value="${item.code_id}">${item.code_name}</option>`;
+            });
+            $("#dept").html(html);
+        },
+        error: function(err) {
+            console.error("부서 옵션 로딩 실패:", err);
+        }
+    });
+
+
+    // let logs;
+
+    // $.ajax({
+    //     type: "GET",
+    //     dataType: "json",
+    //     url: "/?url=AgentUserController/selectLogList",
+    //     success: function(result) {
+    //         console.log(result)
+    //         logs = result;
+    //     },
+    //     error: function(err) {
+    //         console.error("로그 목록 불러오기 실패:", err);
+    //     }
+    // });
 
     // ✅ 로그 검색
     function searchAuditLogs() {
-        const dept = document.getElementById('dept').value.trim();
-        const id = document.getElementById('id').value.trim();
-        const type = document.getElementById('type').value.trim();
+    const dept = document.getElementById('dept').value.trim();
+    const id = document.getElementById('id').value.trim();
+    const type = document.getElementById('type').value.trim();
 
-        filtered = auditLogs.filter(log =>
-            (!dept || log.dept === dept) &&
-            (!id || log.id.includes(id)) &&
-            (!type || log.type === type)
-        );
+    filtered = auditLogs.filter(log =>
+        (!dept || log.dept === dept) &&
+        (!id || log.id.includes(id)) &&
+        (!type || log.type === type)
+    );
 
-        currentPage = 1;
-        renderTable();
-        renderPagination();
-    }
+    currentSort = { column: null, direction: 'asc' };
+
+    setupPagination({
+        data: filtered,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+
+    updateSortArrows();
+}
 
 
 
-    // ✅ 정렬 설정 함수 (헤더 클릭)
     function setSort(column) {
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    } else {
+        currentSort.column = column;
+        currentSort.direction = "asc";
+    }
+
+    filtered.sort((a, b) => {
+        let aValue = a[column] || "";
+        let bValue = b[column] || "";
+
+        if (column === "time") {
+            return currentSort.direction === "asc"
+                ? new Date(aValue) - new Date(bValue)
+                : new Date(bValue) - new Date(aValue);
+        }
+
+        return currentSort.direction === "asc"
+            ? aValue.localeCompare(bValue, 'ko')
+            : bValue.localeCompare(aValue, 'ko');
+    });
+
+    setupPagination({
+        data: filtered,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+
+    updateSortArrows();
+}
+
+function updateSortArrows() {
+    const columns = ['dept', 'id', 'type', 'info', 'time'];
+    columns.forEach(col => {
+        const el = document.getElementById(`sort-${col}`);
+        if (!el) return;
+        if (col === currentSort.column) {
+            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
         } else {
-            currentSort.column = column;
-            currentSort.direction = "asc";
+            el.textContent = '⇅';
         }
-        sortFiltered();
-        renderTable();
-    }
+    });
+}
 
-    // ✅ 정렬 함수 (검색된 결과만 정렬)
-    function sortFiltered() {
-        filtered.sort((a, b) => {
-            const aValue = a[currentSort.column];
-            const bValue = b[currentSort.column];
 
-            if (currentSort.column === "time") {
-                return currentSort.direction === "asc" ?
-                    new Date(aValue) - new Date(bValue) :
-                    new Date(bValue) - new Date(aValue);
-            }
+    function renderRowHTML(logs, startIndex) {
+    if (logs.length === 0) return "<p>검색 결과가 없습니다.</p>";
 
-            return currentSort.direction === "asc" ?
-                aValue.localeCompare(bValue, 'ko') :
-                bValue.localeCompare(aValue, 'ko');
-        });
-    }
+    let html = `<table class="result-table">
+        <thead>
+            <tr>
+                <th onclick="setSort('dept')">부서명 <span id="sort-dept">⇅</span></th>
+                <th onclick="setSort('id')">아이디 <span id="sort-id">⇅</span></th>
+                <th onclick="setSort('type')">작업 종류 <span id="sort-type">⇅</span></th>
+                <th onclick="setSort('info')">작업 정보 <span id="sort-info">⇅</span></th>
+                <th onclick="setSort('time')">작업 시각 <span id="sort-time">⇅</span></th>
+            </tr>
+        </thead>
+        <tbody>`;
 
-    // ✅ 표 렌더링 함수
-    function renderTable() {
-        const resultDiv = document.getElementById("result");
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedLogs = filtered.slice(start, end);
+    logs.forEach(log => {
+        html += `<tr>
+            <td>${log.dept}</td>
+            <td>${log.id}</td>
+            <td>${log.type}</td>
+            <td>${log.info}</td>
+            <td>${log.time}</td>
+        </tr>`;
+    });
 
-        if (paginatedLogs.length > 0) {
-            let table = `<table class="result-table">
-                <thead>
-                    <tr>
-                        <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
-                        <th onclick="setSort('id')" class="sortable">아이디 <span>↑↓</span></th>
-                        <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
-                         <th onclick="setSort('info')" class="sortable">작업 정보 <span>↑↓</span></th>
-                        <th onclick="setSort('time')" class="sortable">작업 시각 <span>↑↓</span></th>
-                    </tr>
-                </thead>
-                <tbody>`;
+    html += `</tbody></table>`;
+    return html;
+}
 
-            paginatedLogs.forEach(log => {
-                table += `<tr>
-                    <td>${log.dept}</td>
-                    <td>${log.id}</td>
-                    <td>${log.type}</td>
-                     <td>${log.info}</td>
-                    <td>${log.time}</td>
-                </tr>`;
-            });
-
-            table += `</tbody></table>`;
-            resultDiv.innerHTML = table;
-        } else {
-            resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
-        }
-    }
-
-    // ✅ 페이지네이션 렌더링 함수
-    function renderPagination() {
-        const paginationDiv = document.getElementById("pagination");
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-
-        paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
-        paginationDiv.innerHTML = "";
-
-        if (totalPages <= 1) return;
-
-        let html =
-            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
-
-        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
-        }
-
-        html +=
-            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
-        paginationDiv.innerHTML = html;
-    }
-
-    // ✅ 페이지 변경
-    function changePage(page) {
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-        if (page < 1) page = 1;
-        if (page > totalPages) page = totalPages;
-
-        currentPage = page;
-        renderTable();
-        renderPagination();
-    }
     </script>
 
 </body>

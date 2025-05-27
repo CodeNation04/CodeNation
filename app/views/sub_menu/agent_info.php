@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>Agent 정보 조회</title>
     <link rel="stylesheet" href="css/agent_info.css" />
+    <link rel="stylesheet" href="css/pagination.css">
+<script src="/js/pagination.js"></script>
 
 </head>
 
@@ -96,109 +98,106 @@
     });
 
     function searchAgents() {
-        const name = document.getElementById("name").value.trim();
-        const ip = document.getElementById("ip").value.trim();
-        const hostname = document.getElementById("hostname").value.trim();
-        const dept = document.getElementById("dept").value.trim();
-        console.log("agents :: ",agents)
-        filtered = agents.filter(agent =>
-            (!name || agent.user_name.includes(name)) &&
-            (!ip || agent.user_ip.includes(ip)) &&
-            (!hostname || agent.host_name.includes(hostname)) &&
-            (!dept || agent.code_code_id === dept)
-        );
+    const name = document.getElementById("name").value.trim();
+    const ip = document.getElementById("ip").value.trim();
+    const hostname = document.getElementById("hostname").value.trim();
+    const dept = document.getElementById("dept")?.value.trim() || "";
 
-        currentPage = 1;
-        renderTable();
-        renderPagination();
-        document.querySelector('.save-buttons').style.display = filtered.length > 0 ? "flex" : "none";
+    filtered = agents.filter(agent =>
+        (!name || agent.user_name.includes(name)) &&
+        (!ip || agent.user_ip.includes(ip)) &&
+        (!hostname || agent.host_name.includes(hostname)) &&
+        (!dept || agent.code_code_id === dept)
+    );
+
+    document.querySelector('.save-buttons').style.display = filtered.length > 0 ? "flex" : "none";
+
+    setupPagination({
+        data: filtered,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+}
+
+function setSort(column) {
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    } else {
+        currentSort.column = column;
+        currentSort.direction = "asc";
     }
 
-    function setSort(column) {
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    filtered.sort((a, b) => {
+        let aValue = a[column] || "";
+        let bValue = b[column] || "";
+
+        function updateSortArrows() {
+    const columns = ['code_name', 'user_name', 'user_ip', 'host_name', 'update_date'];
+    columns.forEach(col => {
+        const arrowEl = document.getElementById(`sort-${col}`);
+        if (!arrowEl) return;
+        if (col === currentSort.column) {
+            arrowEl.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
         } else {
-            currentSort.column = column;
-            currentSort.direction = "asc";
+            arrowEl.textContent = '⇅';
         }
-        sortFiltered();
-        renderTable();
-    }
-
-    function sortFiltered() {
-        filtered.sort((a, b) => {
-            const aValue = a[currentSort.column];
-            const bValue = b[currentSort.column];
-
-            if (currentSort.column === "last_login") {
-                return currentSort.direction === "asc" ?
-                    new Date(aValue) - new Date(bValue) :
-                    new Date(bValue) - new Date(aValue);
-            }
-
-            return currentSort.direction === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(
-                aValue);
-        });
-    }
-
-    function renderTable() {
-        const resultDiv = document.getElementById("result");
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedData = filtered.slice(start, end);
-        console.log(paginatedData)
-        if (paginatedData.length > 0) {
-            let table = `<table class="result-table">
-                    <thead>
-                        <tr>
-                            <th onclick="setSort('dept')" class="sortable">부서명<span class="sort-arrows"> ↑↓</span></th>
-                            <th onclick="setSort('name')" class="sortable">사용자명<span class="sort-arrows"> ↑↓</span></th>
-                            <th onclick="setSort('ip')" class="sortable">IP<span class="sort-arrows"> ↑↓</span></th>
-                              <th onclick="setSort('hostname')" class="sortable">Hostname<span class="sort-arrows"> ↑↓</span></th>
-                            <th onclick="setSort('last_login')" class="sortable">최종접속일<span class="sort-arrows"> ↑↓</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            paginatedData.forEach(agent => {
-                table += `<tr>
-                        <td>${agent.code_name}</td>
-                        <td>${agent.user_name}</td>
-                        <td>${agent.user_ip}</td>
-                        <td>${agent.host_name}</td>
-                        <td>${agent.update_date}</td>
-                    </tr>`;
-            });
-            table += `</tbody></table>`;
-            resultDiv.innerHTML = table;
-        } else {
-            resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
-        }
-    }
-
-    function renderPagination() {
-        const paginationDiv = document.getElementById("pagination");
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-        paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
+    });
+}
 
 
-        let html =
-            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
-
-        // ✅ 최대 3개의 페이지 번호만 표시
-        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
+        // 날짜 정렬
+        if (column === "update_date") {
+            return currentSort.direction === "asc"
+                ? new Date(aValue) - new Date(bValue)
+                : new Date(bValue) - new Date(aValue);
         }
 
-        html +=
-            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
-        paginationDiv.innerHTML = html;
-    }
+        return currentSort.direction === "asc"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+    });
 
-    function changePage(page) {
-        currentPage = page;
-        renderTable();
-        renderPagination();
-    }
+    setupPagination({
+        data: filtered,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+}
+
+function renderRowHTML(pageData, startIndex) {
+    if (pageData.length === 0) return "<p>검색 결과가 없습니다.</p>";
+
+    let html = `<table class="result-table">
+        <thead>
+            <tr>
+                <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                <th onclick="setSort('user_name')">사용자명 <span id="sort-user_name">⇅</span></th>
+                <th onclick="setSort('user_ip')">IP <span id="sort-user_ip">⇅</span></th>
+                <th onclick="setSort('host_name')">Hostname <span id="sort-host_name">⇅</span></th>
+                <th onclick="setSort('update_date')">최종접속일 <span id="sort-update_date">⇅</span></th>
+
+            </tr>
+        </thead>
+        <tbody>`;
+
+    pageData.forEach(agent => {
+        html += `<tr>
+            <td>${agent.code_name}</td>
+            <td>${agent.user_name}</td>
+            <td>${agent.user_ip}</td>
+            <td>${agent.host_name}</td>
+            <td>${agent.update_date}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    return html;
+}
+
 
     function saveAsFile(type) {
         if (filtered.length === 0) return;
@@ -206,8 +205,9 @@
         let content = "\uFEFF부서명,사용자명,IP,최종접속일\n";
 
         filtered.forEach(agent => {
-            content += `${agent.dept},${agent.name},${agent.ip},${agent.last_login}\n`;
-        });
+    content += `${agent.code_name},${agent.user_name},${agent.user_ip},${agent.update_date}\n`;
+});
+
 
         const blob = new Blob([content], {
             type: "text/plain;charset=utf-8"
