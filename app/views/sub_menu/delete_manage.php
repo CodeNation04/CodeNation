@@ -1,14 +1,17 @@
 <link rel="stylesheet" href="css/delete_manage.css" />
+<link rel="stylesheet" href="css/sub_title.css" />
 
-<div class="delete-manage-wrapper">
-    <!-- 제목 + 등록 버튼 -->
-    <div class="title-bar">
+
+<div class="wrapper">
+    <div class="form-header">
         <div style="display:flex; align-items:center">
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>암호화 환경 관리</h1>
         </div>
-        <button id="toggleFormBtn" class="btn-register">등록</button>
+            <button id="toggleFormBtn"class="btn-register">등록</button>
+        </a>
     </div>
+
 
     <!-- 등록/수정 폼 -->
     <?php 

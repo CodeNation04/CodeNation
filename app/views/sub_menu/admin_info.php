@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <title>중간 관리자 목록</title>
     <link rel="stylesheet" href="css/admin_info.css">
+    <link rel="stylesheet" href="css/sub_title.css">
 </head>
 
 <body>
 
-    <div class="placeholder">
-        <!-- 관리자 목록 상단 영역 -->
-        <div class="form-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="title" style="display:flex; align-items:center">
-                <h1 style="font-weight:900; margin-right:12px;">| </h1>
-                <h1>중간 관리자 목록</h1>
-            </div>
-            <a href="?url=MainController/index&page=admin&form=show">
-                <button type="button" class="btn-register" id="toggle-button">등록</button>
-            </a>
+<div class="wrapper">
+    <div class="form-header">
+        <div style="display:flex; align-items:center">
+            <h1 style="font-weight:900; margin-right:12px;">| </h1>
+            <h1>중간 관리자 목록</h1>
         </div>
+        <a href="?url=MainController/index&page=admin&form=show">
+            <button class="btn-register">등록</button>
+        </a>
+    </div>
+
 
         <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>
 
@@ -92,7 +93,7 @@
             </table>
         </div>
         <?php endif; ?>
-    </div>
+    <!-- </div> -->
 
     <script>
     // 페이지 로드 시 폼 상태 확인

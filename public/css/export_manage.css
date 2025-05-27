@@ -8,7 +8,7 @@
    display: flex;
    justify-content: space-between;
    align-items: center;
-   margin-bottom: 20px;
+   margin-bottom: 24px;
 }
 h1 {
    color: #00023e;
@@ -20,7 +20,7 @@ h1 {
 }
 
 .header-controls select {
-   padding: 8px 12px;
+   padding: 6px 14px;
    border: 1px solid #ccc;
    border-radius: 3px;
    font-size: 14px;
@@ -74,21 +74,21 @@ h1 {
 .btn-confirm {
    background-color: #007bff;
    color: white;
-   padding: 8px 16px;
+   padding: 6px 14px;
    border: none;
    border-radius: 3px;
    cursor: pointer;
-   font-size: 15px;
+   font-size: 14px;
 }
 
 .btn-cancel {
    background-color: #6c757d;
    color: white;
-   padding: 10px 24px;
+   padding: 6px 14px;
    border: none;
    border-radius: 3px;
    cursor: pointer;
-   font-size: 15px;
+   font-size: 14px;
 }
 
 .btn-confirm:hover {
