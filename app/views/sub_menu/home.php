@@ -180,25 +180,13 @@
                 data: [2478, 5267, 734, 784, 433]
             }]
         },
-<<<<<<< HEAD
         url: "/?url=ExportController/exportCnt",
         success: function(result) { 
             console.log(result)
         },
         error: function(err) {
             console.error("데이터 불러오기 실패:", err);
-=======
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            },
-            title: {
-                display: true,
-                text: 'Predicted world population (millions) in 2050'
-            }
->>>>>>> 508dae774aae0b3c540047b638f0cb5bde63def0
+
         }
     });
     </script>
