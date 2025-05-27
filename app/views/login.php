@@ -1,3 +1,10 @@
+<?php
+if (!empty($_SESSION['admin_id'])) {
+    header("Location: /?url=MainController/index");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 

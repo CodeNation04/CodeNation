@@ -18,13 +18,13 @@ class AuthController extends Controller {
             $_SESSION['admin_type'] = $admin['admin_type'];
             echo json_encode(['status' => 'success']);
             header('Location: /?url=MainController/index');
+        }else if($admin['pw'] !== $password){
+            echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
+            echo "<script>alert('아이디 또는 비밀번호가 올바르지 않습니다.'); window.location.href='/?url=LoginController/login';</script>";
+            exit;
         }else if ($admin['ip'] !== $ip) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
             echo "<script>alert('ip가 허용되어있지않습니다.'); window.location.href='/?url=LoginController/login';</script>";
-            exit;
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid login']);
-            echo "<script>alert('아이디 또는 비밀번호가 올바르지 않습니다.'); window.location.href='/?url=LoginController/login';</script>";
             exit;
         }
     }

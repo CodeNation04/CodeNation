@@ -73,8 +73,6 @@ function selectExter(){
         url: "/?url=ExportController/exportCnt",
         success: function(result) { 
             console.log(result)
-
-
         },
         error: function(err) {
             console.error("데이터 불러오기 실패:", err);

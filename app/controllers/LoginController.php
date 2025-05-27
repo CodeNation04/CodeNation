@@ -10,7 +10,7 @@
             $loginModel = $this->model('Login'); 
             // $logins = $loginModel->getAdmins($session_id);
             // $this->view('/login', ['admins' => $logins]);
-            $this->view('/login', []);
+            $this->view('/login', ['session_id' => $session_id]);
         }
     }
 
