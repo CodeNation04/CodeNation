@@ -3,6 +3,7 @@
 ?>
 <link rel="stylesheet" href="/css/add_department.css" />
 <link rel="stylesheet" href="css/pagination.css">
+<link rel="stylesheet" href="css/sub_title.css">
 <script src="/js/pagination.js"></script>
 
 
@@ -12,17 +13,20 @@
         $typeMode = isset($_GET['type']) && $_GET['type'] === 'moddify'; 
     ?>
 
+<div class="wrapper">
     <div class="form-header">
         <div style="display:flex; align-items:center">
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>부서 관리</h1>
         </div>
         <?php if (!$formMode): ?>
-        <a href="?url=MainController/index&page=department&form=show">
-            <button type="button" class="btn-register">등록</button>
+            <a href="?url=MainController/index&page=department&form=show">
+            <button class="btn-register">등록</button>
         </a>
         <?php endif; ?>
     </div>
+
+
 
     <?php if (!$formMode): ?>
     <div class="dept-table-wrapper" id="task-table-wrapper"></div>

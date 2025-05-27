@@ -3,18 +3,20 @@
 ?>
 <link rel="stylesheet" href="/css/department_info.css" />
 <link rel="stylesheet" href="css/pagination.css">
+<link rel="stylesheet" href="css/sub_title.css">
 <script src="/js/pagination.js"></script>
 
-<div class="dept-wrapper">
-    <div class="dept-header">
+
+<div class="wrapper">
+    <div class="form-header">
         <div style="display:flex; align-items:center">
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>부서 정보 관리</h1>
         </div>
-        <a href="?url=MainController/index&page=dept&form=show">
             <button class="btn-register">등록</button>
         </a>
     </div>
+
 
     <?php 
     $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; 

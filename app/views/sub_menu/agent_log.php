@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <title>Agent 로그 조회</title>
     <link rel="stylesheet" href="css/agent_info.css" />
-
+    <link rel="stylesheet" href="css/pagination.css">
+    <script src="/js/pagination.js"></script>
 </head>
 
 <body>
@@ -72,8 +73,6 @@
 
     <script>
     let filteredLogs = [];
-    let currentPage = 1;
-    const itemsPerPage = 10;
     let currentSort = {
         column: null,
         direction: 'asc'
@@ -96,17 +95,7 @@
         }
     });
 
-    // ✅ 샘플 로그 데이터
-    // const logs = Array.from({
-    //     length: 50
-    // }, (_, i) => ({
-    //     dept: ["의무기록과", "전산실", "원무과", "진료지원팀"][i % 4],
-    //     name: `사용자${i + 1}`,
-    //     hostname: `hostname${i+1}`,
-    //     type: ["로그인", "로그아웃", "체크", "삭제로그", "설정정보요청"][i % 5],
-    //     result: i % 2 === 0 ? "성공" : "실패",
-    //     info: `작업 정보 ${i + 1}`
-    // }));
+
     let logs;
 
     $.ajax({
@@ -118,134 +107,122 @@
             logs = result;
         },
         error: function(err) {
-            console.error("부서 목록 불러오기 실패:", err);
+            console.error("로그 목록 불러오기 실패:", err);
         }
     });
 
     // ✅ 로그 검색
     function searchLogs() {
-        const name = document.getElementById("name").value.trim();
-        const hostname = document.getElementById("hostname").value.trim();
-        const type = document.getElementById("type").value.trim();
-        const dept = document.getElementById("dept").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const hostname = document.getElementById("hostname").value.trim();
+    const type = document.getElementById("type").value.trim();
+    const dept = document.getElementById("dept")?.value.trim() || "";
 
-        filteredLogs = logs.filter(log =>
-            (!name || log.user_name.includes(name)) &&
-            (!hostname || agent.host_name.includes(hostname)) &&
-            (!type || log.work_type.includes(type)) &&
-            (!dept || log.code_code_id === dept)
-        );
+    filteredLogs = logs.filter(log =>
+        (!name || log.user_name.includes(name)) &&
+        (!hostname || log.host_name.includes(hostname)) &&
+        (!type || log.work_type.includes(type)) &&
+        (!dept || log.code_code_id === dept)
+    );
 
-        if (currentSort.column) sortFilteredLogs();
-        currentPage = 1;
-        renderTable();
-        renderPagination();
-        document.querySelector('.save-buttons').style.display = filteredLogs.length > 0 ? "flex" : "none";
-    }
+    // 초기 정렬 제거
+    currentSort = { column: null, direction: 'asc' };
 
-    // ✅ 정렬 설정 함수 (헤더 클릭)
+    document.querySelector('.save-buttons').style.display = filteredLogs.length > 0 ? "flex" : "none";
+
+    setupPagination({
+        data: filteredLogs,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+
+    updateSortArrows();
+}
+
+
     function setSort(column) {
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+    } else {
+        currentSort.column = column;
+        currentSort.direction = "asc";
+    }
+
+    filteredLogs.sort((a, b) => {
+        let aValue = a[column] || "";
+        let bValue = b[column] || "";
+        return currentSort.direction === "asc"
+            ? aValue.localeCompare(bValue, 'ko')
+            : bValue.localeCompare(aValue, 'ko');
+    });
+
+    setupPagination({
+        data: filteredLogs,
+        itemsPerPage: 10,
+        containerId: "result",
+        paginationClass: "pagination",
+        renderRowHTML: renderRowHTML
+    });
+
+    updateSortArrows();
+}
+
+function updateSortArrows() {
+    const columns = ['code_name', 'user_name', 'host_name', 'work_type', 'work_result', 'work_info'];
+    columns.forEach(col => {
+        const el = document.getElementById(`sort-${col}`);
+        if (!el) return;
+        if (col === currentSort.column) {
+            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
         } else {
-            currentSort.column = column;
-            currentSort.direction = "asc";
+            el.textContent = '⇅';
         }
-        sortFilteredLogs();
-        renderTable();
-    }
+    });
+}
 
-    // ✅ 정렬 함수 (검색된 결과만 정렬)
-    function sortFilteredLogs() {
-        filteredLogs.sort((a, b) => {
-            const aValue = a[currentSort.column];
-            const bValue = b[currentSort.column];
+    function renderRowHTML(logs, startIndex) {
+    if (logs.length === 0) return "<p>검색 결과가 없습니다.</p>";
 
-            return currentSort.direction === "asc" ? aValue.localeCompare(bValue, 'ko') : bValue.localeCompare(
-                aValue, 'ko');
-        });
-    }
+    let html = `<table class="result-table">
+        <thead>
+            <tr>
+                <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                <th onclick="setSort('user_name')">사용자명 <span id="sort-user_name">⇅</span></th>
+                <th onclick="setSort('host_name')">Hostname <span id="sort-host_name">⇅</span></th>
+                <th onclick="setSort('work_type')">작업 종류 <span id="sort-work_type">⇅</span></th>
+                <th onclick="setSort('work_result')">작업 결과 <span id="sort-work_result">⇅</span></th>
+                <th onclick="setSort('work_info')">작업 정보 <span id="sort-work_info">⇅</span></th>
+            </tr>
+        </thead>
+        <tbody>`;
 
-    // ✅ 표 렌더링 함수
-    function renderTable() {
-        const resultDiv = document.getElementById("result");
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedLogs = filteredLogs.slice(start, end);
+    logs.forEach(log => {
+        html += `<tr>
+            <td>${log.code_name}</td>
+            <td>${log.user_name}</td>
+            <td>${log.host_name}</td>
+            <td>${log.work_type}</td>
+            <td>${log.work_result}</td>
+            <td>${log.work_info}</td>
+        </tr>`;
+    });
 
-        if (paginatedLogs.length > 0) {
-            let table = `<table class="result-table">
-                    <thead>
-                        <tr>
-                            <th onclick="setSort('dept')" class="sortable">부서명 <span>↑↓</span></th>
-                            <th onclick="setSort('name')" class="sortable">사용자명 <span>↑↓</span></th>
-                            <th onclick="setSort('hostname')" class="sortable">Hostname<span class="sort-arrows"> ↑↓</span></th>
-                            <th onclick="setSort('type')" class="sortable">작업 종류 <span>↑↓</span></th>
-                            <th onclick="setSort('result')" class="sortable">작업 결과 <span>↑↓</span></th>
-                            <th onclick="setSort('info')" class="sortable">작업 정보 <span>↑↓</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            paginatedLogs.forEach(log => {
-                table += `<tr>
-                        <td>${log.code_name}</td>
-                        <td>${log.user_name}</td>
-                        <td>${log.host_name}</td>
-                        <td>${log.work_type}</td>
-                        <td>${log.work_result}</td>
-                        <td>${log.work_info}</td>
-                    </tr>`;
-            });
-            table += `</tbody></table>`;
-            resultDiv.innerHTML = table;
-        } else {
-            resultDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
-        }
-    }
+    html += `</tbody></table>`;
+    return html;
+}
 
-    // ✅ 페이지네이션 렌더링 함수
-    function renderPagination() {
-        const paginationDiv = document.getElementById("pagination");
-        const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
-
-        if (totalPages <= 1) {
-            paginationDiv.style.display = "none";
-            return;
-        }
-
-        paginationDiv.style.display = "flex";
-        let html =
-            `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>◀ 이전</button>`;
-
-        // ✅ 최대 3개의 페이지 번호만 표시
-        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-            html += `<button onclick="changePage(${i})" ${i === currentPage ? "class='active'" : ""}>${i}</button>`;
-        }
-
-        html +=
-            `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>다음 ▶</button>`;
-        paginationDiv.innerHTML = html;
-    }
-
-    // ✅ 페이지 변경
-    function changePage(page) {
-        const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
-        if (page < 1) page = 1;
-        if (page > totalPages) page = totalPages;
-
-        currentPage = page;
-        renderTable();
-        renderPagination();
-    }
 
     // ✅ 저장 파일 생성
     function saveAsFile(type) {
         if (filteredLogs.length === 0) return;
 
         let content = "\uFEFF부서명,사용자명,작업 종류,작업 결과,작업 정보\n";
-        filteredLogs.forEach(log => {
-            content += `${log.dept},${log.name},${log.type},${log.result},${log.info}\n`;
-        });
+filteredLogs.forEach(log => {
+    content += `${log.code_name},${log.user_name},${log.work_type},${log.work_result},${log.work_info}\n`;
+});
+
 
         const blob = new Blob([content], {
             type: "text/plain;charset=utf-8"

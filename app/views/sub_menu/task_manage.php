@@ -3,9 +3,10 @@
 ?>
 <link rel="stylesheet" href="/css/task_manage.css" />
 <link rel="stylesheet" href="css/pagination.css">
+<link rel="stylesheet" href="css/sub_title.css">
 <script src="/js/pagination.js"></script>
 
-<div class="task-manage-wrapper">
+<div class="wrapper">
     <div class="form-header">
         <div style="display:flex; align-items:center">
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
