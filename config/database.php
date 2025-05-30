@@ -9,6 +9,10 @@ class Database {
     public $pdo;
 
     public function __construct() {
+        $_GET    = $this->sanitizeArray($_GET);
+        $_POST   = $this->sanitizeArray($_POST);
+        $_COOKIE = $this->sanitizeArray($_COOKIE);
+
         try {
             $this->pdo = new PDO(
                 "mysql:host={$this->host};port={$this->port};dbname={$this->database};charset=utf8",
@@ -21,23 +25,26 @@ class Database {
         }
     }
 
-    // private $host = 'localhost';       // MySQL 호스트
-    // private $username = 'imon';        // 사용자명
-    // private $password = 'test8877!';        // 비밀번호
-    // private $database = 'imon';        // 데이터베이스명              // 포트 번호
+    private function sanitizeInput($input) {
+        $input = trim($input);
+        $input = str_replace(['../', '..\\', './', '.\\', '/', '\\'], '', $input);
 
-    // public $pdo;
+        $pattern = '/\b(select|insert|update|delete|drop|union|--|#|\*|;)\b/i';
+        $input = preg_replace($pattern, '', $input);
 
-    // public function __construct() {
-    //     try {
-    //         $this->pdo = new PDO(
-    //             "mysql:host={$this->host};dbname={$this->database};charset=utf8",
-    //             $this->username,
-    //             $this->password
-    //         );
-    //         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    //     } catch (PDOException $e) {
-    //         die("DB 연결 실패: " . $e->getMessage());
-    //     }
-    // }
+        $input = strip_tags($input);
+
+        return $input;
+    }
+    
+    private function sanitizeArray($array) {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = $this->sanitizeArray($value);
+            } else {
+                $array[$key] = $this->sanitizeInput($value);
+            }
+        }
+        return $array;
+    }
 }
