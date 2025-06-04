@@ -55,7 +55,7 @@ class AdminInfoController extends Controller {
             $agentLog = $this->model('AgentUser')->insertAdminLog($admin_code_id,$admin_id,$admin_type,$work_type,$work_info);
 
             echo "<script>
-                    alert('성공적으로 저정되었습니다.');
+                    alert('성공적으로 저장되었습니다.');
                     window.location.href='/?url=MainController/index&page=admin';
                 </script>";
         } else {
