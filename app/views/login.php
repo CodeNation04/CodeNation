@@ -15,7 +15,7 @@ if (!empty($_SESSION['admin_id'])) {
 </head>
 
 <body>
-    <canvas id="starfield"></canvas>
+    <canvas id="constellation"></canvas>
 
     <div class="login-container">
         <div class="login-image">
@@ -26,59 +26,72 @@ if (!empty($_SESSION['admin_id'])) {
             <h2>로그인</h2>
             <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
             <form method="post" action="/?url=AuthController/login">
-                <input type="text" name="id" placeholder="아이디" required>
-                <input type="password" name="pw" placeholder="비밀번호" required>
+                <input type="text" name="id" placeholder="아이디" required><br>
+                <input type="password" name="pw" placeholder="비밀번호" required><br>
                 <button type="submit">로그인</button>
             </form>
         </div>
     </div>
 
     <script>
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
+    // 마우스 반응 별자리 캔버스 효과
+    const canvas = document.getElementById("constellation");
+    const ctx = canvas.getContext("2d");
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    const stars = Array.from({
+        length: 100
+    }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3
+    }));
 
-    function createStars(count) {
-        stars = [];
-        for (let i = 0; i < count; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5,
-                speed: Math.random() * 0.3 + 0.1
-            });
-        }
-    }
+    let mouse = {
+        x: w / 2,
+        y: h / 2
+    };
 
-    function animateStars() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        stars.forEach(star => {
-            star.y += star.speed;
-            if (star.y > canvas.height) {
-                star.y = 0;
-                star.x = Math.random() * canvas.width;
-            }
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        requestAnimationFrame(animateStars);
-    }
-
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-        createStars(150);
+    canvas.addEventListener("mousemove", e => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
     });
 
-    resizeCanvas();
-    createStars(150);
-    animateStars();
+    function animate() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#fff";
+        stars.forEach(star => {
+            star.x += star.vx;
+            star.y += star.vy;
+
+            if (star.x < 0 || star.x > w) star.vx *= -1;
+            if (star.y < 0 || star.y > h) star.vy *= -1;
+
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, 1.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 선 그리기
+            if (Math.hypot(star.x - mouse.x, star.y - mouse.y) < 150) {
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+                ctx.beginPath();
+                ctx.moveTo(star.x, star.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    });
     </script>
 </body>
 

@@ -1,21 +1,23 @@
 body {
    margin: 0;
    font-family: Arial, sans-serif;
-   background-color: black;
+   background: radial-gradient(ellipse at center, #101e8a, #010415 90%);
    height: 100vh;
    overflow: hidden;
+   display: flex;
+   justify-content: center;
+   align-items: center;
    position: relative;
 }
 
-#starfield {
+#constellation {
    position: fixed;
    top: 0;
    left: 0;
    z-index: 0;
    width: 100%;
    height: 100%;
-   display: block;
-   background: linear-gradient(180deg, #1521a7, #071052);
+   background: transparent;
 }
 
 .login-container {
@@ -25,12 +27,9 @@ body {
    width: 800px;
    height: 450px;
    background-color: white;
-   box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+   box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
    border-radius: 10px;
    overflow: hidden;
-   margin: auto;
-   top: 50%;
-   transform: translateY(-50%);
 }
 
 .login-image {
@@ -76,31 +75,29 @@ body {
 .login-form form {
    display: flex;
    flex-direction: column;
+   align-items: center;
 }
 
 .login-form input {
+   width: 100%;
+   max-width: 250px;
    margin-bottom: 15px;
-   padding: 12px;
+   padding: 10px;
    font-size: 16px;
-   border: 1px solid #ddd;
+   border: 1px solid #ccc;
    border-radius: 5px;
-   outline: none;
-   transition: border-color 0.3s;
-}
-
-.login-form input:focus {
-   border-color: #4a90e2;
 }
 
 .login-form button {
-   padding: 12px;
+   width: 100%;
+   max-width: 250px;
+   padding: 10px;
    font-size: 16px;
    background-color: #4a90e2;
    color: white;
    border: none;
    border-radius: 5px;
    cursor: pointer;
-   transition: background-color 0.3s;
 }
 
 .login-form button:hover {
