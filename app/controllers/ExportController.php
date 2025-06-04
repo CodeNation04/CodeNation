@@ -26,11 +26,21 @@ class ExportController extends Controller {
 
         header('Content-Type: application/json');
 
+        session_start();
+        $admin_id = $_SESSION['admin_id'];
+        $admin_type = $_SESSION['admin_type'];
+        $code_id = $_SESSION['code_id'];
+        $work_type = "외부 반출 요청 $status";
+
         if ($temp) {
+            $work_info = "성공";
             echo json_encode(["success" => true, "message" => "${status}처리되었습니다."]);
         } else {
+            $work_info = "실패";
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
+
+        $agentLog = $this->model('AgentUser')->insertAdminLog($code_id,$admin_id,$admin_type,$work_type,$work_info);
     }
 
     public function exportCnt() {

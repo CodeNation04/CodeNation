@@ -3,6 +3,8 @@
 <div class="delete-manage-form">
     <form method="post" action="/?url=DeleteManageController/deleteManage" id="deleteManageForm"
         name="deleteManageForm">
+        <input type="hidden" name="type" id="type"/>
+        <input type="hidden" name="num" id="num"/>
         <!-- 부서명 -->
         <div class="form-row">
             <label for="department">부서명</label>
@@ -55,7 +57,13 @@
 </div>
 
 <script>
-$(document).ready(function() {
+ $(document).ready(function(){
+    document.getElementById("deleteManageForm").reset();
+
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    const num = params.get('num');
+
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -72,15 +80,92 @@ $(document).ready(function() {
             console.error("데이터 불러오기 실패:", err);
         }
     });
-})
 
-$("#submitBtn").click(function() {
+    if(type === 'moddify'){
+        $("#type").val(type);
+        $("#num").val(num);
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: { num: num },
+            url: "/?url=DeleteManageController/deleteManageInfo",
+            success: function(result) {
+                console.log(result)
+
+                let file_ext = result.file_ext.split(",").map(e => e.trim()).filter(e => e);
+                if (!file_ext.length) return;
+
+                let container = document.getElementById("extFields");
+                let baseInput = container.querySelector('input[name="file_ext"]');
+                baseInput.value = file_ext[0];
+
+                file_ext.slice(1).forEach(ext => {
+                    container.insertAdjacentHTML("beforeend", `
+                        <div class="dynamic-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="file_ext" placeholder="예: docx" value="${ext}" required />
+                                <button type="button" class="remove-btn" onclick="this.closest('.dynamic-field').remove()">×</button>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                let exclude_path = result.exclude_path.split(",").map(e => e.trim()).filter(e => e);
+                if (!exclude_path.length) return;
+
+                let container2 = document.getElementById("excludeFields");
+                let baseInput2 = container2.querySelector('input[name="exclude_path"]');
+                baseInput2.value = exclude_path[0];
+
+                exclude_path.slice(1).forEach(ext => {
+                    container2.insertAdjacentHTML("beforeend", `
+                        <div class="dynamic-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="exclude_path" placeholder="예: C:" value="${ext}" required />
+                                <button type="button" class="remove-btn" onclick="this.closest('.dynamic-field').remove()">×</button>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                $("#department").val(result.code_code_id).attr("selected",true);
+                
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err.responseText);
+            }
+        });
+    }
+ })
+
+
+$("#submitBtn").click(function(){
     const form = $("#deleteManageForm");
     const formData = form.serializeArray();
+    let file_exts = document.querySelectorAll("input[name=file_ext]");
+    let exclude_paths = document.querySelectorAll("input[name=exclude_path]");
+    let str = "";
+    let str2 = "";
+    for (file_ext of file_exts) {
+            if (str !== "") {
+                str += ", ";
+            }
+            str += file_ext.value;
+    }
 
-    console.log(formData)
+    for (exclude_path of exclude_paths) {
+            if (str2 !== "") {
+                str2 += ", ";
+            }
+            str2 += exclude_path.value;
+    }
+
+    $("#file_exts").val(str);
+    $("#exclude_paths").val(str2);
+    
     if (confirm("저장하시겠습니까?")) {
-        // form.submit();
+        form.submit();
     }
 })
 

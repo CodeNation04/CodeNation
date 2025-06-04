@@ -54,7 +54,7 @@ toggleBtn.addEventListener("click", () => {
     // formContainer.style.display = "block";
     // listContainer.style.display = "none";
     // toggleBtn.style.display = "none";
-    location.href = "/?url=MainController/index&page=delete&form=show"
+    location.href = "/?url=MainController/index&page=deleteData&form=show"
 });
 
 // 수정 버튼
@@ -87,7 +87,7 @@ function cancelForm() {
     // formContainer.style.display = "none";
     // listContainer.style.display = "block";
     // toggleBtn.style.display = "inline-block";
-    location.href = "/?url=MainController/index&page=delete";
+    location.href = "/?url=MainController/index&page=deleteData";
 }
 
 $.ajax({
@@ -116,7 +116,7 @@ $.ajax({
 });
 
 function listModidfy(num) {
-    location.href = "/?url=MainController/index&page=delete&form=show&type=moddify&num=" + num;
+    location.href = "/?url=MainController/index&page=deleteData&form=show&type=moddify&num=" + num;
 }
 
 function manageListDel(num) {

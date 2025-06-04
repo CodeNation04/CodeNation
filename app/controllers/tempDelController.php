@@ -30,7 +30,22 @@ class TempDelController extends Controller {
             $temp = $this->model('TempDel')->updateTempDel($num,$code_id,$reser_date,$reser_date_week,$reser_date_day,$reser_date_time,$job_type,$folder_path);
         }
 
+        session_start();
+        $admin_id = $_SESSION['admin_id'];
+        $admin_type = $_SESSION['admin_type'];
+        $code_id = $_SESSION['code_id'];
+
         if ($temp) {
+            $work_info = "성공";
+
+            if($type !== "moddify"){
+                $work_type = "예약 추가";
+            }else{
+                $work_type = "예약 수정";
+            }
+
+            $agentLog = $this->model('AgentUser')->insertAdminLog($code_id,$admin_id,$admin_type,$work_type,$work_info);
+
             echo "<script>
                     alert('성공적으로 저정되었습니다.');
                     window.location.href='/?url=MainController/index&page=task&tab=temp_delete';
@@ -49,9 +64,19 @@ class TempDelController extends Controller {
 
         header('Content-Type: application/json');
 
+        session_start();
+        $admin_id = $_SESSION['admin_id'];
+        $admin_type = $_SESSION['admin_type'];
+        $code_id = $_SESSION['code_id'];
+        $work_type = "예약 삭제";
+
         if ($temp) {
+            $work_info = "성공";
+            $agentLog = $this->model('AgentUser')->insertAdminLog($code_id,$admin_id,$admin_type,$work_type,$work_info);
             echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
         } else {
+            $work_info = "실패";
+            $agentLog = $this->model('AgentUser')->insertAdminLog($code_id,$admin_id,$admin_type,$work_type,$work_info);
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
     }

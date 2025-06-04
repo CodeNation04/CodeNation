@@ -29,15 +29,19 @@
                         <option value="로그인">로그인</option>
                         <option value="로그아웃">로그아웃</option>
                         <option value="예약 추가">예약 추가</option>
+                        <option value="예약 수정">예약 수정</option>
                         <option value="예약 삭제">예약 삭제</option>
                         <option value="중간관리자 등록">중간관리자 등록</option>
                         <option value="중간관리자 수정">중간관리자 수정</option>
+                        <option value="중간관리자 삭제">중간관리자 삭제</option>
                         <option value="부서 등록">부서 등록</option>
                         <option value="부서 수정">부서 수정</option>
+                        <option value="부서 삭제">부서 삭제</option>
                         <option value="암호화 환경 등록">암호화 환경 등록</option>
                         <option value="암호화 환경 수정">암호화 환경 수정</option>
                         <option value="암호화 환경 삭제">암호화 환경 삭제</option>
-                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 승인/반려</option>
+                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 승인</option>
+                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 반려</option>
                     </select>
                     <span class="custom-arrow">▼</span>
                 </div>

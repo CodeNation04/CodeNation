@@ -82,16 +82,27 @@ class AgentUserController extends Controller {
 
         if($type !== "moddify"){
             $temp = $this->model('AgentUser')->insertDeptInfo($code_name,$code_id);
+            $work_type = "부서 등록";
         }else{
             $temp = $this->model('AgentUser')->updateDeptInfo($code_name,$code_id);
+            $work_type = "부서 수정";
         }
 
+        session_start();
+        $admin_id = $_SESSION['admin_id'];
+        $admin_type = $_SESSION['admin_type'];
+        $admin_code_id = $_SESSION['code_id'];
+
         if ($temp) {
+            $work_info = "성공";
+            $agentLog = $this->model('AgentUser')->insertAdminLog($admin_code_id,$admin_id,$admin_type,$work_type,$work_info);
             echo "<script>
                     alert('성공적으로 저장되었습니다.');
                     window.location.href='/?url=MainController/index&page=department';
                 </script>";
         } else {
+            $work_info = "성공";
+            $agentLog = $this->model('AgentUser')->insertAdminLog($admin_code_id,$admin_id,$admin_type,$work_type,$work_info);
             echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=department';</script>";
             exit;
         }
@@ -116,11 +127,21 @@ class AgentUserController extends Controller {
 
         header('Content-Type: application/json');
 
+        session_start();
+        $admin_id = $_SESSION['admin_id'];
+        $admin_type = $_SESSION['admin_type'];
+        $admin_code_id = $_SESSION['code_id'];
+        $work_type = "부서 삭제";
+
         if ($temp) {
+            $work_info = "성공";
             echo json_encode(["success" => true, "message" => "삭제되었습니다."]);
         } else {
+            $work_info = "실패";
             echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
         }
+
+        $agentLog = $this->model('AgentUser')->insertAdminLog($admin_code_id,$admin_id,$admin_type,$work_type,$work_info);
     }
 
     public function agentUserData() {
