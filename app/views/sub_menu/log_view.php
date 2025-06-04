@@ -40,8 +40,8 @@
                         <option value="암호화 환경 등록">암호화 환경 등록</option>
                         <option value="암호화 환경 수정">암호화 환경 수정</option>
                         <option value="암호화 환경 삭제">암호화 환경 삭제</option>
-                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 승인</option>
-                        <option value="외부 반출 요청 승인/반려">외부 반출 요청 반려</option>
+                        <option value="외부 반출 요청 승인">외부 반출 요청 승인</option>
+                        <option value="외부 반출 요청 반려">외부 반출 요청 반려</option>
                     </select>
                     <span class="custom-arrow">▼</span>
                 </div>
@@ -64,7 +64,7 @@
 
         <div id="result" style="margin-top: 20px;"></div>
 
-        <!-- ✅ 페이징 중앙 정렬 -->
+        <!-- 가운데 정렬된 페이징 -->
         <div style="display: flex; justify-content: center; margin-top: 24px;">
             <div class="pagination" id="pagination" style="display: none;"></div>
         </div>
@@ -72,13 +72,20 @@
 
     <script>
     let filteredLogs = [];
+    let logs = [];
     let currentSort = {
         column: null,
         direction: 'asc'
     };
-    let logs;
 
-    // 부서 옵션 불러오기
+    const columnKeyMap = {
+        dept: "code_name",
+        id: "admin_id",
+        type: "work_type",
+        info: "work_info",
+        time: "create_date"
+    };
+
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -95,7 +102,6 @@
         }
     });
 
-    // 로그 데이터 불러오기
     $.ajax({
         type: "GET",
         dataType: "json",
@@ -108,7 +114,6 @@
         }
     });
 
-    // 검색
     function searchLogs() {
         const id = document.getElementById("id").value.trim();
         const type = document.getElementById("type").value.trim();
@@ -138,8 +143,10 @@
         updateSortArrows();
     }
 
-    // 정렬
     function setSort(column) {
+        const key = columnKeyMap[column];
+        if (!key) return;
+
         if (currentSort.column === column) {
             currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
         } else {
@@ -148,18 +155,18 @@
         }
 
         filteredLogs.sort((a, b) => {
-            let aValue = a[column] || "";
-            let bValue = b[column] || "";
+            let aVal = a[key] || "";
+            let bVal = b[key] || "";
 
-            if (column === "time") {
+            if (key === "create_date") {
                 return currentSort.direction === "asc" ?
-                    new Date(aValue) - new Date(bValue) :
-                    new Date(bValue) - new Date(aValue);
+                    new Date(aVal) - new Date(bVal) :
+                    new Date(bVal) - new Date(aVal);
             }
 
             return currentSort.direction === "asc" ?
-                aValue.localeCompare(bValue, 'ko') :
-                bValue.localeCompare(aValue, 'ko');
+                aVal.localeCompare(bVal, 'ko') :
+                bVal.localeCompare(aVal, 'ko');
         });
 
         setupPagination({
@@ -184,7 +191,7 @@
         });
     }
 
-    function renderRowHTML(logs, startIndex) {
+    function renderRowHTML(logs) {
         if (logs.length === 0) return "<p>검색 결과가 없습니다.</p>";
 
         let html = `<table class="result-table">
