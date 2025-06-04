@@ -508,5 +508,20 @@
             
             return $stmt->execute();;
         }
+
+        public function selectAdminLogList(){
+
+            $stmt = $this->db->prepare("SELECT  a.code_code_id,
+                                                (SELECT code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name,
+                                                a.admin_id,
+                                                a.admin_type,
+                                                a.work_type,
+                                                a.work_info,
+                                                a.create_date
+                                        FROM appreciation_log a
+                                        ORDER BY create_date DESC");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 ?>

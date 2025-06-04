@@ -92,9 +92,8 @@
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/?url=AgentUserController/selectLogList",
+        url: "/?url=AgentUserController/selectAdminLogList",
         success: function(result) {
-            console.log(result);
             logs = result;
         },
         error: function(err) {
@@ -109,9 +108,9 @@
         const dept = document.getElementById("dept")?.value.trim() || "";
 
         filteredLogs = logs.filter(log =>
-            (!id || log.id.includes(id)) &&
-            (!type || log.type.includes(type)) &&
-            (!dept || log.dept === dept)
+            (!id || log.admin_id.includes(id)) &&
+            (!type || log.work_type.includes(type)) &&
+            (!dept || log.code_code_id === dept)
         );
 
         currentSort = {
@@ -195,11 +194,11 @@
 
         logs.forEach(log => {
             html += `<tr>
-                <td>${log.dept}</td>
-                <td>${log.id}</td>
-                <td>${log.type}</td>
-                <td>${log.info}</td>
-                <td>${log.time}</td>
+                <td>${log.code_name}</td>
+                <td>${log.admin_id}</td>
+                <td>${log.work_type}</td>
+                <td>${log.work_info}</td>
+                <td>${log.create_date}</td>
             </tr>`;
         });
 
