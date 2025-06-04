@@ -17,7 +17,7 @@ class DeleteManageController extends Controller {
 
         if ($temp) {
             echo "<script>
-                    alert('성공적으로 저정되었습니다.');
+                    alert('성공적으로 저장되었습니다.');
                     window.location.href='/?url=MainController/index&page=delete';
                 </script>";
         } else {
