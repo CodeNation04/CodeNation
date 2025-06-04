@@ -1,8 +1,12 @@
+.dept-table-wrapper {
+   width: 100%;
+   overflow-x: auto;
+}
+
 .dept-table {
    background-color: white;
-   width: 100%;
+   min-width: 100%; /* 기본적으로는 부모 너비 채우기 */
    border-collapse: collapse;
-   table-layout: fixed;
 }
 
 .dept-table th,

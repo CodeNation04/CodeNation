@@ -3,14 +3,36 @@ header('Content-Type: application/json');
 
 if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
     $data = [
-        'code_id' =>
-$_POST['code_id'], 'hostname' => $_POST['hostname'], 'ip' => $_POST['ip'],
-'username' => $_POST['username'], 'token' => $_POST['token'], 'work_info' =>
-'로그아웃' ]; $ch = curl_init(); curl_setopt($ch, CURLOPT_URL,
-"http://localhost/?url=AgentUserController/logAdd"); curl_setopt($ch,
-CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS,
-http_build_query($data)); curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch); if ($response === false) { echo json_encode([
-'success' => false, 'message' => 'cURL 오류: ' . curl_error($ch) ]); } else {
-echo $response; } curl_close($ch); } else { echo json_encode([ 'success' =>
-false, 'message' => '요청 파라미터 부족' ]); } ?>
+        'code_id' => $_POST['code_id'],
+        'hostname' => $_POST['hostname'],
+        'ip' => $_POST['ip'],
+        'username' => $_POST['username'],
+        'token' => $_POST['token'],
+        'work_info' => '로그아웃'
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/logAdd");
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if ($response === false) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'cURL 오류: ' . curl_error($ch)
+        ]);
+    } else {
+        echo $response;
+    }
+
+    curl_close($ch);
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => '요청 파라미터 부족'
+    ]);
+}
+?>
