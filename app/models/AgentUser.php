@@ -462,5 +462,51 @@
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+
+        public function insertAdminLog($code_id,$admin_id,$admin_type,$work_type,$work_info){  
+            $create_ip = $_SERVER['REMOTE_ADDR'];
+
+            $sql = "INSERT INTO appreciation_log(code_code_id,
+                                                admin_id,
+                                                admin_type,
+                                                work_type,
+                                                work_info,
+                                                create_date,
+                                                create_ip
+                                                )
+                            VALUES(:code_id,
+                                   :admin_id,
+                                   :admin_type,
+                                   :work_type,
+                                   :work_info,
+                                   NOW(),
+                                   :create_ip)";
+            
+            $params = [
+                ':code_id' => $code_id,
+                ':admin_id' => $admin_id,
+                ':admin_type' => $admin_type,
+                ':work_type' => $work_type,
+                ':work_info' => $work_info,
+                ':create_ip' => $create_ip
+            ];
+
+            $debugSql = $sql;
+            foreach ($params as $key => $val) {
+                $safeVal = is_numeric($val) ? $val : "'" . addslashes($val) . "'";
+                $debugSql = str_replace($key, $safeVal, $debugSql);
+            }
+
+            // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
+            // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+
+            // 쿼리 실행
+            $stmt = $this->db->prepare($sql);
+            foreach ($params as $key => $val) {
+                $stmt->bindValue($key, $val);
+            }
+            
+            return $stmt->execute();;
+        }
     }
 ?>

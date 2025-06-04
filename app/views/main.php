@@ -41,8 +41,8 @@
                 <div class="menu-group-title">정책 설정</div>
                 <a href="/?url=MainController/index&page=task"
                     class="menu-item <?= ($page === 'task') ? 'active' : '' ?>">Agent 예약 작업 관리</a>
-                <a href="/?url=MainController/index&page=delete"
-                    class="menu-item <?= ($page === 'delete') ? 'active' : '' ?>">Agent 암호화 환경 관리</a>
+                <a href="/?url=MainController/index&page=deleteData"
+                    class="menu-item <?= ($page === 'deleteData') ? 'active' : '' ?>">Agent 암호화 환경 관리</a>
             </div>
             <?php endif; ?>
 
@@ -80,7 +80,7 @@
                     case "dept": include $view_path . "department_info.php"; break;
                     case "log": include $view_path . "log_view.php"; break;
                     case "task": include $view_path . "task_manage.php"; break;
-                    case "delete": include $view_path . "delete_manage.php"; break;
+                    case "deleteData": include $view_path . "delete_manage.php"; break;
                     case "export": include $view_path . "export_manage.php"; break;
                     case "agent": include $view_path . "agent_info.php"; break;
                     case "agentlog": include $view_path . "agent_log.php"; break;
