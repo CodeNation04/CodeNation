@@ -63,7 +63,11 @@
         </form>
 
         <div id="result" style="margin-top: 20px;"></div>
-        <div class="pagination" id="pagination" style="display: none;"></div>
+
+        <!-- ✅ 페이징 중앙 정렬 -->
+        <div style="display: flex; justify-content: center; margin-top: 24px;">
+            <div class="pagination" id="pagination" style="display: none;"></div>
+        </div>
     </div>
 
     <script>
@@ -72,6 +76,7 @@
         column: null,
         direction: 'asc'
     };
+    let logs;
 
     // 부서 옵션 불러오기
     $.ajax({
@@ -89,8 +94,6 @@
             console.error("부서 옵션 로딩 실패:", err);
         }
     });
-
-    let logs;
 
     // 로그 데이터 불러오기
     $.ajax({
@@ -121,6 +124,8 @@
             column: null,
             direction: 'asc'
         };
+
+        document.getElementById("pagination").style.display = filteredLogs.length > 0 ? "block" : "none";
 
         setupPagination({
             data: filteredLogs,
@@ -173,11 +178,9 @@
         columns.forEach(col => {
             const el = document.getElementById(`sort-${col}`);
             if (!el) return;
-            if (col === currentSort.column) {
-                el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
-            } else {
-                el.textContent = '⇅';
-            }
+            el.textContent = col === currentSort.column ?
+                (currentSort.direction === 'asc' ? '▲' : '▼') :
+                '⇅';
         });
     }
 

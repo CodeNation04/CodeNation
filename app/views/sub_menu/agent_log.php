@@ -41,22 +41,17 @@
                 </div>
             </div>
 
-            <!-- 최고관리자만 부서검색 가능 -->
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
-                <div class="dropdown-wrapper">
-                    <label for="dept">부서 선택</label>
-                    <div class="custom-select-wrapper">
-                        <select id="dept" name="dept" class="custom-select">
-                            <option value="">-- 부서 선택 --</option>
-                            <!-- 샘플부서, db에서 불러와야함 -->
-                        </select>
-                        <span class="custom-arrow">▼</span>
-                    </div>
+            <div class="dropdown-wrapper">
+                <label for="dept">부서 선택</label>
+                <div class="custom-select-wrapper">
+                    <select id="dept" name="dept" class="custom-select">
+                        <option value="">-- 부서 선택 --</option>
+                    </select>
+                    <span class="custom-arrow">▼</span>
                 </div>
+            </div>
             <?php endif;?>
-
-
-
 
             <div class="button-group">
                 <button type="button" onclick="searchLogs()">검색</button>
@@ -64,29 +59,34 @@
         </form>
 
         <div id="result" style="margin-top: 20px;"></div>
+
         <div class="save-buttons" style="display: none;">
             <button onclick="saveAsFile('csv')">엑셀로 저장</button>
             <button onclick="saveAsFile('txt')">텍스트로 저장</button>
         </div>
-        <div class="pagination" id="pagination" style="display: none;"></div>
+
+        <!-- ✅ 가운데 정렬을 위한 래퍼 div 추가 -->
+        <div style="display: flex; justify-content: center; margin-top: 24px;">
+            <div class="pagination" id="pagination" style="display: none;"></div>
+        </div>
     </div>
 
     <script>
     let filteredLogs = [];
+    let logs;
     let currentSort = {
         column: null,
         direction: 'asc'
     };
 
-     $.ajax({
+    $.ajax({
         type: "GET",
         dataType: "json",
         url: "/?url=AgentUserController/selectDeptList",
         success: function(result) {
             let html = '<option value="">전체</option>';
             result.forEach((item) => {
-                html +=
-                    `<option value="${item.code_id}">${item.code_name}</option>`;
+                html += `<option value="${item.code_id}">${item.code_name}</option>`;
             });
             $("#dept").html(html);
         },
@@ -95,15 +95,11 @@
         }
     });
 
-
-    let logs;
-
     $.ajax({
         type: "GET",
         dataType: "json",
         url: "/?url=AgentUserController/selectLogList",
         success: function(result) {
-            console.log(result)
             logs = result;
         },
         error: function(err) {
@@ -111,118 +107,115 @@
         }
     });
 
-    // ✅ 로그 검색
     function searchLogs() {
-    const name = document.getElementById("name").value.trim();
-    const hostname = document.getElementById("hostname").value.trim();
-    const type = document.getElementById("type").value.trim();
-    const dept = document.getElementById("dept")?.value.trim() || "";
+        const name = document.getElementById("name").value.trim();
+        const hostname = document.getElementById("hostname").value.trim();
+        const type = document.getElementById("type").value.trim();
+        const dept = document.getElementById("dept")?.value.trim() || "";
 
-    filteredLogs = logs.filter(log =>
-        (!name || log.user_name.includes(name)) &&
-        (!hostname || log.host_name.includes(hostname)) &&
-        (!type || log.work_type.includes(type)) &&
-        (!dept || log.code_code_id === dept)
-    );
+        filteredLogs = logs.filter(log =>
+            (!name || log.user_name.includes(name)) &&
+            (!hostname || log.host_name.includes(hostname)) &&
+            (!type || log.work_type.includes(type)) &&
+            (!dept || log.code_code_id === dept)
+        );
 
-    // 초기 정렬 제거
-    currentSort = { column: null, direction: 'asc' };
+        currentSort = {
+            column: null,
+            direction: 'asc'
+        };
 
-    document.querySelector('.save-buttons').style.display = filteredLogs.length > 0 ? "flex" : "none";
+        document.querySelector('.save-buttons').style.display = filteredLogs.length > 0 ? "flex" : "none";
+        document.getElementById("pagination").style.display = filteredLogs.length > 0 ? "block" : "none";
 
-    setupPagination({
-        data: filteredLogs,
-        itemsPerPage: 10,
-        containerId: "result",
-        paginationClass: "pagination",
-        renderRowHTML: renderRowHTML
-    });
+        setupPagination({
+            data: filteredLogs,
+            itemsPerPage: 10,
+            containerId: "result",
+            paginationClass: "pagination",
+            renderRowHTML: renderRowHTML
+        });
 
-    updateSortArrows();
-}
-
-
-    function setSort(column) {
-    if (currentSort.column === column) {
-        currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
-    } else {
-        currentSort.column = column;
-        currentSort.direction = "asc";
+        updateSortArrows();
     }
 
-    filteredLogs.sort((a, b) => {
-        let aValue = a[column] || "";
-        let bValue = b[column] || "";
-        return currentSort.direction === "asc"
-            ? aValue.localeCompare(bValue, 'ko')
-            : bValue.localeCompare(aValue, 'ko');
-    });
-
-    setupPagination({
-        data: filteredLogs,
-        itemsPerPage: 10,
-        containerId: "result",
-        paginationClass: "pagination",
-        renderRowHTML: renderRowHTML
-    });
-
-    updateSortArrows();
-}
-
-function updateSortArrows() {
-    const columns = ['code_name', 'user_name', 'host_name', 'work_type', 'work_result', 'work_info'];
-    columns.forEach(col => {
-        const el = document.getElementById(`sort-${col}`);
-        if (!el) return;
-        if (col === currentSort.column) {
-            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+    function setSort(column) {
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
         } else {
-            el.textContent = '⇅';
+            currentSort.column = column;
+            currentSort.direction = "asc";
         }
-    });
-}
+
+        filteredLogs.sort((a, b) => {
+            let aValue = a[column] || "";
+            let bValue = b[column] || "";
+            return currentSort.direction === "asc" ?
+                aValue.localeCompare(bValue, 'ko') :
+                bValue.localeCompare(aValue, 'ko');
+        });
+
+        setupPagination({
+            data: filteredLogs,
+            itemsPerPage: 10,
+            containerId: "result",
+            paginationClass: "pagination",
+            renderRowHTML: renderRowHTML
+        });
+
+        updateSortArrows();
+    }
+
+    function updateSortArrows() {
+        const columns = ['code_name', 'user_name', 'host_name', 'work_type', 'work_result', 'work_info'];
+        columns.forEach(col => {
+            const el = document.getElementById(`sort-${col}`);
+            if (!el) return;
+            el.textContent = col === currentSort.column ?
+                (currentSort.direction === 'asc' ? '▲' : '▼') :
+                '⇅';
+        });
+    }
 
     function renderRowHTML(logs, startIndex) {
-    if (logs.length === 0) return "<p>검색 결과가 없습니다.</p>";
+        if (logs.length === 0) return "<p>검색 결과가 없습니다.</p>";
 
-    let html = `<table class="result-table">
-        <thead>
-            <tr>
-                <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
-                <th onclick="setSort('user_name')">사용자명 <span id="sort-user_name">⇅</span></th>
-                <th onclick="setSort('host_name')">Hostname <span id="sort-host_name">⇅</span></th>
-                <th onclick="setSort('work_type')">작업 종류 <span id="sort-work_type">⇅</span></th>
-                <th onclick="setSort('work_result')">작업 결과 <span id="sort-work_result">⇅</span></th>
-                <th onclick="setSort('work_info')">작업 정보 <span id="sort-work_info">⇅</span></th>
-            </tr>
-        </thead>
-        <tbody>`;
+        let html = `<table class="result-table">
+            <thead>
+                <tr>
+                    <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                    <th onclick="setSort('user_name')">사용자명 <span id="sort-user_name">⇅</span></th>
+                    <th onclick="setSort('host_name')">Hostname <span id="sort-host_name">⇅</span></th>
+                    <th onclick="setSort('work_type')">작업 종류 <span id="sort-work_type">⇅</span></th>
+                    <th onclick="setSort('work_result')">작업 결과 <span id="sort-work_result">⇅</span></th>
+                    <th onclick="setSort('work_info')">작업 정보 <span id="sort-work_info">⇅</span></th>
+                </tr>
+            </thead>
+            <tbody>`;
 
-    logs.forEach(log => {
-        html += `<tr>
-            <td>${log.code_name}</td>
-            <td>${log.user_name}</td>
-            <td>${log.host_name}</td>
-            <td>${log.work_type}</td>
-            <td>${log.work_result}</td>
-            <td>${log.work_info}</td>
-        </tr>`;
-    });
+        logs.forEach(log => {
+            html += `<tr>
+                <td>${log.code_name}</td>
+                <td>${log.user_name}</td>
+                <td>${log.host_name}</td>
+                <td>${log.work_type}</td>
+                <td>${log.work_result}</td>
+                <td>${log.work_info}</td>
+            </tr>`;
+        });
 
-    html += `</tbody></table>`;
-    return html;
-}
+        html += `</tbody></table>`;
+        return html;
+    }
 
-
-    // ✅ 저장 파일 생성
     function saveAsFile(type) {
         if (filteredLogs.length === 0) return;
 
         let content = "\uFEFF부서명,사용자명,작업 종류,작업 결과,작업 정보\n";
-filteredLogs.forEach(log => {
-    content += `${log.code_name},${log.user_name},${log.work_type},${log.work_result},${log.work_info}\n`;
-});
-
+        filteredLogs.forEach(log => {
+            content +=
+                `${log.code_name},${log.user_name},${log.work_type},${log.work_result},${log.work_info}\n`;
+        });
 
         const blob = new Blob([content], {
             type: "text/plain;charset=utf-8"
@@ -233,7 +226,6 @@ filteredLogs.forEach(log => {
         link.click();
     }
     </script>
-
 </body>
 
 </html>
