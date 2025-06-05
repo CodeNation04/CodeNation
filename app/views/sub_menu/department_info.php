@@ -13,6 +13,7 @@
             <h1 style="font-weight:900; margin-right:12px;">| </h1>
             <h1>부서 정보 관리</h1>
         </div>
+        <a href="?url=MainController/index&page=dept&form=show">
             <button class="btn-register">등록</button>
         </a>
     </div>
