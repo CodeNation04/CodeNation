@@ -1,49 +1,99 @@
 <?php
+
 header('Content-Type: application/json');
 
-if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
-    $data = [
-        'code_id'   => trim($_POST['code_id']),
-        'hostname'  => trim($_POST['hostname']),
-        'ip'        => trim($_POST['ip']),
-        'username'  => trim($_POST['username']),
-        'token'     => trim($_POST['token']),
-        'work_info' => '최초등록',
+$agentId = $_POST['agent_id'] ?? '';
+
+if (!$agentId) {
+    echo json_encode(['success' => false, 'message' => 'Agent ID 누락']);
+    exit;
+}
+
+$url = "http://localhost/?url=AgentUserController/agentUserByAgentId&agent_id=" . urlencode($agentId);
+$response = file_get_contents($url);
+$data = json_decode($response, true);
+
+if (isset($data['agent_id'])) {
+    // 이미 등록된 사용자
+    echo json_encode([
+        'success' => true,
+        'is_duplicate' => true,
+        'token' => $data['token'],
+        'code_name' => $data['code_name'] ?? '',
+        'check_time' => $data['check_time'] ?? 3600
+    ]);
+} else {
+    // 신규 등록 처리 (기존 agentUserData 호출)
+    $postData = [
+        'code_id' => $_POST['code_id'] ?? '',
+        'hostname' => $_POST['hostname'],
+        'ip' => $_POST['ip'],
+        'username' => $_POST['username'],
+        'token' => $_POST['token'],
+        'work_info' => '최초등록'
     ];
-
-    // 기존 함수 agentUserData 호출
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserData");
+    $ch = curl_init("http://localhost/?url=AgentUserController/agentUserData");
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
+    $result = curl_exec($ch);
     curl_close($ch);
 
-    $result = json_decode($response, true);
-
-    // controller에서 중복이면 기존 token/code_name 보내도록 이미 처리된 경우
-    if (isset($result['token'])) {
-        echo json_encode([
-            'success' => true,
-            'is_duplicate' => true,
-            'message' => '이미 등록된 사용자입니다.',
-            'token' => $result['token'],
-            'code_name' => $result['code_name'] ?? ''
-        ]);
-    } else {
-        echo json_encode([
-            'success' => true,
-            'is_duplicate' => false,
-            'message' => '신규 등록 완료',
-            'token' => $data['token']
-        ]);
-    }
-} else {
     echo json_encode([
-        'success' => false,
-        'message' => '요청 파라미터 부족'
+        'success' => true,
+        'is_duplicate' => false,
+        'message' => '신규 등록 완료',
+        'token' => $postData['token'],
+        'check_time' => 3600
     ]);
 }
+
+// header('Content-Type: application/json');
+
+// if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
+//     $data = [
+//         'code_id'   => trim($_POST['code_id']),
+//         'hostname'  => trim($_POST['hostname']),
+//         'ip'        => trim($_POST['ip']),
+//         'username'  => trim($_POST['username']),
+//         'token'     => trim($_POST['token']),
+//         'work_info' => '최초등록',
+//         'check_time' => 3600  // ✅ 체크주기 추가 (단위: 초),
+//     ];
+
+//     // 기존 함수 agentUserData 호출
+//     $ch = curl_init();
+//     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserData");
+//     curl_setopt($ch, CURLOPT_POST, true);
+//     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+//     $response = curl_exec($ch);
+//     curl_close($ch);
+
+//     $result = json_decode($response, true);
+
+//     // controller에서 중복이면 기존 token/code_name 보내도록 이미 처리된 경우
+//     if (isset($result['token'])) {
+//         echo json_encode([
+//             'success' => true,
+//             'is_duplicate' => true,
+//             'message' => '이미 등록된 사용자입니다.',
+//             'token' => $result['token'],
+//             'code_name' => $result['code_name'] ?? ''
+//         ]);
+//     } else {
+//         echo json_encode([
+//             'success' => true,
+//             'is_duplicate' => false,
+//             'message' => '신규 등록 완료',
+//             'token' => $data['token']
+//         ]);
+//     }
+// } else {
+//     echo json_encode([
+//         'success' => false,
+//         'message' => '요청 파라미터 부족'
+//     ]);
+// }
 ?>

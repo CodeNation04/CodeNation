@@ -1,0 +1,44 @@
+<?php
+header('Content-Type: text/plain');
+
+$agentId = $_GET['agent_id'] ?? '';
+
+if (!$agentId) {
+    echo "0"; // agent_id 없을 경우 0 또는 오류 코드로 처리
+    exit;
+}
+
+// 1. 사용자 정보 조회
+$url = "http://localhost/?url=AgentUserController/agentUserByAgentId&agent_id=" . urlencode($agentId);
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+
+if (isset($data['check_time'])) {
+     // 2. 로그 기록 추가
+    $logData = [
+        'hostname'  => $data['hostname'],
+        'ip'        => $data['ip'],
+        'username'  => $data['username'],
+        'token'     => $data['token'],
+        'code_id'   => $data['code_id'],
+        'work_info' => '체크'
+    ];
+
+    $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+    // 3. 체크주기 응답
+    echo $data['check_time']; 
+} else {
+    echo "0"; // 실패 시 기본값 또는 오류로 처리
+}
+?>
