@@ -1,16 +1,19 @@
 <?php
 header('Content-Type: application/json');
 
-if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
+$params = $_POST ?: $_GET;
+
+if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['username'], $params['token'])) {
     $data = [
-        'code_id' => $_POST['code_id'],
-        'hostname' => $_POST['hostname'],
-        'ip' => $_POST['ip'],
-        'username' => $_POST['username'],
-        'token' => $_POST['token'],
-        'work_info' => '로그인'
+        'code_id'   => trim($params['code_id']),
+        'hostname'  => trim($params['hostname']),
+        'ip'        => trim($params['ip']),
+        'username'  => trim($params['username']),
+        'token'     => trim($params['token']),
+        'work_info' => '최초등록',
     ];
 
+    // 기존 함수 agentUserData 호출
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserData");
     curl_setopt($ch, CURLOPT_POST, true);
@@ -18,17 +21,37 @@ if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
+    curl_close($ch);
 
-    if ($response === false) {
+    $result = json_decode($response, true);
+
+    if (isset($result['success']) && $result['success']) {
+
+        $userInfo = $result['result'] ?? [];
+
+        if (!empty($result['cnt']) && $result['cnt'] > 0) {
+            echo json_encode([
+                'success' => true,
+                'is_duplicate' => true,
+                'message' => '이미 등록된 사용자입니다.',
+                'token' => $userInfo['user_id'] ?? '',
+                'code_name' => $userInfo['code_name'] ?? ''
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true,
+                'is_duplicate' => false,
+                'message' => '신규 등록 완료',
+                'token' => $userInfo['user_id'] ?? ''
+            ]);
+        }
+    } else {
         echo json_encode([
             'success' => false,
-            'message' => 'cURL 오류: ' . curl_error($ch)
+            'message' => $result['message'] ?? '알 수 없는 오류',
+            'result' => $response
         ]);
-    } else {
-        echo $response;
     }
-
-    curl_close($ch);
 } else {
     echo json_encode([
         'success' => false,

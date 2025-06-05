@@ -1,0 +1,45 @@
+<?php
+header('Content-Type: application/json');
+
+$params = $_POST ?: $_GET;
+
+if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['username'], $params['token'])) {
+    $data = [
+        'code_id'   => trim($params['code_id']),
+        'hostname'  => trim($params['hostname']),
+        'ip'        => trim($params['ip']),
+        'username'  => trim($params['username']),
+        'token'     => trim($params['token']),
+        'work_info' => '로그인',
+    ];
+
+    // 기존 함수 agentUserData 호출
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserLogin");
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response, true);
+
+    if (isset($result['success']) && $result['success']) {
+        echo json_encode([
+            'success' => true,
+            'message' => $result['message'] ?? '',
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => $result['message'] ?? '알 수 없는 오류',
+        ]);
+    }
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => '요청 파라미터 부족'
+    ]);
+}
+?>
