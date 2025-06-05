@@ -10,17 +10,16 @@
 
 <body>
 
-<div class="wrapper">
-    <div class="form-header">
-        <div style="display:flex; align-items:center">
-            <h1 style="font-weight:900; margin-right:12px;">| </h1>
-            <h1>중간 관리자 목록</h1>
+    <div class="wrapper">
+        <div class="form-header">
+            <div style="display:flex; align-items:center">
+                <h1 style="font-weight:900; margin-right:12px;">| </h1>
+                <h1>중간 관리자 목록</h1>
+            </div>
+            <a href="?url=MainController/index&page=admin&form=show">
+                <button class="btn-register">등록</button>
+            </a>
         </div>
-        <a href="?url=MainController/index&page=admin&form=show">
-            <button class="btn-register">등록</button>
-        </a>
-    </div>
-
 
         <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>
 
@@ -80,9 +79,9 @@
             <table class="manager-table">
                 <thead>
                     <tr>
-                        <th>부서</th>
-                        <th>아이디</th>
-                        <th>접근가능 IP</th>
+                        <th onclick="setSort('code_name')">부서 <span id="sort-code_name">⇅</span></th>
+                        <th onclick="setSort('id')">아이디 <span id="sort-id">⇅</span></th>
+                        <th onclick="setSort('access_ip')">접근가능 IP <span id="sort-access_ip">⇅</span></th>
                         <th>수정</th>
                         <th>삭제</th>
                     </tr>
@@ -93,139 +92,101 @@
             </table>
         </div>
         <?php endif; ?>
-    <!-- </div> -->
 
-    <script>
-    // 페이지 로드 시 폼 상태 확인
-    let managerList = [];
-    $(document).ready(function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const formMode = urlParams.get('form');
-        const editIndex = urlParams.get('edit');
-        const typeIndex = urlParams.get('type');
-        let list_section = document.getElementById('manager-list-section')
+        <script>
+        let managerList = [];
+        let currentSort = {
+            column: null,
+            direction: 'asc'
+        };
 
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AdminInfoController/adminInfoList",
-            success: function(result) {
-                result.forEach((item) => {
-                    managerList.push(item);
-                })
-                renderManagerList()
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
-
-        if (formMode === 'show') {
-            showForm();
-        } else {
-            hideForm();
-        }
-
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "/?url=AgentUserController/selectDeptList",
-            success: function(result) {
-                let html = '';
-                result.forEach((item) => {
-                    console.log(item)
-                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
-                });
-                $("#mgr-dept").html(html)
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
-
-        if (typeIndex == "moddify") {
-            document.getElementById("type").value = typeIndex;
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const formMode = urlParams.get('form');
+            const editIndex = urlParams.get('edit');
+            const typeIndex = urlParams.get('type');
+            let list_section = document.getElementById('manager-list-section');
 
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                data: {
-                    id: editIndex
-                },
-                url: "/?url=AdminInfoController/adminInfoObj",
+                url: "/?url=AdminInfoController/adminInfoList",
                 success: function(result) {
-                    $("#mgr-id").val(result.id)
-                    $("#admin_id").val(result.id)
-                    $("#mgr-pw").val(result.pw_decoded)
-                    $("#mgr-pw-confirm").val(result.pw_decoded)
-                    $("#mgr-ip").val(result.access_ip)
-                    $("#mgr-dept").val(result.code_code_id).trigger("change");
+                    managerList = result;
+                    renderManagerList();
                 },
                 error: function(err) {
                     console.error("데이터 불러오기 실패:", err);
                 }
             });
-        }
 
-        // 폼 표시
-        function showForm() {
-            document.getElementById('register-form').style.display = 'block';
-            if (list_section) {
-                document.getElementById('manager-list-section').style.display = 'none'
-            };
-        }
-
-        // 폼 숨기기
-        function hideForm() {
-            document.getElementById('register-form').style.display = 'none';
-            if (list_section) {
-                document.getElementById('manager-list-section').style.display = 'block'
-            };
-        }
-
-        // 중간 관리자 등록/수정
-        function registerManager(event) {
-            event.preventDefault();
-            const id = document.getElementById('mgr-id').value.trim();
-            const pw = document.getElementById('mgr-pw').value.trim();
-            const pwConfirm = document.getElementById('mgr-pw-confirm').value.trim();
-            const ip = document.getElementById('mgr-ip').value.trim();
-            const dept = document.getElementById('mgr-dept').value;
-
-            if (pw !== pwConfirm) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return;
-            }
-
-            if (editIndex >= 0) {
-                // 수정 모드
-                managerList[editIndex].pw = pw;
-                managerList[editIndex].ip = ip;
-                alert("중간 관리자 정보가 수정되었습니다.");
-                editIndex = -1;
+            if (formMode === 'show') {
+                document.getElementById('register-form').style.display = 'block';
+                if (list_section) list_section.style.display = 'none';
             } else {
-                // 등록 모드
-                const duplicate = document.getElementById("duplicate").value
-                if (duplicate !== true) {
-                    alert("중복체크를 확인해주세요.");
-                    return;
-                } else if (duplicate == null || duplicate == "" || duplicate == undefined) {
-                    alert("중복체크를 확인해주세요.");
-                    return;
-                }
+                document.getElementById('register-form').style.display = 'none';
+                if (list_section) list_section.style.display = 'block';
             }
 
-            window.location.href = "?url=MainController/index&page=admin"; // 목록으로 이동
-        }
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/?url=AgentUserController/selectDeptList",
+                success: function(result) {
+                    let html = '';
+                    result.forEach((item) => {
+                        html +=
+                        `<option value="${item.code_id}">${item.code_name}</option>`;
+                    });
+                    $("#mgr-dept").html(html);
+                },
+                error: function(err) {
+                    console.error("데이터 불러오기 실패:", err);
+                }
+            });
 
-        // 중간 관리자 목록 렌더링
+            if (typeIndex == "moddify") {
+                document.getElementById("type").value = typeIndex;
+
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        id: editIndex
+                    },
+                    url: "/?url=AdminInfoController/adminInfoObj",
+                    success: function(result) {
+                        $("#mgr-id").val(result.id);
+                        $("#admin_id").val(result.id);
+                        $("#mgr-pw").val(result.pw_decoded);
+                        $("#mgr-pw-confirm").val(result.pw_decoded);
+                        $("#mgr-ip").val(result.access_ip);
+                        $("#mgr-dept").val(result.code_code_id).trigger("change");
+                    },
+                    error: function(err) {
+                        console.error("데이터 불러오기 실패:", err);
+                    }
+                });
+            }
+        });
+
         function renderManagerList() {
             const list = document.getElementById('manager-list');
-            if (list) {
-                list.innerHTML = '';
+            list.innerHTML = '';
 
-                managerList.forEach((manager, index) => {
-                    list.innerHTML += `
+            const sortedList = [...managerList];
+            if (currentSort.column) {
+                sortedList.sort((a, b) => {
+                    const aVal = a[currentSort.column] || '';
+                    const bVal = b[currentSort.column] || '';
+                    return currentSort.direction === 'asc' ?
+                        aVal.localeCompare(bVal, 'ko') :
+                        bVal.localeCompare(aVal, 'ko');
+                });
+            }
+
+            sortedList.forEach((manager) => {
+                list.innerHTML += `
                     <tr>
                         <td>${manager.code_name}</td>
                         <td>${manager.id}</td>
@@ -238,55 +199,74 @@
                         </td>
                     </tr>
                 `;
+            });
+            updateSortArrows();
+        }
+
+        function setSort(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+            renderManagerList();
+        }
+
+        function updateSortArrows() {
+            const columns = ['code_name', 'id', 'access_ip'];
+            columns.forEach(col => {
+                const el = document.getElementById(`sort-${col}`);
+                if (!el) return;
+                if (col === currentSort.column) {
+                    el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+                } else {
+                    el.textContent = '⇅';
+                }
+            });
+        }
+
+        function deleteManager(index) {
+            if (confirm("정말 삭제하시겠습니까?")) {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        id: index
+                    },
+                    url: "/?url=AdminInfoController/adminInfoDelete",
+                    success: function(result) {
+                        if (result.success == true) {
+                            alert(`${result.message}`);
+                            window.location.href = '/?url=MainController/index&page=admin';
+                        }
+                    },
+                    error: function(err) {
+                        console.error("데이터 불러오기 실패:", err);
+                    }
                 });
             }
         }
-    })
 
-    // 중간 관리자 삭제
-    function deleteManager(index) {
-        if (confirm("정말 삭제하시겠습니까?")) {
+        function duplicateCheck() {
+            const mgr_id = document.getElementById("mgr-id").value;
             $.ajax({
                 type: "POST",
                 dataType: "json",
                 data: {
-                    id: index
+                    id: mgr_id
                 },
-                url: "/?url=AdminInfoController/adminInfoDelete",
+                url: "/?url=AdminInfoController/duplicateCheck",
                 success: function(result) {
-                    if (result.success == true) {
-                        alert(`${result.message}`);
-                        window.location.href = '/?url=MainController/index&page=admin';
-                    }
+                    alert(result.message);
+                    document.getElementById("duplicate").value = result.success;
                 },
                 error: function(err) {
                     console.error("데이터 불러오기 실패:", err);
                 }
             });
         }
-    }
-
-    function duplicateCheck() {
-        const mgr_id = document.getElementById("mgr-id").value;
-        console.log(mgr_id)
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            data: {
-                id: mgr_id
-            },
-            url: "/?url=AdminInfoController/duplicateCheck",
-            success: function(result) {
-                console.log(result)
-                alert(result.message)
-                document.getElementById("duplicate").value = result.success;
-            },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
-        });
-    }
-    </script>
+        </script>
 </body>
 
 </html>
