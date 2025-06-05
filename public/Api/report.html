@@ -1,0 +1,46 @@
+<?php
+header('Content-Type: text/plain');
+
+// 필수 데이터
+$agent_id     = $_POST['agent_id']     ?? '';
+$work_result  = $_POST['work_result']  ?? '';  // 성공 or 실패
+$work_info    = $_POST['work_info']    ?? '';  // 예: UTF8 Encoding, URL Encoding
+
+if (!$agent_id || !$work_result || !$work_info){
+    echo "FAIL";
+    exit;
+}
+
+// 사용자 정보 조회
+$url = "http://localhost/?url=AgentUserController/agentUserByAgentId&agent_id=" . urlencode($agentId);
+$response = file_get_contents($url);
+$data = json_decode($response, true);
+
+if (!isset($data['agent_id'])) {
+    echo "FAIL";
+    exit;
+}
+
+// 로그 전송 데이터 구성
+$logData = [
+    'hostname'    => $data['hostname'],
+    'ip'          => $data['ip'],
+    'username'    => $data['username'],
+    'token'       => $data['token'],
+    'code_id'     => $data['code_id'],
+    'work_info'   => $workInfo,
+    'work_type'   => $data['username'] . "님이 작업을 수행하셨습니다.",
+    'work_result' => $work_result
+];
+
+// 로그 저장 요청
+$ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$logResponse = curl_exec($ch);
+curl_close($ch);
+
+// 결과 응답
+echo (strpos($logResponse, '"success":true') !== false) ? "OK" : "FAIL";
+?>
