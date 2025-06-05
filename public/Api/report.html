@@ -1,0 +1,55 @@
+<?php
+header('Content-Type: text/plain');
+
+$params = $_POST ?: $_GET;
+
+// 필수 값 체크
+if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['username'], $params['token'], $params['work_info'], $params['work_result'])) {
+    // 사용자 데이터 준비
+    $data = [
+        'code_id'   => trim($params['code_id']),
+        'hostname'  => trim($params['hostname']),
+        'ip'        => trim($params['ip']),
+        'username'  => trim($params['username']),
+        'token'     => trim($params['token']),
+        'work_info' => trim($params['work_info']) // 예: UTF8 Encoding
+    ];
+
+    // 사용자 정보 및 등록 갱신 (agentUserData)
+    $ch = curl_init("http://localhost/?url=AgentUserController/agentUserData");
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response, true);
+    $user = $result['result'] ?? null;
+
+    if ($user && isset($user['code_id'], $user['token'])) {
+        // 로그 기록
+        $logData = [
+            'hostname'    => $user['hostname'],
+            'username'    => $user['username'],
+            'token'       => $user['token'],
+            'code_id'     => $user['code_id'],
+            'work_info'   => $data['work_info'],
+            'work_type'   =>"암호화 작업을 수행하셨습니다.",
+            'work_result' => trim($params['work_result']) // 성공 or 실패
+        ];
+
+        $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $logResponse = curl_exec($ch);
+        curl_close($ch);
+
+        echo (strpos($logResponse, '"success":true') !== false) ? "OK" : "FAIL";
+    } else {
+        echo "FAIL"; // 사용자 정보 부족
+    }
+} else {
+    echo "FAIL"; // 필수값 누락
+}
+?>
