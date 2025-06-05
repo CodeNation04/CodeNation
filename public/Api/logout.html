@@ -1,13 +1,15 @@
 <?php
 header('Content-Type: application/json');
 
-if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
+$params = $_POST ?: $_GET;
+
+if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['username'], $params['token'])) {
     $data = [
-        'code_id' => $_POST['code_id'],
-        'hostname' => $_POST['hostname'],
-        'ip' => $_POST['ip'],
-        'username' => $_POST['username'],
-        'token' => $_POST['token'],
+        'code_id' => trim($params['code_id']),
+        'hostname' => trim($params['hostname']),
+        'ip' => trim($params['ip']),
+        'username' => trim($params['username']),
+        'token' => trim($params['token']),
         'work_info' => '로그아웃'
     ];
 

@@ -542,12 +542,6 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        //AgentId로 user 검색
-        public function selectAgentUserByAgentId($agentId) {
-    $stmt = $this->db->prepare("SELECT * FROM user_agent_info WHERE agent_id = :agent_id");
-    $stmt->bindParam(':agent_id', $agentId);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+      
     }
 ?>

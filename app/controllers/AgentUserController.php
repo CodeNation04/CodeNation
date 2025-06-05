@@ -151,6 +151,7 @@ class AgentUserController extends Controller {
         $username = $_POST['username'] ?? '';
         $token = $_POST['token'] ?? '';
         $work_info = $_POST['work_info'] ?? '';
+        $check_time= $_POST['check_time'] ??'3600';
 
         $cnt = $this->model('AgentUser')->countAgentUser($hostname,$ip,$username);
         $response = ['cnt' => $cnt];
@@ -244,25 +245,6 @@ class AgentUserController extends Controller {
             echo json_encode($temp);
         }
     }
-
-//AgentId를 기준으로 정보 조회    
-    public function agentUserByAgentId() {
-    $agentId = $_GET['agent_id'] ?? '';
-    header('Content-Type: application/json');
-
-    if (!$agentId) {
-        echo json_encode(["error" => "Agent ID 누락"]);
-        return;
-    }
-
-    $data = $this->model('AgentUser')->selectAgentUserByAgentId($agentId);
-
-    if ($data) {
-        echo json_encode($data);
-    } else {
-        echo json_encode(["error" => "해당 Agent ID에 대한 정보 없음"]);
-    }
-}
 
 
 }
