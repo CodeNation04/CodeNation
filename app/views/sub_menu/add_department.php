@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="css/sub_title.css">
 <script src="/js/pagination.js"></script>
 
-
 <div class="add-dept-wrapper">
     <?php 
         $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; 
@@ -25,8 +24,6 @@
             </a>
             <?php endif; ?>
         </div>
-
-
 
         <?php if (!$formMode): ?>
         <div class="dept-table-wrapper" id="task-table-wrapper"></div>
@@ -61,6 +58,12 @@
     </div>
 
     <script>
+    let departmentList = [];
+    let currentSort = {
+        column: null,
+        direction: 'asc'
+    };
+
     $(document).ready(function() {
         const params = new URLSearchParams(window.location.search);
         const type = params.get('type');
@@ -90,29 +93,80 @@
             dataType: "json",
             url: "/?url=AgentUserController/selectDeptList",
             success: function(result) {
-                setupPagination({
-                    data: result,
-                    itemsPerPage: 10,
-                    containerId: "task-table-wrapper",
-                    paginationClass: "pagination",
-                    renderRowHTML: (pageData, offset) => {
-                        return `<table class=\"dept-table\"><thead><tr><th>번호</th><th>부서명</th><th>부서코드</th><th>수정</th><th>삭제</th></tr></thead><tbody>` +
-                            pageData.map((item, i) => `
-                        <tr>
-                            <td>${result.length - (offset + i)}</td>
-                            <td>${item.code_name}</td>
-                            <td>${item.code_id}</td>
-                            <td><button class=\"edit-btn\" onclick=\"location.href='?url=MainController/index&page=department&form=show&type=moddify&num=${item.code_id}'\">수정</button></td>
-                            <td><button class=\"delete-btn\" onclick=\"deleteDept('${item.code_id}')\">삭제</button></td>
-                        </tr>`).join('') + '</tbody></table>';
-                    }
-                });
+                departmentList = result;
+                renderDepartmentTable();
             },
             error: function(err) {
                 console.error("데이터 불러오기 실패:", err);
             }
         });
     });
+
+    function renderDepartmentTable() {
+        const sortedList = [...departmentList];
+        if (currentSort.column) {
+            sortedList.sort((a, b) => {
+                const aVal = a[currentSort.column] || '';
+                const bVal = b[currentSort.column] || '';
+                return currentSort.direction === 'asc' ?
+                    aVal.localeCompare(bVal, 'ko') :
+                    bVal.localeCompare(aVal, 'ko');
+            });
+        }
+
+        setupPagination({
+            data: sortedList,
+            itemsPerPage: 10,
+            containerId: "task-table-wrapper",
+            paginationClass: "pagination",
+            renderRowHTML: (pageData, offset) => {
+                return `<table class="dept-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                            <th onclick="setSort('code_id')">부서코드 <span id="sort-code_id">⇅</span></th>
+                            <th>수정</th>
+                            <th>삭제</th>
+                        </tr>
+                    </thead>
+                    <tbody>` +
+                    pageData.map((item, i) => `
+                        <tr>
+                            <td>${departmentList.length - (offset + i)}</td>
+                            <td>${item.code_name}</td>
+                            <td>${item.code_id}</td>
+                            <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=department&form=show&type=moddify&num=${item.code_id}'">수정</button></td>
+                            <td><button class="delete-btn" onclick="deleteDept('${item.code_id}')">삭제</button></td>
+                        </tr>`).join('') + '</tbody></table>';
+            }
+        });
+
+        updateSortArrows();
+    }
+
+    function setSort(column) {
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.column = column;
+            currentSort.direction = 'asc';
+        }
+        renderDepartmentTable();
+    }
+
+    function updateSortArrows() {
+        const columns = ['code_name', 'code_id'];
+        columns.forEach(col => {
+            const el = document.getElementById(`sort-${col}`);
+            if (!el) return;
+            if (col === currentSort.column) {
+                el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+            } else {
+                el.textContent = '⇅';
+            }
+        });
+    }
 
     function deleteDept(num) {
         if (confirm("정말 삭제하시겠습니까?")) {
