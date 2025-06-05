@@ -42,7 +42,7 @@
             </div>
             <div class="form-row">
                 <label for="phone">전화번호</label>
-                <input type="text" id="phone" name="phone" />
+                <input type="text" id="phone" name="phone" placeholder="010-1234-5678 또는 1234-1234 또는 123-1234" />
             </div>
             <div class="form-row">
                 <label for="email">이메일</label>
@@ -249,8 +249,15 @@ function editDept(num) {
 
 function submitBtn() {
     const name = $("#dept_name").val();
+    const manager = $("#manager").val().trim();
     const email = $("#email").val();
-    // 이메일 비어있는지 및 형식 체크
+    const phone = $("#phone").val();
+    // 담당자명 확인
+    if (!manager) {
+        alert("담당자명을 입력해주세요.");
+        return;
+    }
+    // 이메일 필수 및 형식 체크
     if (!email) {
         alert("이메일을 입력해주세요.");
         return;
@@ -259,6 +266,16 @@ function submitBtn() {
         alert("유효한 이메일 주소를 입력해주세요.");
         return;
     }
+    // 전화번호 필수 및 형식 체크: 4-4 또는 3-4 또는 2~4-3~4-4
+    if (!phone) {
+        alert("전화번호를 입력해주세요.");
+        return;
+    }
+    if (!/^(?:\d{3}-\d{4}|\d{4}-\d{4}|\d{2,3}-\d{3,4}-\d{4})$/.test(phone)) {
+        alert("유효한 전화번호 형식(예: 123-1234, 1234-1234, 또는 010-1234-5678)으로 입력해주세요.");
+        return;
+    }
+    // 부서명확인
     if (!name) {
         alert("부서명은 필수입니다.");
         return;
