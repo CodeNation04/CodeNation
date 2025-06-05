@@ -1,0 +1,54 @@
+<?php
+header('Content-Type: text/plain');
+
+$params = $_POST ?: $_GET;
+
+if (isset($params['code_id'], $params['host_name'], $params['user_name'], $params['externally'], $params['reason'], $params['token'])) {
+    require_once __DIR__ . '/../config/database.php';
+    $db = (new Database())->pdo;
+
+    $data = [
+        ':code_id'      => trim($params['code_id']),
+        ':host_name'    => trim($params['host_name']),
+        ':user_name'    => trim($params['user_name']),
+        ':externally'   => trim($params['externally']),
+        ':reason'       => trim($params['reason']),
+        ':exter_status' => '반출 요청',
+        ':create_date'  => date('Y-m-d H:i:s'),
+        ':create_ip'    => $_SERVER['REMOTE_ADDR']
+    ];
+
+    $sql = "INSERT INTO externally_info 
+            (code_code_id, host_name, user_name, externally, reason, exter_status, create_date, create_ip)
+            VALUES 
+            (:code_id, :host_name, :user_name, :externally, :reason, :exter_status, :create_date, :create_ip)";
+    $stmt = $db->prepare($sql);
+
+    if ($stmt->execute($data)) {
+        $requestCode = strtoupper(bin2hex(random_bytes(8)));
+
+        // 로그 기록
+        $logData = [
+            'hostname'    => $data[':host_name'],
+            'username'    => $data[':user_name'],
+            'token'       => trim($params['token']),
+            'code_id'     => $data[':code_id'],
+            'work_info'   => "반출 요청",
+            'work_type'   => "외부반출요청",
+            'work_result' => "성공"
+        ];
+
+        $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+
+        echo "요청|{$requestCode}";
+    } else {
+        echo "FAIL";
+    }
+} else {
+    echo "FAIL";
+}

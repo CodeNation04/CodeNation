@@ -1,0 +1,37 @@
+<?php
+header('Content-Type: text/plain');
+
+$agentId = $_GET['val'] ?? ''; // 로그인된 사용자 ID (user_id 또는 token)
+if (!$agentId) {
+    echo "ERROR: Agent ID 없음";
+    exit;
+}
+
+require_once __DIR__ . '/../config/database.php';
+$db = (new Database())->pdo;
+
+// 1. user_agent_info 에서 code_code_id 확인
+$stmt = $db->prepare("SELECT code_code_id FROM user_agent_info WHERE user_id = :agent_id LIMIT 1");
+$stmt->bindParam(':agent_id', $agentId);
+$stmt->execute();
+$code_id = $stmt->fetchColumn();
+
+if (!$code_id) {
+    echo "ERROR: 부서 정보 없음";
+    exit;
+}
+
+// 2. encryption_setting 테이블에서 확장자/예외폴더 정보 조회
+$stmt = $db->prepare("SELECT extensions, exclude_folders FROM encryption_setting WHERE code_code_id = :code_id LIMIT 1");
+$stmt->bindParam(':code_id', $code_id);
+$stmt->execute();
+$config = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// 3. 결과 리턴
+if ($config) {
+    echo trim($config['extensions']) . "\n";
+    echo trim($config['exclude_folders']);
+} else {
+    echo "ERROR: 설정 정보 없음";
+}
+?>
