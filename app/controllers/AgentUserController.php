@@ -1,31 +1,31 @@
 <?php
 
 class AgentUserController extends Controller {
-    // public function agentUserSubmit() {
-    //     $type = $_POST['type'] ?? '';
-    //     $num = $_POST['num'] ?? 0;
-    //     $code_id = $_POST['department'] ?? '';
-    //     $name = $_POST['name'] ?? '';
-    //     $phone = $_POST['phone'] ?? '';
-    //     $email = $_POST['email'] ?? '';
-    //     $etc = $_POST['etc'] ?? '';
+    public function agentUserSubmit() {
+        $type = $_POST['type'] ?? '';
+        $num = $_POST['num'] ?? 0;
+        $code_id = $_POST['department'] ?? '';
+        $name = $_POST['name'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $etc = $_POST['etc'] ?? '';
 
-    //     if($type !== "moddify"){
-    //         $temp = $this->model('AgentUser')->insertAgentUser($code_id,$name,$phone,$email,$etc);
-    //     }else{
-    //         $temp = $this->model('AgentUser')->updateAgentUser($num,$code_id,$name,$phone,$email,$etc);
-    //     }
+        if($type !== "moddify"){
+            $temp = $this->model('AgentUser')->insertAgentUser($code_id,$name,$phone,$email,$etc);
+        }else{
+            $temp = $this->model('AgentUser')->updateAgentUser($num,$code_id,$name,$phone,$email,$etc);
+        }
 
-    //     if ($temp) {
-    //         echo "<script>
-    //                 alert('성공적으로 저장되었습니다.');
-    //                 window.location.href='/?url=MainController/index&page=dept';
-    //             </script>";
-    //     } else {
-    //         echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=dept';</script>";
-    //         exit;
-    //     }
-    // }
+        if ($temp) {
+            echo "<script>
+                    alert('성공적으로 저장되었습니다.');
+                    window.location.href='/?url=MainController/index&page=dept';
+                </script>";
+        } else {
+            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=dept';</script>";
+            exit;
+        }
+    }
 
     public function agentUserList() {
         header('Content-Type: application/json');

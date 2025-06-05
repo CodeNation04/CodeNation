@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="css/sub_title.css">
 <script src="/js/pagination.js"></script>
 
-
 <div class="wrapper">
     <div class="form-header">
         <div style="display:flex; align-items:center">
@@ -17,7 +16,6 @@
             <button class="btn-register">등록</button>
         </a>
     </div>
-
 
     <?php 
     $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; 
@@ -71,6 +69,11 @@
 <script>
 let resultData = [];
 let registeredDeptCodes = [];
+let editingDeptCode = null;
+let currentSort = {
+    column: null,
+    direction: 'asc'
+};
 
 window.onload = function() {
     const params = new URLSearchParams(window.location.search);
@@ -113,9 +116,10 @@ function loadDeptSelectOptions(callback) {
         success: function(result) {
             let html = '';
             result.forEach((item) => {
-                const isDisabled = registeredDeptCodes.includes(item.code_id);
-                html +=
-                    `<option value="${item.code_id}" ${isDisabled ? 'disabled' : ''}>${item.code_name}${isDisabled ? ' (등록됨)' : ''}</option>`;
+                if (!registeredDeptCodes.includes(item.code_id) || item.code_id ===
+                    editingDeptCode) {
+                    html += `<option value="${item.code_id}">${item.code_name}</option>`;
+                }
             });
             $("#dept_name").html(html);
             if (callback) callback();
@@ -137,7 +141,10 @@ function loadEditForm(num) {
         url: "/?url=AgentUserController/agentUserInfo",
         success: function(result) {
             $("#num").val(result.user_idx);
-            $("#dept_name").val(result.code_code_id).prop("disabled", true);
+            editingDeptCode = result.code_code_id;
+            loadDeptSelectOptions(() => {
+                $("#dept_name").val(editingDeptCode);
+            });
             $("#manager").val(result.user_name);
             $("#phone").val(result.user_phone);
             $("#email").val(result.user_email);
@@ -156,28 +163,78 @@ function loadDepartmentList() {
         url: "/?url=AgentUserController/agentUserList",
         success: function(result) {
             resultData = result;
-            setupPagination({
-                data: resultData,
-                itemsPerPage: 10,
-                containerId: "deptTableBody",
-                paginationClass: "pagination",
-                renderRowHTML: (pageData) => {
-                    return `<table class=\"dept-table\"><thead><tr><th>부서명</th><th>담당자명</th><th>전화번호</th><th>이메일</th><th>비고</th><th>수정</th><th>삭제</th></tr></thead><tbody>` +
-                        pageData.map(item => `
-                            <tr>
-                                <td>${item.code_name}</td>
-                                <td>${item.user_name}</td>
-                                <td>${item.user_phone}</td>
-                                <td>${item.user_email}</td>
-                                <td>${item.etc}</td>
-                                <td><button class=\"edit-btn\" onclick=\"editDept(${item.user_idx})\">수정</button></td>
-                                <td><button class=\"delete-btn\" onclick=\"deleteDept(${item.user_idx})\">삭제</button></td>
-                            </tr>`).join('') + '</tbody></table>';
-                }
-            });
+            renderTable();
         },
         error: function(err) {
             console.error("부서 목록 불러오기 실패:", err);
+        }
+    });
+}
+
+function renderTable() {
+    let sortedData = [...resultData];
+    if (currentSort.column) {
+        sortedData.sort((a, b) => {
+            const aVal = a[currentSort.column] || '';
+            const bVal = b[currentSort.column] || '';
+            return currentSort.direction === 'asc' ?
+                aVal.localeCompare(bVal, 'ko') :
+                bVal.localeCompare(aVal, 'ko');
+        });
+    }
+    setupPagination({
+        data: sortedData,
+        itemsPerPage: 10,
+        containerId: "deptTableBody",
+        paginationClass: "pagination",
+        renderRowHTML: (pageData) => {
+            return `<table class=\"dept-table\">
+                <thead>
+                    <tr>
+                        <th onclick=\"setSort('code_name')\">부서명 <span id=\"sort-code_name\">⇅</span></th>
+                        <th onclick=\"setSort('user_name')\">담당자명 <span id=\"sort-user_name\">⇅</span></th>
+                        <th onclick=\"setSort('user_phone')\">전화번호 <span id=\"sort-user_phone\">⇅</span></th>
+                        <th onclick=\"setSort('user_email')\">이메일 <span id=\"sort-user_email\">⇅</span></th>
+                        <th>비고</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody>` +
+                pageData.map(item => `
+                    <tr>
+                        <td>${item.code_name}</td>
+                        <td>${item.user_name}</td>
+                        <td>${item.user_phone}</td>
+                        <td>${item.user_email}</td>
+                        <td>${item.etc}</td>
+                        <td><button class=\"edit-btn\" onclick=\"editDept(${item.user_idx})\">수정</button></td>
+                        <td><button class=\"delete-btn\" onclick=\"deleteDept(${item.user_idx})\">삭제</button></td>
+                    </tr>`).join('') + '</tbody></table>';
+        }
+    });
+    updateSortArrows();
+}
+
+function setSort(column) {
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+    }
+    renderTable();
+}
+
+function updateSortArrows() {
+    const columns = ['code_name', 'user_name', 'user_phone', 'user_email'];
+    columns.forEach(col => {
+        const el = document.getElementById(`sort-${col}`);
+        if (!el) return;
+        if (col === currentSort.column) {
+            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+        } else {
+            el.textContent = '⇅';
         }
     });
 }
