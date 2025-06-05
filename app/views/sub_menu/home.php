@@ -86,7 +86,7 @@
         const dataMap = {};
         let minDate = null;
         let maxDate = null;
-
+        
         dataList.forEach(item => {
             let label = item.period;
             let count = Number(item.count);
