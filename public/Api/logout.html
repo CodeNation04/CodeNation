@@ -1,77 +1,38 @@
 <?php
-
 header('Content-Type: application/json');
 
-$agentId = $_POST['agent_id'] ?? '';
-if (!$agentId) {
-    echo json_encode(['success' => false, 'message' => 'Agent ID 누락']);
-    exit;
-}
-
-// 사용자 정보 조회
-$url = "http://localhost/?url=AgentUserController/agentUserByAgentId&agent_id=" . urlencode($agentId);
-$response = file_get_contents($url);
-$data = json_decode($response, true);
-
-if (isset($data['agent_id'])) {
-    $logData = [
-        'hostname' => $data['hostname'],
-        'ip' => $data['ip'],
-        'username' => $data['username'],
-        'token' => $data['token'],
-        'code_id' => $data['code_id'],
+if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
+    $data = [
+        'code_id' => $_POST['code_id'],
+        'hostname' => $_POST['hostname'],
+        'ip' => $_POST['ip'],
+        'username' => $_POST['username'],
+        'token' => $_POST['token'],
         'work_info' => '로그아웃'
     ];
 
-    $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/logAdd");
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $logResponse = curl_exec($ch);
+
+    $response = curl_exec($ch);
+
+    if ($response === false) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'cURL 오류: ' . curl_error($ch)
+        ]);
+    } else {
+        echo $response;
+    }
+
     curl_close($ch);
-
-    echo $logResponse;
 } else {
-    echo json_encode(['success' => false, 'message' => 'Agent ID 정보 없음']);
+    echo json_encode([
+        'success' => false,
+        'message' => '요청 파라미터 부족'
+    ]);
 }
-
-
-// header('Content-Type: application/json');
-
-// if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
-//     $data = [
-//         'code_id'   => trim($_POST['code_id']),
-//         'hostname'  => trim($_POST['hostname']),
-//         'ip'        => trim($_POST['ip']),
-//         'username'  => trim($_POST['username']),
-//         'token'     => trim($_POST['token']),
-//         'work_info' => '로그아웃'
-//     ];
-
-//     $ch = curl_init();
-//     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/logAdd");
-//     curl_setopt($ch, CURLOPT_POST, true);
-//     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-//     $response = curl_exec($ch);
-//     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-//     curl_close($ch);
-
-//     //http_code 체크
-//     if ($response === false || $httpCode !== 200) {
-//         echo json_encode([
-//             'success' => false,
-//             'message' => '서버 통신 오류'
-//         ]);
-//     } else {
-//         echo $response;
-//     }
-// } else {
-//     echo json_encode([
-//         'success' => false,
-//         'message' => '요청 파라미터 부족'
-//     ]);
-// }
 ?>

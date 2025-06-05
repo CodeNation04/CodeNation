@@ -153,24 +153,54 @@ class AgentUserController extends Controller {
         $work_info = $_POST['work_info'] ?? '';
 
         $cnt = $this->model('AgentUser')->countAgentUser($hostname,$ip,$username);
-        echo json_encode(["cnt" => $cnt]);
+        $response = ['cnt' => $cnt];
         if($cnt == 0){
             $temp = $this->model('AgentUser')->insertAgentUserData($hostname,$ip,$username,$token,$code_id);
-            $work_type = $username. "님이 로그인 하셨습니다.";
-            $work_result = "성공";
-            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id);
-        }else{
-            $temp = $this->model('AgentUser')->updateAgentUserData($hostname,$ip,$username,$token,$code_id);
-            $work_type = $username. "님이 로그인 하셨습니다.";
-            $work_result = "성공";
-            $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id);
+        }
+        else{
+            $temp = $this->model('AgentUser')->updateAgentUserData($hostname,$ip,$username,$code_id);
         }
 
+        $agentUserData = $this->model('AgentUser')->selectAgentUserData($hostname,$ip,$username);
+
         if ($temp) {
-            echo json_encode(["success" => true]);
+            $response['success'] = true;
+            $response['result'] = $agentUserData;
         } else {
-            echo json_encode(["success" => false, "message" => "데이터베이스 오류가 발생했습니다."]);
+            $response['success'] = false;
+            $response['message'] = "데이터베이스 오류가 발생했습니다.";
         }
+
+        echo json_encode($response);
+    }
+
+    public function agentUserLogin() {
+        $code_id = $_POST['code_id'] ?? '';
+        $hostname = $_POST['hostname'] ?? '';
+        $ip = $_POST['ip'] ?? '';
+        $username = $_POST['username'] ?? '';
+        $token = $_POST['token'] ?? '';
+        $work_info = $_POST['work_info'] ?? '';
+
+        $cnt = $this->model('AgentUser')->countAgentUser($hostname,$ip,$username);
+        $response = ['cnt' => $cnt];
+
+        if($cnt == 0){
+            $work_result = "실패";
+            $response['success'] = false;
+            $response['message'] = "데이터베이스 오류가 발생했습니다.";
+        }
+        else{
+            $work_result = "성공";
+            $response['success'] = true;
+            $response['message'] = "로그인 성공";
+        }
+
+        $work_type = $username. "님이 로그인 하셨습니다.";
+
+        $log = $this->model('AgentUser')->insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id);
+
+        echo json_encode($response);
     }
 
     public function selectLogList(){

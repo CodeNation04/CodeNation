@@ -301,7 +301,7 @@
 
             $stmt = $this->db->prepare("SELECT count(*)
                                         FROM user_agent_info
-                                        WHERE user_id = :hostname
+                                        WHERE host_name = :hostname
                                         AND user_name = :username
                                         AND user_ip = :ip");
             $stmt->bindParam(':hostname', $hostname);   
@@ -360,13 +360,12 @@
             
             return $stmt->execute();;
         }
-
-        public function updateAgentUserData($hostname,$ip,$username,$token,$code_id){
+        
+        public function updateAgentUserData($hostname,$ip,$username,$code_id){
             $update_ip = $_SERVER['REMOTE_ADDR'];
             
             $sql = "UPDATE user_agent_info
-                    SET user_id = :token,
-                        code_code_id = :code_id,
+                    SET code_code_id = :code_id,
                         update_ip = :update_ip,
                         update_date = now()
                     WHERE user_name = :username
@@ -374,10 +373,10 @@
                     AND host_name = :hostname";
             
             $params = [
-                'hostname' => $hostname,
+                ':hostname' => $hostname,
+                ':code_id' => $code_id,
                 ':ip' => $ip,
                 ':username' => $username,
-                ':token' => $token,
                 ':update_ip' => $update_ip
             ];
 
@@ -397,6 +396,25 @@
             }
             
             return $stmt->execute();;
+        }
+
+        public function selectAgentUserData($hostname,$ip,$username){
+
+            $stmt = $this->db->prepare("SELECT  a.code_code_id,
+                                                (SELECT code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name,
+                                                a.user_id,
+                                                a.user_ip,
+                                                a.host_name,
+                                                a.user_name
+                                        FROM user_agent_info a
+                                        WHERE a.host_name = :hostname
+                                        AND a.user_ip = :ip
+                                        AND a.user_name = :username");
+            $stmt->bindParam(':hostname', $hostname);
+            $stmt->bindParam(':ip', $ip);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         public function insertAgentLog($hostname,$ip,$username,$token,$work_type,$work_result,$work_info,$code_id){  

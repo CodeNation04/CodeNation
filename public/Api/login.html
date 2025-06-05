@@ -1,89 +1,45 @@
 <?php
-
 header('Content-Type: application/json');
 
-$agentId = $_POST['agent_id'] ?? '';
-if (!$agentId) {
-    echo json_encode(['success' => false, 'message' => 'Agent ID 누락']);
-    exit;
-}
+$params = $_POST ?: $_GET;
 
-$url = "http://localhost/?url=AgentUserController/agentUserByAgentId&agent_id=" . urlencode($agentId);
-$response = file_get_contents($url);
-$data = json_decode($response, true);
-
-if (isset($data['agent_id'])) {
- // 로그 남기기
-    $logData = [
-        'hostname' => $data['hostname'],
-        'ip' => $data['ip'],
-        'username' => $data['username'],
-        'token' => $data['token'],
-        'code_id' => $data['code_id'] ?? '',
-        'work_info' => '로그인'
+if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['username'], $params['token'])) {
+    $data = [
+        'code_id'   => trim($params['code_id']),
+        'hostname'  => trim($params['hostname']),
+        'ip'        => trim($params['ip']),
+        'username'  => trim($params['username']),
+        'token'     => trim($params['token']),
+        'work_info' => '로그인',
     ];
-    
-    $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+
+    // 기존 함수 agentUserData 호출
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserLogin");
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_exec($ch);
+
+    $response = curl_exec($ch);
     curl_close($ch);
-// 응답
-    echo json_encode([
-        'success' => true,
-        'message' => '로그인 성공',
-        'token' => $data['token'],
-        'code_name' => $data['code_name'] ?? '',
-        'check_time' => $data['check_time'] ?? 3600
-    ]);
+
+    $result = json_decode($response, true);
+
+    if (isset($result['success']) && $result['success']) {
+        echo json_encode([
+            'success' => true,
+            'message' => $result['message'] ?? '',
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => $result['message'] ?? '알 수 없는 오류',
+        ]);
+    }
 } else {
-    echo json_encode(['success' => false, 'message' => '등록되지 않은 사용자']);
+    echo json_encode([
+        'success' => false,
+        'message' => '요청 파라미터 부족'
+    ]);
 }
-
-// header('Content-Type: application/json');
-
-// // 필수 값 존재 확인
-// if (isset($_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
-//     $data = [
-//         'hostname'  => trim($_POST['hostname']),
-//         'ip'        => trim($_POST['ip']),
-//         'username'  => trim($_POST['username']),
-//         'token'     => trim($_POST['token']),
-//         'work_info' => '로그인'
-//     ];
-
-//     // 기존 agentUserData 함수 호출
-//     $ch = curl_init();
-//     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserData");
-//     curl_setopt($ch, CURLOPT_POST, true);
-//     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-//     $response = curl_exec($ch);
-//     curl_close($ch);
-
-//     $result = json_decode($response, true);
-
-//     if (isset($result['token'])) {
-//         // 응답에 체크주기 포함
-//         echo json_encode([
-//             'success'        => true,
-//             'message'        => '로그인 성공',
-//             'token'          => $result['token'],
-//             'code_name'      => $result['code_name'] ?? '',
-//             'check_interval' => 3600  // 체크주기 (초) - 향후 DB나 설정값으로 대체 가능
-//         ]);
-//     } else {
-//         echo json_encode([
-//             'success' => false,
-//             'message' => '로그인 실패'
-//         ]);
-//     }
-// } else {
-//     echo json_encode([
-//         'success' => false,
-//         'message' => '요청 파라미터 부족'
-//     ]);
-// }
 ?>
