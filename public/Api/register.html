@@ -35,14 +35,16 @@ if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['usern
                 'is_duplicate' => true,
                 'message' => '이미 등록된 사용자입니다.',
                 'token' => $userInfo['user_id'] ?? '',
-                'code_name' => $userInfo['code_name'] ?? ''
+                'code_name' => $userInfo['code_name'] ?? '',
+                'check_time' => $data['check_time'] ?? 3600
             ]);
         } else {
             echo json_encode([
                 'success' => true,
                 'is_duplicate' => false,
                 'message' => '신규 등록 완료',
-                'token' => $userInfo['user_id'] ?? ''
+                'token' => $userInfo['user_id'] ?? '',
+                'check_time' => $data['check_time'] ?? 3600
             ]);
         }
     } else {
