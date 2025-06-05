@@ -3,14 +3,15 @@ header('Content-Type: application/json');
 
 if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'], $_POST['token'])) {
     $data = [
-        'code_id' => $_POST['code_id'],
-        'hostname' => $_POST['hostname'],
-        'ip' => $_POST['ip'],
-        'username' => $_POST['username'],
-        'token' => $_POST['token'],
-        'work_info' => '로그인'
+        'code_id'   => trim($_POST['code_id']),
+        'hostname'  => trim($_POST['hostname']),
+        'ip'        => trim($_POST['ip']),
+        'username'  => trim($_POST['username']),
+        'token'     => trim($_POST['token']),
+        'work_info' => '최초등록',
     ];
 
+    // 기존 함수 agentUserData 호출
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/agentUserData");
     curl_setopt($ch, CURLOPT_POST, true);
@@ -18,17 +19,27 @@ if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
+    curl_close($ch);
 
-    if ($response === false) {
+    $result = json_decode($response, true);
+
+    // controller에서 중복이면 기존 token/code_name 보내도록 이미 처리된 경우
+    if (isset($result['token'])) {
         echo json_encode([
-            'success' => false,
-            'message' => 'cURL 오류: ' . curl_error($ch)
+            'success' => true,
+            'is_duplicate' => true,
+            'message' => '이미 등록된 사용자입니다.',
+            'token' => $result['token'],
+            'code_name' => $result['code_name'] ?? ''
         ]);
     } else {
-        echo $response;
+        echo json_encode([
+            'success' => true,
+            'is_duplicate' => false,
+            'message' => '신규 등록 완료',
+            'token' => $data['token']
+        ]);
     }
-
-    curl_close($ch);
 } else {
     echo json_encode([
         'success' => false,

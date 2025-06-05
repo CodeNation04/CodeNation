@@ -8,7 +8,7 @@ if (isset($_POST['code_id'], $_POST['hostname'], $_POST['ip'], $_POST['username'
         'ip' => $_POST['ip'],
         'username' => $_POST['username'],
         'token' => $_POST['token'],
-        'work_info' => '로그인'
+        'work_info' => '최초등록'
     ];
 
     $ch = curl_init();
