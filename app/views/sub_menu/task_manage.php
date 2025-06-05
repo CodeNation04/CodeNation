@@ -15,7 +15,6 @@
         <a href="?url=MainController/index&page=task&form=show">
             <button class="btn-register">등록</button>
         </a>
-
     </div>
 
     <?php $formMode = isset($_GET['form']) && $_GET['form'] === 'show'; ?>
@@ -111,6 +110,12 @@
 </div>
 
 <script>
+let taskData = [];
+let currentSort = {
+    column: null,
+    direction: 'asc'
+};
+
 function handlePeriodChange() {
     const period = document.getElementById("period").value;
     document.getElementById("onceFields").style.display = period === "한번" ? "block" : "none";
@@ -159,6 +164,77 @@ function submitBtn() {
     }
 }
 
+function setSort(column) {
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+    }
+    renderTaskTable();
+}
+
+function updateSortArrows() {
+    const columns = ['code_name', 'job_type', 'reser_date', 'folder_path'];
+    columns.forEach(col => {
+        const el = document.getElementById(`sort-${col}`);
+        if (!el) return;
+        if (col === currentSort.column) {
+            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+        } else {
+            el.textContent = '⇅';
+        }
+    });
+}
+
+function renderTaskTable() {
+    const wrapper = document.getElementById("task-table-wrapper");
+    let sorted = [...taskData];
+    if (currentSort.column) {
+        sorted.sort((a, b) => {
+            const aVal = a[currentSort.column] || '';
+            const bVal = b[currentSort.column] || '';
+            return currentSort.direction === 'asc' ?
+                aVal.localeCompare(bVal, 'ko') :
+                bVal.localeCompare(aVal, 'ko');
+        });
+    }
+
+    setupPagination({
+        data: sorted,
+        itemsPerPage: 10,
+        containerId: "task-table-wrapper",
+        paginationClass: "pagination",
+        renderRowHTML: (pageData, offset) => {
+            return `<table class="task-table">
+                        <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                                <th onclick="setSort('job_type')">예약작업 종류 <span id="sort-job_type">⇅</span></th>
+                                <th onclick="setSort('reser_date')">작업 주기 <span id="sort-reser_date">⇅</span></th>
+                                <th onclick="setSort('folder_path')">작업 대상 <span id="sort-folder_path">⇅</span></th>
+                                <th>수정</th>
+                                <th>삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody>` +
+                pageData.map((item, i) => `
+                    <tr>
+                        <td>${taskData.length - (offset + i)}</td>
+                        <td>${item.code_name}</td>
+                        <td>${item.job_type}</td>
+                        <td>${item.reser_date} (${formatPeriodDetail(item)})</td>
+                        <td>${item.folder_path}</td>
+                        <td><button class="edit-btn" onclick="location.href='?url=MainController/index&page=task&form=show&type=moddify&num=${item.del_idx}'">수정</button></td>
+                        <td><button class="delete-btn" onclick="deleteTask(${item.del_idx})">삭제</button></td>
+                    </tr>`).join('') +
+                '</tbody></table>';
+        }
+    });
+    updateSortArrows();
+}
+
 $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -169,7 +245,7 @@ $(document).ready(function() {
             result.forEach((item) => {
                 html += `<option value="${item.code_id}">${item.code_name}</option>`;
             });
-            $("#department").html(html)
+            $("#department").html(html);
         }
     });
 
@@ -212,25 +288,8 @@ $(document).ready(function() {
         dataType: "json",
         url: "/?url=TempDelController/tempDelList",
         success: function(result) {
-            setupPagination({
-                data: result,
-                itemsPerPage: 10,
-                containerId: "task-table-wrapper",
-                paginationClass: "pagination",
-                renderRowHTML: (pageData, offset) => {
-                    return `<table class=\"task-table\"><thead><tr><th>번호</th><th>부서명</th><th>예약작업 종류</th><th>작업 주기</th><th>작업 대상</th><th>수정</th><th>삭제</th></tr></thead><tbody>` +
-                        pageData.map((item, i) => `
-                            <tr>
-                                <td>${result.length - (offset + i)}</td>
-                                <td>${item.code_name}</td>
-                                <td>${item.job_type}</td>
-                                <td>${item.reser_date} (${formatPeriodDetail(item)})</td>
-                                <td>${item.folder_path}</td>
-                                <td><button class=\"edit-btn\" onclick=\"location.href='?url=MainController/index&page=task&form=show&type=moddify&num=${item.del_idx}'\">수정</button></td>
-                                <td><button class=\"delete-btn\" onclick=\"deleteTask(${item.del_idx})\">삭제</button></td>
-                            </tr>`).join('') + '</tbody></table>';
-                }
-            });
+            taskData = result;
+            renderTaskTable();
         }
     });
 });

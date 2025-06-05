@@ -80,12 +80,12 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
         <table class="export-table">
             <thead>
                 <tr>
-                    <th>부서명</th>
-                    <th>Hostname</th>
-                    <th>사용자명</th>
-                    <th>외부 반출 대상</th>
-                    <th>사유</th>
-                    <th>처리 상태</th>
+                    <th onclick="setSort('code_name')">부서명 <span id="sort-code_name">⇅</span></th>
+                    <th onclick="setSort('host_name')">Hostname <span id="sort-host_name">⇅</span></th>
+                    <th onclick="setSort('user_name')">사용자명 <span id="sort-user_name">⇅</span></th>
+                    <th onclick="setSort('externally')">외부 반출 대상 <span id="sort-externally">⇅</span></th>
+                    <th onclick="setSort('reason')">사유 <span id="sort-reason">⇅</span></th>
+                    <th onclick="setSort('exter_status')">처리 상태 <span id="sort-exter_status">⇅</span></th>
                     <th>처리</th>
                 </tr>
             </thead>
@@ -96,8 +96,35 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
 
 <script>
 const isSuperAdmin = <?php echo $isSuperAdmin ? 'true' : 'false'; ?>;
-
 let dataList = [];
+let currentSort = {
+    column: null,
+    direction: 'asc'
+};
+
+function setSort(column) {
+    if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+    }
+    filterByStatus();
+    updateSortArrows();
+}
+
+function updateSortArrows() {
+    const columns = ['code_name', 'host_name', 'user_name', 'externally', 'reason', 'exter_status'];
+    columns.forEach(col => {
+        const el = document.getElementById(`sort-${col}`);
+        if (!el) return;
+        if (col === currentSort.column) {
+            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+        } else {
+            el.textContent = '⇅';
+        }
+    });
+}
 
 $(document).ready(function() {
     const codePram = $("#code_id").val();
@@ -116,12 +143,10 @@ $(document).ready(function() {
             externally: externallyPram,
             exter_status: statusPram
         },
-        url: "/?url=ExportController/exportList", // 수정할 부서 정보 API
+        url: "/?url=ExportController/exportList",
         success: function(result) {
-            result.forEach((item) => {
-                dataList.push(item)
-            })
-            filterByStatus()
+            dataList = result;
+            filterByStatus();
         },
         error: function(err) {
             console.error("데이터 불러오기 실패:", err);
@@ -135,17 +160,15 @@ $(document).ready(function() {
         success: function(result) {
             let html = '';
             result.forEach((item) => {
-                console.log(item)
                 html += `<option value="${item.code_id}">${item.code_name}</option>`;
             });
-            $("#dept_name").html(html)
+            $("#dept_name").html(html);
         },
         error: function(err) {
-            console.error("데이터 불러오기 실패:", err);
+            console.error("부서 데이터 실패:", err);
         }
     });
-
-})
+});
 
 function processRequest(id, status) {
     if (confirm(`${status} 처리하시겠습니까?`)) {
@@ -164,7 +187,7 @@ function processRequest(id, status) {
                 }
             },
             error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
+                console.error("요청 실패:", err);
             }
         });
     }
@@ -173,29 +196,39 @@ function processRequest(id, status) {
 function renderTable(data) {
     const tbody = document.getElementById("exportTableBody");
     tbody.innerHTML = "";
-    data.forEach(item => {
+    const sorted = [...data];
+    if (currentSort.column) {
+        sorted.sort((a, b) => {
+            const aVal = a[currentSort.column] || '';
+            const bVal = b[currentSort.column] || '';
+            return currentSort.direction === 'asc' ?
+                aVal.localeCompare(bVal, 'ko') :
+                bVal.localeCompare(aVal, 'ko');
+        });
+    }
+
+    sorted.forEach(item => {
         const tr = document.createElement("tr");
         const actionButtons =
             item.exter_status === "요청" ?
             `<button class='btn-confirm' onclick='processRequest(${item.exter_idx}, "승인")'>승인</button>
-        <button class='btn-cancel' onclick='processRequest(${item.exter_idx}, "반려")'>반려</button>` :
+                   <button class='btn-cancel' onclick='processRequest(${item.exter_idx}, "반려")'>반려</button>` :
             "-";
         tr.innerHTML = `
-    <td>${item.code_name}</td>
-    <td>${item.host_name}</td>
-    <td>${item.user_name}</td>
-    <td>${item.externally}</td>
-    <td>${item.reason}</td>
-    <td>${item.exter_status}</td>
-    <td>${actionButtons}</td>
-    `;
+            <td>${item.code_name}</td>
+            <td>${item.host_name}</td>
+            <td>${item.user_name}</td>
+            <td>${item.externally}</td>
+            <td>${item.reason}</td>
+            <td>${item.exter_status}</td>
+            <td>${actionButtons}</td>
+        `;
         tbody.appendChild(tr);
     });
 }
 
 function filterByStatus() {
     const status = document.getElementById("filterSelect").value;
-    console.log(status)
     const filtered = status === "전체" ? dataList : dataList.filter(d => d.exter_status === status);
     renderTable(filtered);
 }

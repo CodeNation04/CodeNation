@@ -1,31 +1,31 @@
 <?php
 
 class AgentUserController extends Controller {
-    // public function agentUserSubmit() {
-    //     $type = $_POST['type'] ?? '';
-    //     $num = $_POST['num'] ?? 0;
-    //     $code_id = $_POST['department'] ?? '';
-    //     $name = $_POST['name'] ?? '';
-    //     $phone = $_POST['phone'] ?? '';
-    //     $email = $_POST['email'] ?? '';
-    //     $etc = $_POST['etc'] ?? '';
+    public function agentUserSubmit() {
+        $type = $_POST['type'] ?? '';
+        $num = $_POST['num'] ?? 0;
+        $code_id = $_POST['department'] ?? '';
+        $name = $_POST['name'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $etc = $_POST['etc'] ?? '';
 
-    //     if($type !== "moddify"){
-    //         $temp = $this->model('AgentUser')->insertAgentUser($code_id,$name,$phone,$email,$etc);
-    //     }else{
-    //         $temp = $this->model('AgentUser')->updateAgentUser($num,$code_id,$name,$phone,$email,$etc);
-    //     }
+        if($type !== "moddify"){
+            $temp = $this->model('AgentUser')->insertAgentUser($code_id,$name,$phone,$email,$etc);
+        }else{
+            $temp = $this->model('AgentUser')->updateAgentUser($num,$code_id,$name,$phone,$email,$etc);
+        }
 
-    //     if ($temp) {
-    //         echo "<script>
-    //                 alert('성공적으로 저장되었습니다.');
-    //                 window.location.href='/?url=MainController/index&page=dept';
-    //             </script>";
-    //     } else {
-    //         echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=dept';</script>";
-    //         exit;
-    //     }
-    // }
+        if ($temp) {
+            echo "<script>
+                    alert('성공적으로 저장되었습니다.');
+                    window.location.href='/?url=MainController/index&page=dept';
+                </script>";
+        } else {
+            echo "<script>alert('데이터베이스에서 오류가 발생하였습니다.'); window.location.href='/?url=MainController/index&page=dept';</script>";
+            exit;
+        }
+    }
 
     public function agentUserList() {
         header('Content-Type: application/json');
@@ -151,6 +151,7 @@ class AgentUserController extends Controller {
         $username = $_POST['username'] ?? '';
         $token = $_POST['token'] ?? '';
         $work_info = $_POST['work_info'] ?? '';
+        $check_time= $_POST['check_time'] ??'3600';
 
         $cnt = $this->model('AgentUser')->countAgentUser($hostname,$ip,$username);
         $response = ['cnt' => $cnt];
@@ -244,25 +245,6 @@ class AgentUserController extends Controller {
             echo json_encode($temp);
         }
     }
-
-//AgentId를 기준으로 정보 조회    
-    public function agentUserByAgentId() {
-    $agentId = $_GET['agent_id'] ?? '';
-    header('Content-Type: application/json');
-
-    if (!$agentId) {
-        echo json_encode(["error" => "Agent ID 누락"]);
-        return;
-    }
-
-    $data = $this->model('AgentUser')->selectAgentUserByAgentId($agentId);
-
-    if ($data) {
-        echo json_encode($data);
-    } else {
-        echo json_encode(["error" => "해당 Agent ID에 대한 정보 없음"]);
-    }
-}
 
 
 }
