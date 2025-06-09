@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
 
+<?php
+ $session_type = $_SESSION['admin_type'];
+ if($session_type !== "최고관리자"){
+    echo "<script>
+            alert('잘못된 접근입니다.')
+            location.href='/?url=MainController/index'
+            </script>";
+ }
+?>
+
 <head>
     <meta charset="UTF-8">
     <title>중간 관리자 목록</title>
@@ -51,11 +61,11 @@
                     </div>
                     <div class="input-wrapper">
                         <label>비밀번호</label>
-                        <input type="password" id="mgr-pw" name="pw" required />
+                        <input type="password" id="mgr-pw" name="pw" maxlength="13" required />
                     </div>
                     <div class="input-wrapper">
                         <label>비밀번호 확인</label>
-                        <input type="password" id="mgr-pw-confirm" required />
+                        <input type="password" id="mgr-pw-confirm" maxlength="13" required />
                     </div>
                 </div>
 
@@ -250,6 +260,11 @@
 
         function duplicateCheck() {
             const mgr_id = document.getElementById("mgr-id").value;
+            if(mgr_id == '' || mgr_id == null){
+                alert("아이디를 입력해주세요.");
+                return;
+            }
+            
             $.ajax({
                 type: "POST",
                 dataType: "json",
@@ -265,6 +280,25 @@
                     console.error("데이터 불러오기 실패:", err);
                 }
             });
+        }
+
+        function registerManager(event) {
+            const deptValue = document.getElementById("mgr-dept").value;
+
+            if (deptValue !== "true") {
+                alert("ID 중복 확인이 완료되지 않았습니다.");
+                return false;
+            }
+
+            // 비밀번호 확인 체크 (추가 보안)
+            const pw = document.getElementById("mgr-pw").value;
+            const pwConfirm = document.getElementById("mgr-pw-confirm").value;
+            if (pw !== pwConfirm) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return false;
+            }
+
+            return true;
         }
         </script>
 </body>

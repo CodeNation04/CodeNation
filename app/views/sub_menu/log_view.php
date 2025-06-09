@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
 
+<?php
+ $session_type = $_SESSION['admin_type'];
+ if($session_type !== "최고관리자"){
+    echo "<script>
+            alert('잘못된 접근입니다.')
+            location.href='/?url=MainController/index'
+            </script>";
+ }
+?>
+
 <head>
     <meta charset="UTF-8">
     <title>감사 로그 조회</title>

@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="css/super_admin.css">
 </head>
 <?php
- $session_id = $_SESSION['admin_id']
+ $session_id = $_SESSION['admin_id'];
+ $session_type = $_SESSION['admin_type'];
+ if($session_type !== "최고관리자"){
+    echo "<script>
+            alert('잘못된 접근입니다.')
+            location.href='/?url=MainController/index'
+            </script>";
+    
+ }
 ?>
 
 <body>

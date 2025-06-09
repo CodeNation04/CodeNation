@@ -52,8 +52,19 @@
                     class="menu-item <?= ($page === 'agent') ? 'active' : '' ?>">Agent 정보 조회</a>
                 <a href="/?url=MainController/index&page=agentlog"
                     class="menu-item <?= ($page === 'agentlog') ? 'active' : '' ?>">Agent 로그 조회</a>
+                <?php
+                    if ($_SESSION['admin_type'] === '최고관리자'){
+                ?>
                 <a href="/?url=MainController/index&page=log"
                     class="menu-item <?= ($page === 'log') ? 'active' : '' ?>">감사 로그 조회</a>
+                <?php
+                    }else{
+                ?>
+                    <a href="/?url=MainController/index&page=export"
+                        class="menu-item <?= ($page === 'export') ? 'active' : '' ?>">외부 반출 승인 관리</a>
+                <?php
+                    }
+                ?>
             </div>
         </div>
 

@@ -1,6 +1,16 @@
 <link rel="stylesheet" href="css/delete_manage.css" />
 <link rel="stylesheet" href="css/sub_title.css" />
 
+<?php
+ $session_type = $_SESSION['admin_type'];
+ if($session_type !== "최고관리자"){
+    echo "<script>
+            alert('잘못된 접근입니다.')
+            location.href='/?url=MainController/index'
+            </script>";
+ }
+?>
+
 <div class="wrapper">
     <div class="form-header">
         <div style="display:flex; align-items:center">
