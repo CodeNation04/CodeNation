@@ -21,9 +21,9 @@
                                                (SELECT b.code_name FROM code b WHERE b.code_id = a.code_code_id) AS code_name
                                         FROM admin a
                                         WHERE a.id = :username 
-                         " );
+                                        AND a.access_ip = :ip" );
             $stmt->bindParam(':username', $username);
-         
+            $stmt->bindParam(':ip', $ip);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
