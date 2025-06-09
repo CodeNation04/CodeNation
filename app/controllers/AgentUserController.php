@@ -237,7 +237,6 @@ class AgentUserController extends Controller {
 
     public function selectAdminLogList(){
         header('Content-Type: application/json');
-        
 
         $temp = $this->model('AgentUser')->selectAdminLogList();
         if (!$temp) {

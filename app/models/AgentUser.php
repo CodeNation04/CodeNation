@@ -542,6 +542,7 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+       
         public function loginCnt($user_type,$date){
             if($user_type !== '전체'){
                 if($user_type === '중간관리자'){

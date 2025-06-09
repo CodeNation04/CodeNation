@@ -22,19 +22,19 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h1>로그인 횟수</h1>
                 <div>
-                    <label for="login-unit-selector">단위:</label>
-                    <select id="login-unit-selector" name="login_date">
-                        <option value="year" selected>년</option>
-                        <option value="month">월</option>
-                        <option value="week">주</option>
-                    </select>
-                </div>
-                <div>
                     <label for="login-type-selector">구분:</label>
                     <select id="login-type-selector" name="login_type">
                         <option value="전체" selected>전체</option>
                         <option value="중간관리자">중간 관리자</option>
                         <option value="에이전트">에이전트</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="login-unit-selector">단위:</label>
+                    <select id="login-unit-selector" name="login_date">
+                        <option value="year" selected>년</option>
+                        <option value="month">월</option>
+                        <option value="week">주</option>
                     </select>
                 </div>
             </div>
@@ -186,6 +186,9 @@
     function drawBarChart(dataList, unit, userType) {
         const labels = [];
         const data = [];
+        // 데이터는 최신순으로 정렬되어 넘어오므로 오름차순이 되도록 정렬
+        dataList.sort((a, b) => String(a.period).localeCompare(String(b.period)));
+
         dataList.forEach(item => {
             labels.push(item.period);
             data.push(Number(item.count));
@@ -210,11 +213,18 @@
                 title: {
                     display: true,
                     text: `로그인 횟수 (${userType}, 단위: ${unit})`
+
                 },
                 scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        } // y축을 0부터 시작
+                    }],
                     xAxes: [{
-                        barThickness: 40,
-                        maxBarThickness: 50
+                        ticks: {
+                            autoSkip: false
+                        }
                     }]
                 }
             }
