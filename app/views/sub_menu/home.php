@@ -22,19 +22,19 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h1>로그인 횟수</h1>
                 <div>
-                    <label for="login-type-selector">구분:</label>
-                    <select id="login-type-selector" name="login_type">
-                        <option value="전체" selected>전체</option>
-                        <option value="중간관리자">중간 관리자</option>
-                        <option value="에이전트">에이전트</option>
-                    </select>
-                </div>
-                <div>
                     <label for="login-unit-selector">단위:</label>
                     <select id="login-unit-selector" name="login_date">
                         <option value="year" selected>년</option>
                         <option value="month">월</option>
                         <option value="week">주</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="login-type-selector">구분:</label>
+                    <select id="login-type-selector" name="login_type">
+                        <option value="전체" selected>전체</option>
+                        <option value="중간관리자">중간 관리자</option>
+                        <option value="에이전트">에이전트</option>
                     </select>
                 </div>
             </div>
@@ -210,6 +210,12 @@
                 title: {
                     display: true,
                     text: `로그인 횟수 (${userType}, 단위: ${unit})`
+                },
+                scales: {
+                    xAxes: [{
+                        barThickness: 40,
+                        maxBarThickness: 50
+                    }]
                 }
             }
         });
