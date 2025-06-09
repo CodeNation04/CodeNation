@@ -12,6 +12,8 @@
     canvas#bar-chart {
         height: 400px !important;
         width: 100% !important;
+        display: block;
+        margin: 0 auto;
     }
     </style>
 </head>
@@ -22,14 +24,6 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h1>로그인 횟수</h1>
                 <div>
-                    <label for="login-type-selector">구분:</label>
-                    <select id="login-type-selector" name="login_type">
-                        <option value="전체" selected>전체</option>
-                        <option value="중간관리자">중간 관리자</option>
-                        <option value="에이전트">에이전트</option>
-                    </select>
-                </div>
-                <div>
                     <label for="login-unit-selector">단위:</label>
                     <select id="login-unit-selector" name="login_date">
                         <option value="year" selected>년</option>
@@ -37,8 +31,18 @@
                         <option value="week">주</option>
                     </select>
                 </div>
+                <div>
+                    <label for="login-type-selector">구분:</label>
+                    <select id="login-type-selector" name="login_type">
+                        <option value="전체" selected>전체</option>
+                        <option value="중간관리자">중간 관리자</option>
+                        <option value="에이전트">에이전트</option>
+                    </select>
+                </div>
             </div>
-            <canvas id="bar-chart"></canvas>
+            <div class="chart-container">
+                <canvas id="bar-chart"></canvas>
+            </div>
         </div>
 
         <div>
@@ -61,7 +65,9 @@
                     </select>
                 </div>
             </div>
-            <canvas id="line-chart"></canvas>
+            <div class="chart-container">
+                <canvas id="line-chart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -219,14 +225,17 @@
                     yAxes: [{
                         ticks: {
                             beginAtZero: true
-                        } // y축을 0부터 시작
+                        }
                     }],
                     xAxes: [{
+                        barThickness: 40, // sets each bar to 40 px width
+                        maxBarThickness: 50, // optional cap on width
                         ticks: {
                             autoSkip: false
                         }
                     }]
                 }
+
             }
         });
     }
