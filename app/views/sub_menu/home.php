@@ -122,14 +122,21 @@
 
             dataMap[label] = count;
 
-            const dateObj = new Date(label.length === 4 ? `${label}-01-01` : label.length === 7 ?
-                `${label}-01` : label);
+            const dateObj = new Date(
+                label.length === 4 ? `${label}-01-01` :
+                label.length === 7 ? `${label}-01` :
+                label
+            );
             if (!minDate || dateObj < minDate) minDate = dateObj;
             if (!maxDate || dateObj > maxDate) maxDate = dateObj;
         });
 
         const labels = getDateList(minDate, maxDate, unit);
         const data = labels.map(label => dataMap[label] || 0);
+
+        // 최대값 계산 +10
+        const maxCount = data.length ? Math.max(...data) : 0;
+        const suggestedMax = maxCount + 3;
 
         if (lineChart) lineChart.destroy();
 
@@ -157,6 +164,13 @@
                         ticks: {
                             autoSkip: false
                         }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1,
+                            max: suggestedMax // 최대값+10 지정
+                        }
                     }]
                 }
             }
@@ -180,7 +194,6 @@
                     if (lineChart) lineChart.destroy();
                     return;
                 }
-
                 drawLineChart(result, exter_date, exter_status);
             },
             error: function(err) {
@@ -192,13 +205,16 @@
     function drawBarChart(dataList, unit, userType) {
         const labels = [];
         const data = [];
-        // 데이터는 최신순으로 정렬되어 넘어오므로 오름차순이 되도록 정렬
         dataList.sort((a, b) => String(a.period).localeCompare(String(b.period)));
 
         dataList.forEach(item => {
             labels.push(item.period);
             data.push(Number(item.count));
         });
+
+        // 최대값 계산 +10
+        const maxCount = data.length ? Math.max(...data) : 0;
+        const suggestedMax = maxCount + 3;
 
         if (barChart) barChart.destroy();
 
@@ -219,23 +235,22 @@
                 title: {
                     display: true,
                     text: `로그인 횟수 (${userType}, 단위: ${unit})`
-
                 },
                 scales: {
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            max: suggestedMax // 최대값+10 지정
                         }
                     }],
                     xAxes: [{
-                        barThickness: 40, // sets each bar to 40 px width
-                        maxBarThickness: 50, // optional cap on width
+                        barThickness: 40,
+                        maxBarThickness: 50,
                         ticks: {
                             autoSkip: false
                         }
                     }]
                 }
-
             }
         });
     }
@@ -257,7 +272,6 @@
                     if (barChart) barChart.destroy();
                     return;
                 }
-
                 drawBarChart(result, login_date, user_type);
             },
             error: function(err) {
