@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="public/css/home.css" />
+    <link rel="stylesheet" href="css/home.css" />
     <style>
     /* 차트 사이즈 고정 */
     canvas#line-chart,

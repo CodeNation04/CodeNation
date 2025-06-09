@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/css/task_manage.css" />
 <link rel="stylesheet" href="css/pagination.css">
 <link rel="stylesheet" href="css/sub_title.css">
-<script src="/js/pagination.js"></script>
+<script src="js/pagination.js"></script>
 
 <?php
  $session_type = $_SESSION['admin_type'];

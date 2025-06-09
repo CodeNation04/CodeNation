@@ -16,7 +16,7 @@
     <title>감사 로그 조회</title>
     <link rel="stylesheet" href="css/agent_info.css" />
     <link rel="stylesheet" href="css/pagination.css">
-    <script src="/js/pagination.js"></script>
+    <script src="js/pagination.js"></script>
 </head>
 
 <body>
