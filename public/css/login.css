@@ -81,7 +81,7 @@ body {
 .login-form button {
    padding: 12px;
    font-size: 16px;
-   background-color: #4a90e2;
+   background-color: #0077ff;
    color: white;
    border: none;
    border-radius: 5px;
@@ -90,5 +90,5 @@ body {
 }
 
 .login-form button:hover {
-   background-color: #357abd;
+   background-color: #005ab3;
 }
