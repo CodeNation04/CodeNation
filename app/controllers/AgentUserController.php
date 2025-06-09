@@ -237,12 +237,27 @@ class AgentUserController extends Controller {
 
     public function selectAdminLogList(){
         header('Content-Type: application/json');
-        
+
         $temp = $this->model('AgentUser')->selectAdminLogList();
         if (!$temp) {
             echo json_encode(["error" => "No data found."]);
         } else {
             echo json_encode($temp);
+        }
+    }
+
+    public function loginCnt(){
+        $user_type = $_GET['user_type'] ?? '';
+        $date = $_GET['date'] ?? '';
+
+        header('Content-Type: application/json');
+
+        $result = $this->model('AgentUser')->loginCnt($user_type,$date);
+
+        if(!$result){
+            echo json_encode(["error" => "No data found."]);
+        } else {
+            echo json_encode($result);
         }
     }
 

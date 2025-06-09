@@ -516,7 +516,7 @@
             }
 
             // 콘솔로 출력 (브라우저 개발자 도구에서 확인)
-            // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
+             // echo "<script>console.log(`실행될 쿼리 (예상): " . $debugSql . "`);</script>";
 
             // 쿼리 실행
             $stmt = $this->db->prepare($sql);
@@ -540,6 +540,55 @@
                                         ORDER BY create_date DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+       
+        public function loginCnt($user_type,$date){
+            if($user_type !== '전체'){
+                if($user_type === '중간관리자'){
+                    $table = 'appreciation_log';
+                    $condition = "admin_type = '중간관리자' AND work_type = '로그인'";
+                }else{
+                    $table = 'user_agent_log';
+                    $condition = "work_info = '로그인'";
+                }
+
+                if($date === 'year'){
+                    $sql = "SELECT YEAR(create_date) AS period, COUNT(*) AS count FROM {$table} WHERE {$condition} AND create_date >= DATE_SUB(CURDATE(), INTERVAL 15 YEAR) GROUP BY YEAR(create_date) ORDER BY period DESC";
+                }else if($date === 'month'){
+                    $sql = "SELECT DATE_FORMAT(create_date, '%Y-%m') AS period, COUNT(*) AS count FROM {$table} WHERE {$condition} AND create_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) GROUP BY DATE_FORMAT(create_date, '%Y-%m') ORDER BY period DESC";
+                }else{
+                    $sql = "SELECT DATE(create_date) AS period, COUNT(*) AS count FROM {$table} WHERE {$condition} AND create_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(create_date) ORDER BY period DESC";
+                }
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }else{
+                if($date === 'year'){
+                    $sql = "SELECT period, SUM(cnt) AS count FROM (
+                                SELECT YEAR(create_date) AS period, COUNT(*) AS cnt FROM appreciation_log WHERE work_type = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 15 YEAR) GROUP BY YEAR(create_date)
+                                UNION ALL
+                                SELECT YEAR(create_date) AS period, COUNT(*) AS cnt FROM user_agent_log WHERE work_info = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 15 YEAR) GROUP BY YEAR(create_date)
+                            ) AS t GROUP BY period ORDER BY period DESC";
+                }else if($date === 'month'){
+                    $sql = "SELECT period, SUM(cnt) AS count FROM (
+                                SELECT DATE_FORMAT(create_date, '%Y-%m') AS period, COUNT(*) AS cnt FROM appreciation_log WHERE work_type = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) GROUP BY DATE_FORMAT(create_date, '%Y-%m')
+                                UNION ALL
+                                SELECT DATE_FORMAT(create_date, '%Y-%m') AS period, COUNT(*) AS cnt FROM user_agent_log WHERE work_info = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) GROUP BY DATE_FORMAT(create_date, '%Y-%m')
+                            ) AS t GROUP BY period ORDER BY period DESC";
+                }else{
+                    $sql = "SELECT period, SUM(cnt) AS count FROM (
+                                SELECT DATE(create_date) AS period, COUNT(*) AS cnt FROM appreciation_log WHERE work_type = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(create_date)
+                                UNION ALL
+                                SELECT DATE(create_date) AS period, COUNT(*) AS cnt FROM user_agent_log WHERE work_info = '로그인' AND create_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(create_date)
+                            ) AS t GROUP BY period ORDER BY period DESC";
+                }
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
     }
 ?>

@@ -12,6 +12,8 @@
     canvas#bar-chart {
         height: 400px !important;
         width: 100% !important;
+        display: block;
+        margin: 0 auto;
     }
     </style>
 </head>
@@ -19,8 +21,28 @@
 <body>
     <div class="placeholder" id="item-wrap">
         <div>
-            <h1>로그</h1>
-            <canvas id="bar-chart"></canvas>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h1>로그인 횟수</h1>
+                <div>
+                    <label for="login-unit-selector">단위:</label>
+                    <select id="login-unit-selector" name="login_date">
+                        <option value="year" selected>년</option>
+                        <option value="month">월</option>
+                        <option value="week">주</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="login-type-selector">구분:</label>
+                    <select id="login-type-selector" name="login_type">
+                        <option value="전체" selected>전체</option>
+                        <option value="중간관리자">중간 관리자</option>
+                        <option value="에이전트">에이전트</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="bar-chart"></canvas>
+            </div>
         </div>
 
         <div>
@@ -43,12 +65,15 @@
                     </select>
                 </div>
             </div>
-            <canvas id="line-chart"></canvas>
+            <div class="chart-container">
+                <canvas id="line-chart"></canvas>
+            </div>
         </div>
     </div>
 
     <script>
     let lineChart = null;
+    let barChart = null;
 
     function padZero(n) {
         return n < 10 ? '0' + n : n;
@@ -86,7 +111,7 @@
         const dataMap = {};
         let minDate = null;
         let maxDate = null;
-        
+
         dataList.forEach(item => {
             let label = item.period;
             let count = Number(item.count);
@@ -164,30 +189,90 @@
         });
     }
 
+    function drawBarChart(dataList, unit, userType) {
+        const labels = [];
+        const data = [];
+        // 데이터는 최신순으로 정렬되어 넘어오므로 오름차순이 되도록 정렬
+        dataList.sort((a, b) => String(a.period).localeCompare(String(b.period)));
+
+        dataList.forEach(item => {
+            labels.push(item.period);
+            data.push(Number(item.count));
+        });
+
+        if (barChart) barChart.destroy();
+
+        const ctx = document.getElementById("bar-chart").getContext("2d");
+        barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: userType,
+                    backgroundColor: '#3e95cd',
+                    data: data
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: `로그인 횟수 (${userType}, 단위: ${unit})`
+
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        barThickness: 40, // sets each bar to 40 px width
+                        maxBarThickness: 50, // optional cap on width
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
+                }
+
+            }
+        });
+    }
+
+    function selectLogin() {
+        const user_type = document.getElementById("login-type-selector").value;
+        const login_date = document.getElementById("login-unit-selector").value;
+
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: {
+                user_type: user_type,
+                date: login_date
+            },
+            url: "/?url=AgentUserController/loginCnt",
+            success: function(result) {
+                if (!result || result.length === 0) {
+                    if (barChart) barChart.destroy();
+                    return;
+                }
+
+                drawBarChart(result, login_date, user_type);
+            },
+            error: function(err) {
+                console.error("데이터 불러오기 실패:", err);
+            }
+        });
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
         selectExter();
+        selectLogin();
         document.getElementById("unit-selector").addEventListener("change", selectExter);
         document.getElementById("exter-selector").addEventListener("change", selectExter);
-    });
-
-    new Chart(document.getElementById("bar-chart"), {
-        type: 'bar',
-        data: {
-            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-            datasets: [{
-                label: "Population (millions)",
-                backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                data: [2478, 5267, 734, 784, 433]
-            }]
-        },
-        url: "/?url=ExportController/exportCnt",
-        success: function(result) { 
-            console.log(result)
-        },
-        error: function(err) {
-            console.error("데이터 불러오기 실패:", err);
-
-        }
+        document.getElementById("login-unit-selector").addEventListener("change", selectLogin);
+        document.getElementById("login-type-selector").addEventListener("change", selectLogin);
     });
     </script>
 </body>
