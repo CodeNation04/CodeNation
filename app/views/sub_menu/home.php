@@ -109,17 +109,14 @@
 
     function drawLineChart(dataList, unit, status) {
         const dataMap = {};
-        let minDate = null;
-        let maxDate = null;
+        let minDate = null,
+            maxDate = null;
 
         dataList.forEach(item => {
-            let label = item.period;
-            let count = Number(item.count);
-
-            if (unit === "year") {
-                label = String(label).substring(0, 4);
-            }
-
+            let label = unit === "year" ?
+                String(item.period).substring(0, 4) :
+                String(item.period);
+            const count = Number(item.count);
             dataMap[label] = count;
 
             const dateObj = new Date(
@@ -132,22 +129,21 @@
         });
 
         const labels = getDateList(minDate, maxDate, unit);
-        const data = labels.map(label => dataMap[label] || 0);
+        const data = labels.map(l => dataMap[l] || 0);
 
-        // 최대값 계산 +10
-        const maxCount = data.length ? Math.max(...data) : 0;
-        const suggestedMax = maxCount + 3;
+        // 20단위 올림
+        const maxCountLine = data.length ? Math.max(...data) : 0;
+        const suggestedMaxLine = Math.ceil(maxCountLine / 20) * 20;
 
         if (lineChart) lineChart.destroy();
-
         const ctx = document.getElementById("line-chart").getContext("2d");
         lineChart = new Chart(ctx, {
             type: "line",
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     label: status,
-                    data: data,
+                    data,
                     borderColor: "#3e95cd",
                     fill: false
                 }]
@@ -168,8 +164,7 @@
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            stepSize: 1,
-                            max: suggestedMax // 최대값+10 지정
+                            max: suggestedMaxLine // 20단위 올림된 값
                         }
                     }]
                 }
@@ -178,55 +173,50 @@
     }
 
     function selectExter() {
-        const exter_status = document.getElementById("exter-selector").value;
-        const exter_date = document.getElementById("unit-selector").value;
+        const exter_status = $("#exter-selector").val();
+        const exter_date = $("#unit-selector").val();
 
         $.ajax({
             type: "GET",
             dataType: "json",
-            data: {
-                exter_status: exter_status,
-                exter_date: exter_date
-            },
             url: "/?url=ExportController/exportCnt",
-            success: function(result) {
-                if (!result || result.length === 0) {
+            data: {
+                exter_status,
+                exter_date
+            },
+            success: res => {
+                if (!res || !res.length) {
                     if (lineChart) lineChart.destroy();
                     return;
                 }
-                drawLineChart(result, exter_date, exter_status);
+                drawLineChart(res, exter_date, exter_status);
             },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
+            error: err => console.error("데이터 불러오기 실패:", err)
         });
     }
 
     function drawBarChart(dataList, unit, userType) {
-        const labels = [];
-        const data = [];
+        const labels = [],
+            data = [];
         dataList.sort((a, b) => String(a.period).localeCompare(String(b.period)));
-
         dataList.forEach(item => {
             labels.push(item.period);
             data.push(Number(item.count));
         });
 
-        // 최대값 계산 +10
         const maxCount = data.length ? Math.max(...data) : 0;
-        const suggestedMax = maxCount + 3;
+        const suggestedMax = Math.ceil(maxCount / 20) * 20;
 
         if (barChart) barChart.destroy();
-
         const ctx = document.getElementById("bar-chart").getContext("2d");
         barChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     label: userType,
                     backgroundColor: '#3e95cd',
-                    data: data
+                    data
                 }]
             },
             options: {
@@ -240,7 +230,7 @@
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            max: suggestedMax // 최대값+10 지정
+                            max: suggestedMax
                         }
                     }],
                     xAxes: [{
@@ -256,37 +246,33 @@
     }
 
     function selectLogin() {
-        const user_type = document.getElementById("login-type-selector").value;
-        const login_date = document.getElementById("login-unit-selector").value;
+        const user_type = $("#login-type-selector").val();
+        const login_date = $("#login-unit-selector").val();
 
         $.ajax({
             type: "GET",
             dataType: "json",
+            url: "/?url=AgentUserController/loginCnt",
             data: {
-                user_type: user_type,
+                user_type,
                 date: login_date
             },
-            url: "/?url=AgentUserController/loginCnt",
-            success: function(result) {
-                if (!result || result.length === 0) {
+            success: res => {
+                if (!res || !res.length) {
                     if (barChart) barChart.destroy();
                     return;
                 }
-                drawBarChart(result, login_date, user_type);
+                drawBarChart(res, login_date, user_type);
             },
-            error: function(err) {
-                console.error("데이터 불러오기 실패:", err);
-            }
+            error: err => console.error("데이터 불러오기 실패:", err)
         });
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    $(function() {
         selectExter();
         selectLogin();
-        document.getElementById("unit-selector").addEventListener("change", selectExter);
-        document.getElementById("exter-selector").addEventListener("change", selectExter);
-        document.getElementById("login-unit-selector").addEventListener("change", selectLogin);
-        document.getElementById("login-type-selector").addEventListener("change", selectLogin);
+        $("#unit-selector, #exter-selector").change(selectExter);
+        $("#login-unit-selector, #login-type-selector").change(selectLogin);
     });
     </script>
 </body>
