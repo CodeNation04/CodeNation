@@ -283,9 +283,9 @@
         }
 
         function registerManager(event) {
-            const deptValue = document.getElementById("mgr-dept").value;
-
-            if (deptValue !== "true") {
+            const duplicate = document.getElementById("duplicate").value;
+            console.log(duplicate)
+            if (duplicate !== "true") {
                 alert("ID 중복 확인이 완료되지 않았습니다.");
                 return false;
             }
