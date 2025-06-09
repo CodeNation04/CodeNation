@@ -12,6 +12,9 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
         $externally = $_POST["target"] ?? '';
         $exter_status = $_POST["status"] ?? '';
     }
+
+    $ssesion_code = $_SESSION["code_id"];
+    $ssesion_type = $_SESSION["admin_type"];
 ?>
 
 <div class="export-wrapper">
@@ -40,6 +43,8 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
             <input type="hidden" id="externally" value="<?=$externally?>" />
             <input type="hidden" id="exter_status" value="<?=$exter_status?>" />
             <?php }?>
+            <input type="hidden" id="admin_code_id" value="<?=$ssesion_code?>" />
+            <input type="hidden" id="admin_type" value="<?=$ssesion_type?>" />
             <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
             <div class="form-row">
                 <label>부서명</label>
@@ -132,6 +137,8 @@ $(document).ready(function() {
     const namePram = $("#user_name").val();
     const externallyPram = $("#externally").val();
     const statusPram = $("#exter_status").val();
+    const adminCodeId = $("#admin_code_id").val();
+    const adminType = $("#admin_type").val();
 
     $.ajax({
         type: "GET",
@@ -141,7 +148,9 @@ $(document).ready(function() {
             host_name: hostPram,
             user_name: namePram,
             externally: externallyPram,
-            exter_status: statusPram
+            exter_status: statusPram,
+            admin_code_id : adminCodeId,
+            admin_type : adminType
         },
         url: "/?url=ExportController/exportList",
         success: function(result) {

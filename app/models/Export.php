@@ -9,7 +9,7 @@
             $this->db = $database->pdo;
         }
 
-        public function selectExportList($code_id,$host_name,$user_name,$externally,$exter_status){
+        public function selectExportList($host_name,$user_name,$externally,$exter_status,$admin_code_id,$admin_type){
 
             $sql = "SELECT  a.exter_idx,
                             a.code_code_id,
@@ -25,9 +25,11 @@
             // 디버깅용 바인딩 파라미터 배열
             $params = [];
 
-            if ($code_id !== '') {
-                $sql .= " AND code_code_id = :code_id";
-                $params[':code_id'] = $code_id;
+            if($admin_type !== "최고관리자"){
+                if ($admin_code_id !== '') {
+                    $sql .= " AND code_code_id = :admin_code_id";
+                    $params[':admin_code_id'] = $admin_code_id;
+                }
             }
 
             if ($host_name !== '') {

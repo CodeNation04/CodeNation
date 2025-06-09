@@ -7,10 +7,12 @@ class ExportController extends Controller {
         $user_name = $_GET["user_name"] ?? '';
         $externally = $_GET["externally"] ?? '';
         $exter_status = $_GET["exter_status"] ?? '';
+        $admin_code_id = $_GET["admin_code_id"] ?? '';
+        $admin_type = $_GET["admin_type"] ?? '';
 
         header('Content-Type: application/json');
         
-        $temp = $this->model('Export')->selectExportList($code_id,$host_name,$user_name,$externally,$exter_status);
+        $temp = $this->model('Export')->selectExportList($host_name,$user_name,$externally,$exter_status,$admin_code_id,$admin_type);
         if (!$temp) {
             echo json_encode(["error" => "No data found."]);
         } else {
