@@ -36,8 +36,10 @@ if (isset($params['code_id'], $params['host_name'], $params['user_name'], $param
             'work_type'   => "외부반출요청",
             'work_result' => "성공"
         ];
-
+        //로컬
         $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+        //운영
+        // $ch = curl_init("http://imon.dothome.co.kr/?url=AgentUserController/logAdd");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

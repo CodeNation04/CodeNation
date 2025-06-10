@@ -14,7 +14,10 @@ if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['usern
     ];
 
     $ch = curl_init();
+    //로컬
     curl_setopt($ch, CURLOPT_URL, "http://localhost/?url=AgentUserController/logAdd");
+    //운영
+    // curl_setopt($ch, CURLOPT_URL, "http://imon.dothome.co.kr/?url=AgentUserController/logAdd");
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

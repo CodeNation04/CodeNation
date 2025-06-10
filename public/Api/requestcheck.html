@@ -9,27 +9,9 @@ if (!$agentId) {
 }
 
 require_once __DIR__ . '/../config/database.php';
-$db = (new Database())->pdo;
-
-$sql = "SELECT exter_status FROM externally_info 
-        WHERE host_name = :host_name 
-        ORDER BY create_date DESC 
-        LIMIT 1";
-$stmt = $db->prepare($sql);
-$stmt->bindValue(':host_name', $agentId);
-$stmt->execute();
-
-$status = $stmt->fetchColumn();
-
-switch ($status) {
-    case '허용':
-        echo "A : 허용";
-        break;
-    case '반려':
-        echo "D : 반려";
-        break;
-    default:
-        echo "P : 대기중";
-        break;
-}
+$db = (new Database())->pdo; $sql = "SELECT exter_status FROM externally_info
+WHERE host_name = :host_name ORDER BY create_date DESC LIMIT 1"; $stmt =
+$db->prepare($sql); $stmt->bindValue(':host_name', $agentId); $stmt->execute();
+$status = $stmt->fetchColumn(); switch ($status) { case '허용': echo "A : 허용";
+break; case '반려': echo "D : 반려"; break; default: echo "P : 대기중"; break; }
 ?>

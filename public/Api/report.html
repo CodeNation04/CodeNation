@@ -16,7 +16,10 @@ if (isset($params['code_id'], $params['hostname'], $params['ip'], $params['usern
     ];
 
     // 사용자 정보 및 등록 갱신 (agentUserData)
+    //로컬
     $ch = curl_init("http://localhost/?url=AgentUserController/agentUserData");
+    //운영
+    // $ch = curl_init("http://imon.dothome.co.kr/?url=AgentUserController/agentUserData");
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

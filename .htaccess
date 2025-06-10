@@ -1,13 +1,17 @@
-# public/.htaccess
+# .htaccess
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
+    # /Api 경로는 public/Api로 rewrite (정적 파일처럼)
+    RewriteRule ^Api/(.*)$ public/Api/$1 [L]
+
+    # 나머지는 index.php 라우팅
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]
+
 </IfModule>
 
 DirectoryIndex public/index.php
-AddType application/x-httpd-php .php .html
