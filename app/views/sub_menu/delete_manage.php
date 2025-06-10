@@ -1,14 +1,18 @@
+```php
 <link rel="stylesheet" href="css/delete_manage.css" />
 <link rel="stylesheet" href="css/sub_title.css" />
+<link rel="stylesheet" href="css/pagination.css" />
+<script src="js/pagination.js"></script>
 
 <?php
- $session_type = $_SESSION['admin_type'];
- if($session_type !== "최고관리자"){
+// delete_manage.php
+$session_type = $_SESSION['admin_type'];
+if ($session_type !== "최고관리자") {
     echo "<script>
             alert('잘못된 접근입니다.')
             location.href='/?url=MainController/index'
-            </script>";
- }
+          </script>";
+}
 ?>
 
 <div class="wrapper">
@@ -20,14 +24,14 @@
         <button id="toggleFormBtn" class="btn-register">등록</button>
     </div>
 
-    <?php 
-        $page = $_GET['form'] ?? ""; 
-        if($page == "show"){
+    <?php
+    $page = $_GET['form'] ?? "";
+    if ($page === "show") {
     ?>
     <div id="formContainer">
-        <?php include "delete_manage_form.php";?>
+        <?php include "delete_manage_form.php"; ?>
     </div>
-    <?php } else{?>
+    <?php } else { ?>
     <div id="listContainer" class="delete-manage-list">
         <table>
             <thead>
@@ -41,15 +45,13 @@
             </thead>
             <tbody id="data-content"></tbody>
         </table>
+        <div class="pagination"></div>
     </div>
-    <?php }?>
+    <?php } ?>
 </div>
 
 <script>
-const formContainer = document.getElementById("formContainer");
-const listContainer = document.getElementById("listContainer");
 const toggleBtn = document.getElementById("toggleFormBtn");
-
 let deleteDataList = [];
 let currentSort = {
     column: null,
@@ -57,7 +59,7 @@ let currentSort = {
 };
 
 toggleBtn.addEventListener("click", () => {
-    location.href = "/?url=MainController/index&page=deleteData&form=show"
+    location.href = "/?url=MainController/index&page=deleteData&form=show";
 });
 
 function cancelForm() {
@@ -75,19 +77,18 @@ function setSort(column) {
 }
 
 function updateSortArrows() {
-    const columns = ['code_name', 'file_ext', 'exclude_path'];
-    columns.forEach(col => {
+    const cols = ['code_name', 'file_ext', 'exclude_path'];
+    cols.forEach(col => {
         const el = document.getElementById(`sort-${col}`);
         if (!el) return;
-        if (col === currentSort.column) {
-            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
-        } else {
-            el.textContent = '⇅';
-        }
+        el.textContent = (col === currentSort.column) ?
+            (currentSort.direction === 'asc' ? '▲' : '▼') :
+            '⇅';
     });
 }
 
 function renderTable() {
+    // 정렬 적용
     const sortedList = [...deleteDataList];
     if (currentSort.column) {
         sortedList.sort((a, b) => {
@@ -98,18 +99,24 @@ function renderTable() {
                 bVal.localeCompare(aVal, 'ko');
         });
     }
-    let html = '';
-    sortedList.forEach(item => {
-        html += `
+
+    // 페이징 처리
+    setupPagination({
+        data: sortedList,
+        itemsPerPage: 10,
+        containerId: "data-content",
+        paginationClass: "pagination",
+        renderRowHTML: (pageData) => pageData.map(item => `
             <tr>
                 <td>${item.code_name}</td>
                 <td>${item.file_ext}</td>
                 <td>${item.exclude_path}</td>
                 <td><button class="edit-btn" onclick="listModidfy(${item.del_idx})">수정</button></td>
                 <td><button class="delete-btn" onclick="manageListDel(${item.del_idx})">삭제</button></td>
-            </tr>`;
+            </tr>
+        `).join('')
     });
-    document.getElementById("data-content").innerHTML = html;
+
     updateSortArrows();
 }
 
@@ -123,22 +130,23 @@ function manageListDel(num) {
             type: "POST",
             dataType: "json",
             data: {
-                num: num
+                num
             },
             url: "/?url=DeleteManageController/manageListdelete",
             success: function(result) {
-                if (result.success == true) {
+                if (result.success) {
                     alert('삭제완료되었습니다.');
                     location.reload();
                 }
             },
             error: function(err) {
-                console.error("데이터 불러오기 실패:", err.responseText);
+                console.error("삭제 실패:", err);
             }
         });
     }
 }
 
+// 초기 데이터 로드
 $.ajax({
     type: "GET",
     dataType: "json",

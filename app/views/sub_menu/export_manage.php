@@ -3,18 +3,20 @@
 $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
 ?>
 <link rel="stylesheet" href="css/export_manage.css" />
+<link rel="stylesheet" href="css/pagination.css" />
+<script src="js/pagination.js"></script>
 
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $code_id = $_POST["department"] ?? '';
-        $host_name = $_POST["hostname"] ?? '';
-        $user_name = $_POST["username"] ?? '';
-        $externally = $_POST["target"] ?? '';
-        $exter_status = $_POST["status"] ?? '';
+        $code_id      = $_POST["department"] ?? '';
+        $host_name    = $_POST["hostname"]   ?? '';
+        $user_name    = $_POST["username"]   ?? '';
+        $externally   = $_POST["target"]     ?? '';
+        $exter_status = $_POST["status"]     ?? '';
     }
 
-    $ssesion_code = $_SESSION["code_id"];
-    $ssesion_type = $_SESSION["admin_type"];
+    $session_code = $_SESSION["code_id"];
+    $session_type = $_SESSION["admin_type"];
 ?>
 
 <div class="export-wrapper">
@@ -33,25 +35,28 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
             <button id="searchToggleBtn" class="btn-confirm" onclick="toggleSearch()">검색</button>
         </div>
     </div>
+
     <!-- 검색 필터 -->
     <div class="search-section" id="searchSection" style="display: none;">
         <form id="searchForm" method="POST" action="/?url=MainController/index&page=export">
-            <?php  if ($_SERVER['REQUEST_METHOD'] === 'POST') { ?>
+            <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
             <input type="hidden" id="code_id" value="<?=$code_id?>" />
             <input type="hidden" id="host_name" value="<?=$host_name?>" />
             <input type="hidden" id="user_name" value="<?=$user_name?>" />
             <input type="hidden" id="externally" value="<?=$externally?>" />
             <input type="hidden" id="exter_status" value="<?=$exter_status?>" />
-            <?php }?>
-            <input type="hidden" id="admin_code_id" value="<?=$ssesion_code?>" />
-            <input type="hidden" id="admin_type" value="<?=$ssesion_type?>" />
-            <?php if ($_SESSION['admin_type'] === '최고관리자'): ?>
+            <?php endif; ?>
+
+            <input type="hidden" id="admin_code_id" value="<?=$session_code?>" />
+            <input type="hidden" id="admin_type" value="<?=$session_type?>" />
+
+            <?php if ($session_type === '최고관리자'): ?>
             <div class="form-row">
                 <label>부서명</label>
-                <select class="form-input" id="dept_name" name="department" required>
-                </select>
+                <select class="form-input" id="dept_name" name="department" required></select>
             </div>
             <?php endif; ?>
+
             <div class="form-row">
                 <label>Hostname</label>
                 <input type="text" name="hostname" placeholder="Hostname" />
@@ -96,6 +101,7 @@ $isSuperAdmin = true; // 최고관리자 여부에 따라 true/false 분기
             </thead>
             <tbody id="exportTableBody"></tbody>
         </table>
+        <div class="pagination"></div>
     </div>
 </div>
 
@@ -119,15 +125,13 @@ function setSort(column) {
 }
 
 function updateSortArrows() {
-    const columns = ['code_name', 'host_name', 'user_name', 'externally', 'reason', 'exter_status'];
-    columns.forEach(col => {
+    const cols = ['code_name', 'host_name', 'user_name', 'externally', 'reason', 'exter_status'];
+    cols.forEach(col => {
         const el = document.getElementById(`sort-${col}`);
         if (!el) return;
-        if (col === currentSort.column) {
-            el.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
-        } else {
-            el.textContent = '⇅';
-        }
+        el.textContent = (col === currentSort.column) ?
+            (currentSort.direction === 'asc' ? '▲' : '▼') :
+            '⇅';
     });
 }
 
@@ -149,8 +153,8 @@ $(document).ready(function() {
             user_name: namePram,
             externally: externallyPram,
             exter_status: statusPram,
-            admin_code_id : adminCodeId,
-            admin_type : adminType
+            admin_code_id: adminCodeId,
+            admin_type: adminType
         },
         url: "/?url=ExportController/exportList",
         success: function(result) {
@@ -168,7 +172,7 @@ $(document).ready(function() {
         url: "/?url=AgentUserController/selectDeptList",
         success: function(result) {
             let html = '';
-            result.forEach((item) => {
+            result.forEach(item => {
                 html += `<option value="${item.code_id}">${item.code_name}</option>`;
             });
             $("#dept_name").html(html);
@@ -185,13 +189,13 @@ function processRequest(id, status) {
             type: "POST",
             dataType: "json",
             data: {
-                id: id,
-                status: status
+                id,
+                status
             },
             url: "/?url=ExportController/exportStatusReq",
-            success: function(result) {
-                if (result.success == true) {
-                    alert(result.message);
+            success: function(res) {
+                if (res.success) {
+                    alert(res.message);
                     location.reload();
                 }
             },
@@ -202,10 +206,14 @@ function processRequest(id, status) {
     }
 }
 
-function renderTable(data) {
-    const tbody = document.getElementById("exportTableBody");
-    tbody.innerHTML = "";
-    const sorted = [...data];
+function filterByStatus() {
+    const status = $("#filterSelect").val();
+    const filtered = status === "전체" ?
+        dataList :
+        dataList.filter(d => d.exter_status === status);
+
+    // 정렬 적용
+    let sorted = [...filtered];
     if (currentSort.column) {
         sorted.sort((a, b) => {
             const aVal = a[currentSort.column] || '';
@@ -216,41 +224,38 @@ function renderTable(data) {
         });
     }
 
-    sorted.forEach(item => {
-        const tr = document.createElement("tr");
-        const actionButtons =
-            item.exter_status === "요청" ?
-            `<button class='btn-confirm' onclick='processRequest(${item.exter_idx}, "승인")'>승인</button>
-                   <button class='btn-cancel' onclick='processRequest(${item.exter_idx}, "반려")'>반려</button>` :
-            "-";
-        tr.innerHTML = `
-            <td>${item.code_name}</td>
-            <td>${item.host_name}</td>
-            <td>${item.user_name}</td>
-            <td>${item.externally}</td>
-            <td>${item.reason}</td>
-            <td>${item.exter_status}</td>
-            <td>${actionButtons}</td>
-        `;
-        tbody.appendChild(tr);
+    // 페이징 처리
+    setupPagination({
+        data: sorted,
+        itemsPerPage: 10,
+        containerId: "exportTableBody",
+        paginationClass: "pagination",
+        renderRowHTML: pageData => pageData.map(item => `
+            <tr>
+                <td>${item.code_name}</td>
+                <td>${item.host_name}</td>
+                <td>${item.user_name}</td>
+                <td>${item.externally}</td>
+                <td>${item.reason}</td>
+                <td>${item.exter_status}</td>
+                <td>${
+                    item.exter_status === "요청"
+                        ? `<button class='btn-confirm' onclick='processRequest(${item.exter_idx},"승인")'>승인</button>
+                           <button class='btn-cancel' onclick='processRequest(${item.exter_idx},"반려")'>반려</button>`
+                        : `-`
+                }</td>
+            </tr>
+        `).join('')
     });
 }
 
-function filterByStatus() {
-    const status = document.getElementById("filterSelect").value;
-    const filtered = status === "전체" ? dataList : dataList.filter(d => d.exter_status === status);
-    renderTable(filtered);
-}
-
 function toggleSearch() {
-    document.getElementById("searchToggleBtn").style.display = "none";
-    document.getElementById("filterSelect").style.display = "none";
-    document.getElementById("searchSection").style.display = "flex";
+    $("#searchToggleBtn, #filterSelect").hide();
+    $("#searchSection").css("display", "flex");
 }
 
 function cancelSearch() {
-    document.getElementById("searchToggleBtn").style.display = "inline-block";
-    document.getElementById("filterSelect").style.display = "inline-block";
-    document.getElementById("searchSection").style.display = "none";
+    $("#searchToggleBtn, #filterSelect").show();
+    $("#searchSection").hide();
 }
 </script>
