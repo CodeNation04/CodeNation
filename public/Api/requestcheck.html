@@ -12,7 +12,7 @@ if (!$agentId) {
 require_once __DIR__ . '/../../config/database.php';
 $db = (new Database())->pdo;
 
-$sql = "SELECT externally, exter_status FROM externally_info WHERE user_id = :agentId ORDER BY create_date DESC";
+$sql = "SELECT externally, exter_status FROM externally_info WHERE user_id = :agentId AND create_date >= DATE_SUB(NOW(), INTERVAL 1 DAY) ORDER BY create_date DESC";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':agentId', $agentId);
 $stmt->execute();
