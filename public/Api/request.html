@@ -11,6 +11,7 @@ if (isset($params['code_id'], $params['host_name'], $params['user_name'], $param
         ':code_id'      => trim($params['code_id']),
         ':host_name'    => trim($params['host_name']),
         ':user_name'    => trim($params['user_name']),
+        ':token'    => trim($params['token']),
         ':externally'   => trim($params['externally']),
         ':reason'       => trim($params['reason']),
         ':exter_status' => '요청',
@@ -18,9 +19,9 @@ if (isset($params['code_id'], $params['host_name'], $params['user_name'], $param
     ];
 
     $sql = "INSERT INTO externally_info 
-            (code_code_id, host_name, user_name, externally, reason, exter_status, create_date, create_ip)
+            (code_code_id, host_name, user_name, user_id, externally, reason, exter_status, create_date, create_ip)
             VALUES 
-            (:code_id, :host_name, :user_name, :externally, :reason, :exter_status, NOW(), :create_ip)";
+            (:code_id, :host_name, :user_name, :token , :externally, :reason, :exter_status, NOW(), :create_ip)";
     $stmt = $db->prepare($sql);
 
     if ($stmt->execute($data)) {

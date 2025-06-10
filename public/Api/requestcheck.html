@@ -1,8 +1,10 @@
 <?php
 header('Content-Type: application/json');
 
-$host = $_GET['host'] ?? '';
-if (!$host) {
+$params = $_POST ?: $_GET;
+
+$agentId = $params['agentId'] ?? '';
+if (!$agentId) {
     echo json_encode([]);
     exit;
 }
@@ -10,9 +12,9 @@ if (!$host) {
 require_once __DIR__ . '/../../config/database.php';
 $db = (new Database())->pdo;
 
-$sql = "SELECT externally, exter_status FROM externally_info WHERE host_name = :host ORDER BY create_date DESC";
+$sql = "SELECT externally, exter_status FROM externally_info WHERE user_id = :agentId ORDER BY create_date DESC";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':host', $host);
+$stmt->bindValue(':agentId', $agentId);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

@@ -1,0 +1,80 @@
+<?php
+// 에러 출력
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+header('Content-Type: text/plain');
+
+// GET 또는 POST 파라미터 처리
+$params = $_POST ?: $_GET;
+
+if (isset($params['hostName'], $params['userName'], $params['localIp'])) {
+    require_once __DIR__ . '/../../config/database.php';
+
+    try {
+        $db = (new Database())->pdo;
+
+        $data = [
+            ':host_name' => trim($params['hostName']),
+            ':user_name' => trim($params['userName']),
+            ':localIp'   => trim($params['localIp']),
+        ];
+
+        $sql = "SELECT code_code_id, user_id
+                FROM user_agent_info
+                WHERE user_name = :user_name
+                AND user_ip = :localIp
+                AND host_name = :host_name";
+
+        $stmt = $db->prepare($sql);
+
+        if ($stmt->execute($data)) {
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $requestCode = strtoupper(bin2hex(random_bytes(8)));
+
+                // work_info, work_type가 있을 경우에만 처리
+                $work_info = isset($params['work_info']) ? trim($params['work_info']) : '';
+                $work_type = isset($params['work_type']) ? trim($params['work_type']) : '';
+
+                $logData = [
+                    'hostname'    => $data[':host_name'],
+                    'username'    => $data[':user_name'],
+                    'token'       => $result['user_id'],
+                    'code_id'     => $result['code_code_id'],
+                    'work_info'   => $work_info,
+                    'work_type'   => $work_type,
+                    'work_result' => '성공',
+                ];
+
+                // 내부 API 호출
+                $ch = curl_init("http://localhost/?url=AgentUserController/logAdd");
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($logData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $curlResult = curl_exec($ch);
+
+                if (curl_errno($ch)) {
+                    $curlError = curl_error($ch);
+                    curl_close($ch);
+                    echo "FAIL|curl_error: $curlError";
+                    exit;
+                }
+
+                curl_close($ch);
+
+                echo "요청|{$requestCode}";
+            } else {
+                echo "FAIL|사용자 정보 없음";
+            }
+        } else {
+            echo "FAIL|DB 실행 실패";
+        }
+    } catch (Exception $e) {
+        echo "FAIL|예외 발생: " . $e->getMessage();
+    }
+} else {
+    echo "FAIL|필수 파라미터 없음";
+}
